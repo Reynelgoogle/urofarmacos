@@ -186,6 +186,7 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family:
 .search-inner {
   width: 100%;
   max-width: 520px;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 9px;
@@ -212,6 +213,11 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family:
   font-size: 13.5px;
   color: var(--ink);
   min-width: 0;
+  /* Una sola línea, siempre de izquierda a derecha: el input no
+     hereda dirección ni alineación de ningún ancestro. */
+  direction: ltr;
+  text-align: left;
+  line-height: 1.4;
 }
 .search-inner input::placeholder { color: var(--muted-2); }
 .search-inner kbd {
@@ -1248,6 +1254,17 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family:
 @media (max-width: 639px) {
   .topbar { padding: 0 12px; gap: 10px; }
   .brand, .top-actions { min-width: 0; }
+  /* En móvil la marca es solo el icono: el texto ("UroFármacos" +
+     el subtítulo) roba ~200px y, como .brand tiene flex:none (no
+     se encoge), el min-width:0 de arriba no lo recoge. Con la
+     marca y Favoritos a ancho completo, el buscador —el único
+     flexible— colapsaba a ~0px en portrait (Redmi Note 10S:
+     ~360-393px CSS) y los caracteres se amontonaban al teclear.
+     Favoritos queda en solo icono + contador. */
+  .brand-text { display: none; }
+  .top-actions .ghost-btn { font-size: 0; gap: 5px; padding: 8px; }
+  .top-actions .ghost-btn .n { font-size: 10.5px; }
+  .search-inner { max-width: none; }
   .search-inner kbd { display: none; }
   .hero-inner { padding: 2.5rem 1rem; }
   .hero h1 { font-size: 2rem; }
@@ -1256,6 +1273,20 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family:
   .ficha-head-card { padding: 20px; }
   .grid-fam { grid-template-columns: 1fr; }
   .sec { padding: 16px 18px; }
+}
+/* Móvil en horizontal: el alto es corto (~360-430px CSS) y la
+   topbar de escritorio (marca 198px + acciones 198px + kbd)
+   vuelve a estrechar el buscador al girar el móvil. Mismo
+   tratamiento compacto que en portrait. No toca tabletas ni
+   escritorio: esos tienen más de 500px de alto. */
+@media (max-width: 1023px) and (orientation: landscape) and (max-height: 500px) {
+  .topbar { padding: 0 12px; gap: 10px; }
+  .brand, .top-actions { min-width: 0; }
+  .brand-text { display: none; }
+  .top-actions .ghost-btn { font-size: 0; gap: 5px; padding: 8px; }
+  .top-actions .ghost-btn .n { font-size: 10.5px; }
+  .search-inner { max-width: none; }
+  .search-inner kbd { display: none; }
 }
 @media (min-width: 640px) {
   .hero h1 { font-size: 3rem; }

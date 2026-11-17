@@ -70,6 +70,36 @@ function blobText(window, blob) {
   });
 }
 
+// Extrae el cuerpo de un bloque @media cuya condición casa con `re`
+// (conteo de llaves; el CSS viene minificado).
+function mediaBlock(css, re) {
+  const m = css.match(re);
+  if (!m) return "";
+  const open = css.indexOf("{", m.index);
+  if (open < 0) return "";
+  let depth = 0;
+  for (let j = open; j < css.length; j++) {
+    if (css[j] === "{") depth++;
+    else if (css[j] === "}") { depth--; if (depth === 0) return css.slice(open + 1, j); }
+  }
+  return "";
+}
+
+// Cuerpo de la regla del selector exacto `sel` (p. ej. ".search-inner
+// input"): busca `sel + "{"` para no casar con :hover, ::placeholder
+// ni :focus-visible del mismo selector.
+function ruleBody(css, sel) {
+  const i = css.indexOf(sel + "{");
+  if (i < 0) return null;
+  const open = i + sel.length;
+  let depth = 0;
+  for (let j = open; j < css.length; j++) {
+    if (css[j] === "{") depth++;
+    else if (css[j] === "}") { depth--; if (depth === 0) return css.slice(open + 1, j); }
+  }
+  return null;
+}
+
 (async () => {
   const { window, doc, errors, tick } = await mount("http://localhost/", ".hero");
 
@@ -192,6 +222,50 @@ function blobText(window, blob) {
     /scrollbar-color:\s*(rgba\(13,\s*148,\s*136|#0d9488)/.test(styleText));
   check("CSS con hover más visible en el pulgar",
     /::-webkit-scrollbar-thumb:hover/.test(styleText));
+
+  // ---------- Buscador en móvil (topbar): no colapsar al girar ----------
+  // Causa raíz: .brand y .top-actions tenían flex:none (no se
+  // encogen) y su ancho de contenido (~225px la marca con el
+  // subtítulo, ~120px Favoritos) superaba el viewport en portrait
+  // (~360-393px CSS en el Redmi Note 10S), así que .search (el
+  // único flexible) colapsaba a ~0px y los caracteres se
+  // amontonaban al teclear. El arreglo: marca solo icono, kbd
+  // oculto y Favoritos compacto en pantallas estrechas y en
+  // horizontal, input con direction:ltr y min-width:0 en cada
+  // ancestro flex.
+  const topInput = doc.querySelector('.topbar .search .search-inner input[type="search"]');
+  check("buscador: input type=search dentro de .topbar .search .search-inner", !!topInput);
+  check("buscador: sin dir=rtl en el input", topInput?.getAttribute("dir") !== "rtl");
+  const inputCss = ruleBody(styleText, ".search-inner input") || "";
+  check("CSS: input del buscador con direction:ltr", /direction\s*:\s*ltr/.test(inputCss), inputCss);
+  check("CSS: input del buscador con text-align:left", /text-align\s*:\s*left/.test(inputCss), inputCss);
+  check("CSS: input del buscador flex:1 con min-width:0",
+    /flex\s*:\s*1/.test(inputCss) && /min-width\s*:\s*0/.test(inputCss), inputCss);
+  check("CSS: input del buscador sin ancho fijo en px", !/(?:^|[^-])width\s*:\s*\d+px/.test(inputCss), inputCss);
+  check("CSS: sin direction:rtl en todo el CSS", !/direction\s*:\s*rtl/.test(styleText));
+  const searchCss = ruleBody(styleText, ".search") || "";
+  check("CSS: .search flex:1 con min-width:0",
+    /flex\s*:\s*1/.test(searchCss) && /min-width\s*:\s*0/.test(searchCss), searchCss);
+  check("CSS: .search sin ancho fijo en px", !/(?:^|[^-])width\s*:\s*\d+px/.test(searchCss), searchCss);
+  const innerCss = ruleBody(styleText, ".search-inner") || "";
+  check("CSS: .search-inner con min-width:0", /min-width\s*:\s*0/.test(innerCss), innerCss);
+  check("CSS: .search-inner sin ancho fijo en px", !/(?:^|[^-])width\s*:\s*\d+px/.test(innerCss), innerCss);
+  // El minificador reescribe max-width:639px como width<=639px.
+  const mobCss = mediaBlock(styleText, /@media[^{]*639px/);
+  check("CSS móvil (≤639px): existe el bloque", mobCss.length > 0);
+  check("CSS móvil: texto de la marca oculto (.brand-text display:none)",
+    /\.brand-text\s*\{[^}]*display\s*:\s*none/.test(mobCss), mobCss.slice(0, 200));
+  check("CSS móvil: kbd ⌘K oculto", /\.search-inner kbd\s*\{[^}]*display\s*:\s*none/.test(mobCss));
+  check("CSS móvil: .search-inner sin tope de 520px (max-width:none)",
+    /max-width\s*:\s*none/.test(mobCss));
+  check("CSS móvil: Favoritos compacto (solo icono + contador)",
+    /\.top-actions \.ghost-btn\s*\{[^}]*font-size\s*:\s*0/.test(mobCss));
+  const landCss = mediaBlock(styleText, /@media[^{]*orientation\s*:\s*landscape/);
+  check("CSS: existe bloque para móvil en horizontal (orientation:landscape)", landCss.length > 0);
+  check("CSS horizontal: texto de la marca oculto",
+    /\.brand-text\s*\{[^}]*display\s*:\s*none/.test(landCss));
+  check("CSS horizontal: kbd ⌘K oculto", /\.search-inner kbd\s*\{[^}]*display\s*:\s*none/.test(landCss));
+  check("CSS horizontal: .search-inner sin tope (max-width:none)", /max-width\s*:\s*none/.test(landCss));
 
   // Contadores del héroe: 9 familias, 7 órganos, 103 fichas, 103 patologías.
   const stats = [...doc.querySelectorAll(".hero-stats .stat")].map((s) => s.textContent.replace(/\s+/g, " ").trim());

@@ -55,7 +55,7 @@ Los datos viven en `src/data/drugs.ts`.
 - **Modo lectura** (`src/ReadingMode.tsx`): overlay a pantalla completa con fondo blanco, A− / % / A+ (fuente 11–21 px, persistente en `localStorage` `uf:letra`), pantalla completa con degradado silencioso, Escape para salir. Patrón de UroCampus (estructura) + UroApp (variable CSS `--tam-letra`).
 - **Créditos** (`#/creditos`): vista propia con autor (Reynel Busto González, Médico Urólogo, Hospital «Hermanos Ameijeiras», ORCID 0009-0003-2233-9021), qué es la app y sus fuentes. Enlaces en el cajón de navegación y en el pie.
 - **Cajón de navegación** (`src/NavDrawer.tsx`): un solo cajón deslizante desde la izquierda para todos los tamaños, abierto con la hamburguesa ☰ de la topbar (visible siempre, también en escritorio); mismo panel que la antigua sidebar fija (Inicio, Favoritos con contador, 9 familias, 7 órganos, patologías, Créditos). Backdrop oscuro, cierre con Escape / clic fuera / al navegar, foco al ✕ al abrir y devuelto a la hamburguesa al cerrar. Patrón del `MobileDrawer` de UroCampus (portal, siempre montado, bloqueo de scroll) sin su inconsistencia de breakpoints (`lg:hidden` + `md:flex` entre 768 y 1023 px) y con las mejoras de accesibilidad de su `ReadingMode`. Sin sidebar fija ni riel colapsable: el contenido ocupa todo el ancho con el cajón cerrado.
-- **Preparación de empaquetado**: `vite.config.ts` con `base: './'` (rutas relativas, funciona desde `file://` y en WebView); sin `fetch`/XHR ni referencias externas; hash routing apto para `file://`. Faltan por generar durante el empaquetado: derivados del icono para Tauri (`tauri icon` desde el maestro 1024) y para Capacitor (icono adaptativo + splash con `@capacitor/assets`).
+- **Preparación de empaquetado**: `vite.config.ts` con `base: './'` (rutas relativas, funciona desde `file://` y en WebView); sin `fetch`/XHR ni referencias externas; hash routing apto para `file://`. Iconos launcher de Android reproducibles con `scripts/make-launcher-icons.py` (ver «Empaquetado»); derivados de Tauri en `src-tauri/icons/`.
 
 ## Desarrollo
 
@@ -73,13 +73,19 @@ npm run dev
   npx cap add android   # solo la primera vez
   npx cap sync android
   ```
-  Tras `cap add android`, re-aplicar a mano al inicio de `android/app/build.gradle` (el `cap sync` no lo borra):
+  Tras `cap add android`, dos pasos manuales (el `cap sync` no los borra, verificado):
+  1. Re-aplicar a mano al inicio de `android/app/build.gradle`:
   ```groovy
   configurations.all {
       exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
       exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
   }
   ```
+  2. Regenerar los iconos launcher oficiales (el `cap add` pone el robot por defecto de Capacitor):
+  ```sh
+  python3 scripts/make-launcher-icons.py public/urofarmacos-icon.png
+  ```
+  Genera los 15 PNG (legacy + round en 5 densidades, foreground adaptativo de 432 px con el círculo en la zona segura de 66 dp) y los XML de fondo con el teal muestreado del maestro (#045B6C).
   Luego compilar en Android Studio o `./gradlew :app:assembleDebug`, con **JDK 21** como Gradle JDK y build-tools **35.0.0** (compileSdk/targetSdk 36, minSdk 24). Verificado en verde aquí (`assembleDebug --offline`, APK debug 5,3 MB) con el entorno cacheado (AGP 8.13.0, Gradle 9.1.0, JDK 21).
-- **Escritorio (Tauri 2.12.6)** — `src-tauri/` (identifier `com.reynel.urofarmacos`, ventana 1280×800, CSP estricta 100% local). El exe de Windows lo construye GitHub Actions al pushear a `main`: workflow `.github/workflows/tauri-windows.yml` (windows-latest, `npm ci`, `tauri build`), artefacto `UroFarmacos-windows-installer` con el instalador NSIS. Tauri no produce un `.exe` portable único: el artefacto es el instalador NSIS. `cargo check`/`cargo build` verificados en Linux (necesitan las dev libs de GTK/WebKit; no sobreviven a un reemplazo de la VM).
-- Icono adaptativo de Android (432×432) y splash: pendientes de generar (el maestro llena casi todo el cuadro; hay que darle margen). Para la APK debug no hacen falta.
+- **Escritorio (Tauri 2.12.6)** — `src-tauri/` (identifier `com.reynel.urofarmacos`, ventana 1280×800, CSP estricta 100% local). El exe de Windows lo construye GitHub Actions al pushear a `main`: workflow `.github/workflows/tauri-windows.yml` (windows-latest, `npm ci`, `tauri build`), dos artefactos: `UroFarmacos-windows-installer` (instalador NSIS) y `UroFarmacos-windows-portable` (exe suelto de `target/release/`, como el portable de UroApp). `cargo check`/`cargo build` verificados en Linux (necesitan las dev libs de GTK/WebKit; no sobreviven a un reemplazo de la VM).
+- Splash de Android: pendiente de generar. Para la APK debug no hace falta.
