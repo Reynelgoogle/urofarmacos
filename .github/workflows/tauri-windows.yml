@@ -1,11 +1,15 @@
 # UroFármacos Desktop — build Windows (Tauri)
 #
 # Compila la app de escritorio (Tauri) en windows-latest y sube el
-# instalador NSIS como artefacto.
+# instalador NSIS y el exe portable como artefactos.
 #
-# Se dispara POR PUSH a main (además de a mano con workflow_dispatch),
-# para que el exe de Windows se construya al subir. El repo es PÚBLICO
-# (Reynelgoogle/urofarmacos), así que los Actions son gratis.
+# Se dispara POR PUSH a main SOLO cuando el cambio toca la app de
+# escritorio directamente (src-tauri/ o el propio workflow), además
+# de a mano con workflow_dispatch. Así no se construye un exe en cada
+# commit: los cambios de la web, Android, scripts o README no lo
+# disparan. Cuando Rey quiera un exe nuevo con los últimos cambios
+# de la web, lo lanza a mano (Actions → Run workflow). El repo es
+# PÚBLICO (Reynelgoogle/urofarmacos), así que los Actions son gratis.
 #
 # Requisitos previos (una sola vez, en el repo):
 #   - Este workflow usa @tauri-apps/cli (devDependency): `npm ci` lo instala
@@ -29,6 +33,9 @@ name: UroFármacos Desktop (Tauri, Windows)
 on:
   push:
     branches: [main]
+    paths:
+      - 'src-tauri/**'
+      - '.github/workflows/tauri-windows.yml'
   workflow_dispatch:
 
 jobs:
