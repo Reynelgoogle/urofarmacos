@@ -83,59 +83,115 @@ function blobText(window, blob) {
   check("marca de cabecera con data URI", !!mark && mark.src.startsWith("data:image/png"));
   check("favicon inlinado", !!doc.querySelector('link[rel="icon"][href^="data:image/png"]'));
 
-  // Estructura nueva: topbar, sidebar, shell y bottom nav móvil.
+  // Estructura nueva: topbar, cajón de navegación y bottom nav móvil.
+  // Sin sidebar fija ni riel: el panel de navegación vive en el cajón.
   check("topbar presente", !!doc.querySelector(".topbar"));
   check("atajo ⌘ K visible", (doc.querySelector(".topbar kbd")?.textContent || "") === "⌘ K");
-  check("sidebar presente", !!doc.querySelector(".sidebar"));
-  check("sidebar con grupo Familias", (doc.querySelector(".sidebar")?.textContent || "").includes("Familias"));
-  check("sidebar con Todas las patologías", (doc.querySelector(".sidebar")?.textContent || "").includes("Todas las patologías"));
+  check("sin sidebar fija (.sidebar)", !doc.querySelector(".sidebar"));
+  check("sin botón de colapso de la sidebar", !doc.querySelector(".side-collapse"));
+  check("sin contenedor .shell", !doc.querySelector(".shell"));
+  check("sin clave uf:sidebar en localStorage",
+    window.localStorage.getItem("uf:sidebar") === null);
+  check("cajón de navegación presente (siempre montado)",
+    !!doc.querySelector(".nav-drawer"));
+  check("cajón con grupo Familias", (doc.querySelector(".nav-drawer")?.textContent || "").includes("Familias"));
+  check("cajón con Todas las patologías", (doc.querySelector(".nav-drawer")?.textContent || "").includes("Todas las patologías"));
+  check("cajón con Favoritos y contador",
+    (doc.querySelector(".nav-drawer")?.textContent || "").includes("Favoritos"));
   const bottomBtns = [...doc.querySelectorAll(".m-bottomnav button")];
   check("bottom nav móvil con 4 botones", bottomBtns.length === 4, `${bottomBtns.length} botones`);
   check("bottom nav: Inicio, Índice, Buscar, Favoritos",
     ["Inicio", "Índice", "Buscar", "Favoritos"].every((t) =>
       bottomBtns.some((b) => b.textContent.includes(t))));
 
-  // ---------- Sidebar colapsable (escritorio) ----------
-  const sidebar = doc.querySelector(".sidebar");
-  const collapseBtn = doc.querySelector(".side-collapse");
-  check("botón de colapso de la sidebar existe", !!collapseBtn);
-  check("sidebar empieza expandida", !!sidebar && !sidebar.classList.contains("collapsed"));
-  check("sidebar expandida mide 264px", window.getComputedStyle(sidebar).width === "264px", window.getComputedStyle(sidebar).width);
-  collapseBtn?.click(); await tick(); await tick();
-  check("al pulsar colapso la sidebar se contrae (clase)", sidebar.classList.contains("collapsed"));
-  check("sidebar colapsada mide 60px", window.getComputedStyle(sidebar).width === "60px", window.getComputedStyle(sidebar).width);
-  check("estado colapsado persiste en localStorage uf:sidebar",
-    window.localStorage.getItem("uf:sidebar") === "collapsed");
-  check("riel colapsado sigue con Inicio/Favoritos/Créditos",
-    doc.querySelectorAll(".sidebar .side-item").length === 3,
-    `${doc.querySelectorAll(".sidebar .side-item").length} botones`);
-  check("riel colapsado sigue con 9 familias + 7 órganos + 4 patologías",
-    doc.querySelectorAll(".sidebar .side-fam").length === 20,
-    `${doc.querySelectorAll(".sidebar .side-fam").length} botones`);
-  check("riel colapsado con título/tooltip en cada icono",
-    [...doc.querySelectorAll(".sidebar .side-item, .sidebar .side-fam")].every((b) =>
-      (b.getAttribute("title") || "").length > 0));
-  check("botón cambia a Expandir índice",
-    collapseBtn.getAttribute("aria-label") === "Expandir índice");
-  // El riel colapsado sigue navegando: primera familia (alfabloqueadores).
-  doc.querySelector(".sidebar .side-fam")?.click(); await tick(); await tick();
-  check("riel colapsado: pulsar una familia abre su vista (6 filas)",
+  // ---------- Cajón de navegación (único, todos los tamaños) ----------
+  const drawer = doc.querySelector(".nav-drawer");
+  const burger = doc.querySelector('.topbar .icon-btn[aria-label="Abrir índice"]');
+  check("botón hamburguesa en la topbar", !!burger);
+  check("hamburguesa con aria-expanded=false al arrancar",
+    burger?.getAttribute("aria-expanded") === "false");
+  check("hamburguesa con aria-controls=nav-drawer",
+    burger?.getAttribute("aria-controls") === "nav-drawer");
+  check("cajón oculto por defecto (aria-hidden)",
+    drawer?.getAttribute("aria-hidden") === "true");
+  check("cajón oculto por defecto (sin clase open)",
+    !!drawer && !drawer.classList.contains("open"));
+  check("cajón con role=dialog y aria-modal en el panel",
+    drawer?.querySelector(".nav-drawer-panel")?.getAttribute("role") === "dialog" &&
+    drawer?.querySelector(".nav-drawer-panel")?.getAttribute("aria-modal") === "true");
+  check("cajón con botón ✕ Cerrar menú",
+    !!drawer?.querySelector('[aria-label="Cerrar menú"]'));
+  check("cajón con Inicio/Favoritos/Créditos",
+    doc.querySelectorAll(".nav-drawer .side-item").length === 3,
+    `${doc.querySelectorAll(".nav-drawer .side-item").length} botones`);
+  check("cajón con 9 familias + 7 órganos + 4 patologías",
+    doc.querySelectorAll(".nav-drawer .side-fam").length === 20,
+    `${doc.querySelectorAll(".nav-drawer .side-fam").length} botones`);
+  check("Favoritos del cajón con contador 0",
+    (doc.querySelector(".nav-drawer .side-item .side-count")?.textContent || "") === "0");
+  // La hamburguesa NO se esconde en escritorio: el CSS no tiene regla
+  // que oculte .icon-btn (jsdom no evalúa media queries, se revisa el CSS).
+  const styleText = [...doc.querySelectorAll("style")].map((s) => s.textContent).join("\n");
+  check("CSS sin regla que oculte la hamburguesa en escritorio",
+    !/\.icon-btn\s*\{[^}]*display\s*:\s*none/.test(styleText));
+  // Abrir con la hamburguesa: foco al botón ✕, scroll bloqueado.
+  burger?.focus();
+  burger?.click(); await tick(); await tick();
+  check("hamburguesa abre el cajón (clase open)",
+    !!drawer && drawer.classList.contains("open"));
+  check("cajón abierto: aria-hidden=false",
+    drawer?.getAttribute("aria-hidden") === "false");
+  check("hamburguesa con aria-expanded=true al abrir",
+    burger?.getAttribute("aria-expanded") === "true");
+  check("cajón abierto bloquea el scroll del fondo", doc.body.style.overflow === "hidden");
+  check("al abrir, el foco va al botón ✕ del cajón",
+    doc.activeElement?.getAttribute("aria-label") === "Cerrar menú",
+    `${doc.activeElement?.tagName} ${doc.activeElement?.getAttribute("aria-label") || ""}`);
+  // Navegar desde el cajón abre la vista y lo cierra.
+  doc.querySelector(".nav-drawer .side-fam")?.click(); await tick(); await tick();
+  check("desde el cajón: pulsar una familia abre su vista (6 filas)",
     doc.querySelectorAll(".drug-row").length === 6,
     `${doc.querySelectorAll(".drug-row").length} filas`);
+  check("al navegar, el cajón se cierra",
+    drawer?.getAttribute("aria-hidden") === "true" && !drawer.classList.contains("open"));
+  check("al cerrar, el scroll del fondo se restaura", doc.body.style.overflow === "");
+  check("al cerrar, el foco vuelve a la hamburguesa", doc.activeElement === burger);
   doc.querySelector(".brand")?.click(); await tick(); await tick();
-  check("vuelta a Inicio tras navegar desde el riel", !!doc.querySelector(".hero"));
-  collapseBtn?.click(); await tick(); await tick();
-  check("al pulsar de nuevo la sidebar se expande", !sidebar.classList.contains("collapsed"));
-  check("estado expandido persiste en localStorage uf:sidebar",
-    window.localStorage.getItem("uf:sidebar") === "open");
-  // Persistencia entre visitas: una instancia nueva con uf:sidebar
-  // sembrado en "collapsed" arranca ya colapsada.
-  const persisted = await mount("http://localhost/", ".hero",
-    (w) => w.localStorage.setItem("uf:sidebar", "collapsed"));
-  check("sidebar colapsada recordada entre visitas",
-    !!persisted.doc.querySelector(".sidebar")?.classList.contains("collapsed"));
-  check("sidebar recordada: sin errores de ventana/jsdom",
-    persisted.errors.length === 0, persisted.errors.slice(0, 3).join(" | "));
+  check("vuelta a Inicio tras navegar desde el cajón", !!doc.querySelector(".hero"));
+  // Escape lo cierra.
+  burger?.click(); await tick(); await tick();
+  check("el cajón reabre con la hamburguesa", !!drawer?.classList.contains("open"));
+  window.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await tick(); await tick();
+  check("Escape cierra el cajón", !drawer?.classList.contains("open"));
+  check("Escape restaura el scroll del fondo", doc.body.style.overflow === "");
+  // El backdrop lo cierra.
+  burger?.click(); await tick(); await tick();
+  doc.querySelector(".nav-drawer-backdrop")?.click(); await tick(); await tick();
+  check("clic en el backdrop cierra el cajón", !drawer?.classList.contains("open"));
+  // El botón ✕ lo cierra.
+  burger?.click(); await tick(); await tick();
+  drawer?.querySelector('[aria-label="Cerrar menú"]')?.click(); await tick(); await tick();
+  check("✕ cierra el cajón", !drawer?.classList.contains("open"));
+  // El botón Índice de la bottom nav abre el mismo cajón.
+  const idxBtn = [...doc.querySelectorAll(".m-bottomnav button")].find((b) =>
+    b.textContent.includes("Índice"));
+  idxBtn?.click(); await tick(); await tick();
+  check("Índice de la bottom nav abre el mismo cajón", !!drawer?.classList.contains("open"));
+  window.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await tick(); await tick();
+
+  // ---------- Barra de desplazamiento modernizada ----------
+  check("CSS con ::-webkit-scrollbar", styleText.includes("::-webkit-scrollbar"));
+  check("CSS con pulgar teal redondeado",
+    /::-webkit-scrollbar-thumb\s*\{[^}]*border-radius:\s*999px/.test(styleText));
+  check("CSS con scrollbar-width thin (Firefox)",
+    /scrollbar-width:\s*thin/.test(styleText));
+  check("CSS con scrollbar-color teal (Firefox)",
+    // El minificador reescribe rgba(13,148,136,.45) como #0d948873.
+    /scrollbar-color:\s*(rgba\(13,\s*148,\s*136|#0d9488)/.test(styleText));
+  check("CSS con hover más visible en el pulgar",
+    /::-webkit-scrollbar-thumb:hover/.test(styleText));
 
   // Contadores del héroe: 9 familias, 7 órganos, 103 fichas, 103 patologías.
   const stats = [...doc.querySelectorAll(".hero-stats .stat")].map((s) => s.textContent.replace(/\s+/g, " ").trim());
@@ -425,11 +481,14 @@ function blobText(window, blob) {
   check("clic en Créditos del pie abre la vista", !!doc.querySelector(".credits"));
   check("clic en Créditos pone el hash #/creditos",
     window.location.hash === "#/creditos", window.location.hash);
-  const sideCred = [...doc.querySelectorAll(".sidebar .side-item")].find((b) =>
+  // Créditos desde el cajón: abre la vista y cierra el cajón.
+  burger?.click(); await tick(); await tick();
+  const drawerCred = [...doc.querySelectorAll(".nav-drawer .side-item")].find((b) =>
     b.textContent.includes("Créditos"));
-  check("enlace Créditos en la sidebar", !!sideCred);
-  sideCred?.click(); await tick(); await tick();
-  check("clic en Créditos de la sidebar abre la vista", !!doc.querySelector(".credits"));
+  check("enlace Créditos en el cajón", !!drawerCred);
+  drawerCred?.click(); await tick(); await tick();
+  check("clic en Créditos del cajón abre la vista", !!doc.querySelector(".credits"));
+  check("al ir a Créditos el cajón se cierra", !drawer?.classList.contains("open"));
 
   // Sin referencias externas restantes.
   check("sin src/href externos en el HTML", !/src="\/|href="\/|url\(\//.test(html));

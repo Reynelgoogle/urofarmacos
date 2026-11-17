@@ -1,8 +1,8 @@
 /* UroFármacos — rediseño (fase 3).
    Lenguaje del mockup de Rey (diseno-moderno): superficies blancas,
-   bordes hairline, teal como acento, sidebar fija en escritorio,
-   bottom nav en móvil. Titulares en SERIF por decisión de Rey
-   (el mockup usa sans en titulares: NO se aplica).
+   bordes hairline, teal como acento, cajón de navegación (hamburguesa)
+   en todos los tamaños, bottom nav en móvil. Titulares en SERIF por
+   decisión de Rey (el mockup usa sans en titulares: NO se aplica).
    Héroe: SOLO la foto de fondo con el velo oscuro actual. */
 
 :root {
@@ -49,7 +49,12 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* Barra de desplazamiento del viewport (Firefox). */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(13, 148, 136, 0.45) transparent;
+}
 
 body {
   margin: 0;
@@ -75,6 +80,32 @@ a { color: inherit; text-decoration: none; }
 
 ::selection { background: var(--teal-200); color: #042f2e; }
 
+/* ---------- Barra de desplazamiento modernizada ----------
+   Fina y redondeada: pulgar teal suave sobre pista transparente,
+   más visible al pasar el puntero (y al arrastrar). WebKit
+   (Chrome/Edge/WebView) con ::-webkit-scrollbar; Firefox con
+   scrollbar-width/color (en html y en cada contenedor con scroll
+   propio). Si el navegador no lo soporta (WebView viejo), queda la
+   barra nativa sin romperse nada: son solo reglas de presentación. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(13, 148, 136, 0.35);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(13, 148, 136, 0.6);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:active {
+  background: rgba(13, 148, 136, 0.8);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
 mark,
 mark.hl {
   background: linear-gradient(transparent 10%, var(--hl) 10%, var(--hl) 90%, transparent 90%);
@@ -85,8 +116,7 @@ mark.hl {
 
 /* Titulares en SERIF (decisión de Rey). .sec h2 se mantiene en sans:
    es una etiqueta de sección en mayúsculas, no un titular. */
-h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
-.drawer h3 { font-family: var(--font-serif); }
+h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family: var(--font-serif); }
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(16px); }
@@ -259,53 +289,102 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
 .icon-btn:hover { background: #f3f6f8; color: var(--ink); }
 .icon-btn svg { width: 17px; height: 17px; }
 
-/* ---------- Shell + sidebar ---------- */
-.shell { display: flex; align-items: stretch; flex: 1; min-height: 0; }
-
-.sidebar {
-  width: 264px;
-  flex: none;
-  align-self: flex-start;
-  position: sticky;
-  top: 64px;
-  height: calc(100vh - 64px);
-  overflow-y: auto;
-  background: #fbfcfd;
-  border-right: 1px solid var(--line);
-  padding: 18px 12px 24px;
+/* ---------- Cajón de navegación (único, todos los tamaños) ----------
+   Patrón del MobileDrawer de UroCampus, aplicado en escritorio y
+   móvil: siempre montado (anima la salida), portal a document.body,
+   backdrop oscuro con blur, panel deslizante desde la izquierda.
+   Cerrado: fuera de pantalla (translateX) y sin interceptar clics
+   ni foco (visibility oculta tras la animación de salida). */
+.nav-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  visibility: hidden;
+  pointer-events: none;
+  transition: visibility 0s linear 300ms;
+}
+.nav-drawer.open {
+  visibility: visible;
+  pointer-events: auto;
+  transition: none;
+}
+.nav-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.nav-drawer.open .nav-drawer-backdrop { opacity: 1; }
+.nav-drawer-panel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 88%;
+  max-width: 384px;
+  background: #fff;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.45);
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  transition: width 150ms ease;
+  transform: translateX(-100%);
+  transition: transform 300ms ease-out;
 }
-/* Sidebar colapsable (escritorio ≥1024 px): riel fino de iconos.
-   El contenido principal (.main, flex:1) se expande solo al
-   estrecharse la sidebar. En móvil la sidebar no existe (cajón). */
-.side-collapse-row { display: flex; justify-content: flex-end; padding: 0 2px; }
-.side-collapse {
+.nav-drawer.open .nav-drawer-panel { transform: translateX(0); }
+.nav-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex: none;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.nav-drawer-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.nav-drawer-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+}
+.nav-drawer-close {
   display: grid;
   place-items: center;
   width: 32px;
   height: 32px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #fff;
+  flex: none;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
   color: var(--muted);
-  font-size: 16px;
-  line-height: 1;
   cursor: pointer;
 }
-.side-collapse:hover { background: #f3f6f8; color: var(--ink); }
-.sidebar.collapsed { width: 60px; padding: 18px 8px 24px; overflow-x: hidden; }
-.sidebar.collapsed .side-collapse-row { justify-content: center; }
-.sidebar.collapsed .side-label,
-.sidebar.collapsed .side-divider,
-.sidebar.collapsed .side-foot { display: none; }
-.sidebar.collapsed .side-item,
-.sidebar.collapsed .side-fam { justify-content: center; padding: 0 4px; }
-.sidebar.collapsed .side-fam-name,
-.sidebar.collapsed .side-count { display: none; }
-.sidebar.collapsed .side-item svg { margin: 0; }
+.nav-drawer-close:hover { background: #f3f6f8; color: var(--ink); }
+.nav-drawer-close svg { width: 20px; height: 20px; }
+.nav-drawer-nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 18px 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(13, 148, 136, 0.45) transparent;
+}
 .side-group { display: flex; flex-direction: column; gap: 2px; }
 .side-item {
   display: flex;
@@ -1157,49 +1236,13 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(13, 148, 136, 0.45) transparent;
 }
 .reading-content { max-width: 48rem; margin: 0 auto; padding: 24px 16px 48px; }
 /* En el overlay no hay índice lateral (una sola columna). */
 .reading-mode .sec-index { display: none; }
 .reading-mode .ficha-layout { grid-template-columns: minmax(0, 1fr); }
-
-/* ---------- Cajón móvil ---------- */
-.drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  background: rgba(15, 23, 42, 0.45);
-  animation: fadeIn 0.2s ease-out both;
-}
-.drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  z-index: 41;
-  width: 17rem;
-  max-width: 85vw;
-  background: #fff;
-  padding: 1.25rem;
-  animation: fadeInUp 0.25s ease-out both;
-  overflow-y: auto;
-}
-.drawer h3 { margin: 0 0 0.75rem; font-size: 1.15rem; }
-.drawer .drawer-link {
-  display: block;
-  width: 100%;
-  text-align: left;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: var(--ink);
-  padding: 0.7rem 0.5rem;
-  border-radius: 0.6rem;
-}
-.drawer .drawer-link:hover { background: #f0f4f7; }
-.drawer .drawer-link.active { background: var(--teal-50); color: var(--teal-d); font-weight: 600; }
 
 /* ---------- Media queries ---------- */
 @media (max-width: 639px) {
@@ -1222,12 +1265,10 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
   .main { padding: 28px 24px 96px; }
 }
 @media (max-width: 1023px) {
-  .sidebar { display: none; }
   .sec-index { display: none; }
   .grid-fam { display: none; }
 }
 @media (min-width: 1024px) {
-  .icon-btn { display: none; }
   .m-bottomnav { display: none; }
   .m-quicknav { display: none; }
   .m-fam-list { display: none; }

@@ -11,6 +11,7 @@ import {
   type Family,
 } from "./data/drugs";
 import { drugToMarkdown, slugify } from "./exportMarkdown";
+import NavDrawer from "./NavDrawer";
 import ReadingMode from "./ReadingMode";
 
 type View =
@@ -30,16 +31,6 @@ function loadFavs(): Set<string> {
     return raw ? new Set(JSON.parse(raw) as string[]) : new Set();
   } catch {
     return new Set();
-  }
-}
-
-// Sidebar de escritorio colapsable: se recuerda entre visitas
-// (clave "uf:sidebar": "open" | "collapsed").
-function loadSidebarCollapsed(): boolean {
-  try {
-    return localStorage.getItem("uf:sidebar") === "collapsed";
-  } catch {
-    return false;
   }
 }
 
@@ -289,14 +280,14 @@ const SvgInfo = (
   </svg>
 );
 
-// ---------- Contenido del índice: mismo en la sidebar y en el cajón ----------
-function SidebarContent({
+// ---------- Contenido del índice: el panel de navegación que vive
+// dentro del cajón (único, para todos los tamaños) ----------
+function NavContent({
   view,
   searching,
   favCount,
   organCounts,
   topConds,
-  collapsed,
   onHome,
   onFavorites,
   onCredits,
@@ -310,7 +301,6 @@ function SidebarContent({
   favCount: number;
   organCounts: { name: string; count: number }[];
   topConds: { name: string; count: number }[];
-  collapsed?: boolean;
   onHome: () => void;
   onFavorites: () => void;
   onCredits: () => void;
@@ -383,11 +373,6 @@ function SidebarContent({
               onClick={() => onOrgan(o.name)}
               title={o.name}
             >
-              {collapsed && (
-                <span className="fam-dot-side" aria-hidden="true">
-                  {o.name.slice(0, 1)}
-                </span>
-              )}
               <span className="side-fam-name">{o.name}</span>
               <span className="side-count">{o.count}</span>
             </button>
@@ -401,11 +386,6 @@ function SidebarContent({
         </p>
         <div className="side-group">
           <button className="side-fam" onClick={onAllConditions} title="Todas las patologías">
-            {collapsed && (
-              <span className="fam-dot-side" aria-hidden="true">
-                T
-              </span>
-            )}
             <span className="side-fam-name">Todas las patologías</span>
             <span className="side-count">{conditions.length}</span>
           </button>
@@ -416,11 +396,6 @@ function SidebarContent({
               onClick={() => onCondition(c.name)}
               title={c.name}
             >
-              {collapsed && (
-                <span className="fam-dot-side" aria-hidden="true">
-                  {c.name.slice(0, 1)}
-                </span>
-              )}
               <span className="side-fam-name">{c.name}</span>
               <span className="side-count">{c.count}</span>
             </button>
@@ -449,16 +424,7 @@ export default function App() {
   const [condFilter, setCondFilter] = useState("");
   const [condExpanded, setCondExpanded] = useState(false);
   const [reading, setReading] = useState(false);
-  const [sideCollapsed, setSideCollapsed] = useState(loadSidebarCollapsed);
   const searchRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("uf:sidebar", sideCollapsed ? "collapsed" : "open");
-    } catch {
-      // Sin almacenamiento: el estado solo vive en esta sesión.
-    }
-  }, [sideCollapsed]);
 
   useEffect(() => {
     localStorage.setItem(FAV_KEY, JSON.stringify([...favs]));
@@ -660,7 +626,7 @@ export default function App() {
       ? families.find((f) => f.id === view.id)
       : undefined;
 
-  const sidebarProps = {
+  const navProps = {
     view,
     searching,
     favCount: favs.size,
@@ -688,6 +654,8 @@ export default function App() {
           className="icon-btn"
           onClick={() => setDrawer(true)}
           aria-label="Abrir índice"
+          aria-expanded={drawer}
+          aria-controls="nav-drawer"
         >
           {SvgMenu}
         </button>
@@ -728,34 +696,14 @@ export default function App() {
         </div>
       </header>
 
-      {/* ---------- Cajón móvil (mismo contenido que la sidebar) ---------- */}
-      {drawer && (
-        <>
-          <div className="drawer-backdrop" onClick={() => setDrawer(false)} />
-          <aside className="drawer">
-            <SidebarContent {...sidebarProps} />
-          </aside>
-        </>
-      )}
+      {/* ---------- Cajón de navegación (único, todos los tamaños):
+           el panel de navegación ya no es una sidebar fija: se abre
+           con la hamburguesa y el contenido ocupa todo el ancho. ---------- */}
+      <NavDrawer open={drawer} onClose={() => setDrawer(false)}>
+        <NavContent {...navProps} />
+      </NavDrawer>
 
-      <div className="shell">
-        <aside className={`sidebar${sideCollapsed ? " collapsed" : ""}`}>
-          <div className="side-collapse-row">
-            <button
-              type="button"
-              className="side-collapse"
-              onClick={() => setSideCollapsed((v) => !v)}
-              aria-label={sideCollapsed ? "Expandir índice" : "Contraer índice"}
-              aria-expanded={!sideCollapsed}
-              title={sideCollapsed ? "Expandir índice" : "Contraer índice"}
-            >
-              {sideCollapsed ? "»" : "«"}
-            </button>
-          </div>
-          <SidebarContent {...sidebarProps} collapsed={sideCollapsed} />
-        </aside>
-
-        <main className="main animate-fade-in">
+      <main className="main animate-fade-in">
           {/* ---------- Búsqueda en vivo, agrupada ---------- */}
           {searching && searchGroups ? (
             <div className="page">
@@ -1115,8 +1063,7 @@ export default function App() {
               </p>
             </div>
           )}
-        </main>
-      </div>
+      </main>
 
       {/* ---------- Pie ---------- */}
       <footer className="footer">
