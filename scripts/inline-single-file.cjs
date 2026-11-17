@@ -27,13 +27,13 @@ function dataUri(file, mime) {
 }
 
 const icon512 = dataUri("icon-512.png", "image/png");
-const heroLogo = dataUri("urofarmacos-icon.jpg", "image/jpeg");
+const heroLogo = dataUri("urofarmacos-icon.png", "image/png");
 const heroBg = dataUri("hero-bg.jpg", "image/jpeg");
 
 // Imágenes dentro del CSS y del JS (las rutas aparecen como literales).
 css = css.replace(/url\(\/hero-bg\.jpg\)/g, () => `url(${heroBg})`);
 js = js.replace(/\/icon-512\.png/g, () => icon512);
-js = js.replace(/\/urofarmacos-icon\.jpg/g, () => heroLogo);
+js = js.replace(/\/urofarmacos-icon\.png/g, () => heroLogo);
 
 let html = distHtml;
 // Favicon -> data URI.
@@ -56,7 +56,7 @@ if (leftovers.length > 0) {
   console.error("REFERENCIAS EXTERNAS RESTANTES:", leftovers);
   process.exit(1);
 }
-if (html.includes("/icon-512.png") || html.includes("/urofarmacos-icon.jpg") || html.includes("/hero-bg.jpg")) {
+if (html.includes("/icon-512.png") || html.includes("/urofarmacos-icon.png") || html.includes("/hero-bg.jpg")) {
   console.error("Quedan rutas de imágenes sin inlinear");
   process.exit(1);
 }

@@ -47,7 +47,7 @@ function check(name, ok, detail = "") {
 
   // Imágenes inlinadas como data URI.
   const logo = doc.querySelector(".hero-logo");
-  check("logo del héroe con data URI", !!logo && logo.src.startsWith("data:image/jpeg"));
+  check("logo del héroe con data URI", !!logo && logo.src.startsWith("data:image/png"));
   const mark = doc.querySelector(".brand-mark-img");
   check("marca de cabecera con data URI", !!mark && mark.src.startsWith("data:image/png"));
   check("favicon inlinado", !!doc.querySelector('link[rel="icon"][href^="data:image/png"]'));

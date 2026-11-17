@@ -457,7 +457,7 @@ export default function App() {
             {/* ---------- Héroe ---------- */}
             <section className="hero">
               <div className="hero-inner">
-                <img src="/urofarmacos-icon.jpg" alt="UroFármacos — Wiki" className="hero-logo" />
+                <img src="/urofarmacos-icon.png" alt="UroFármacos — Wiki" className="hero-logo" />
                 <span className="hero-badge animate-fade-in-up">
                   <span className="dot" /> Material docente en español
                 </span>
