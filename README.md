@@ -46,6 +46,13 @@ Los datos viven en `src/data/drugs.ts`.
   frasco ámbar de pastillas), con velo oscuro teal encima para que el
   texto blanco siga legible.
 
+## Diseño (rediseño 2026-11-17, desde el mockup de Rey)
+
+- Guía: `mockups/diseno-moderno/` (commit de Rey, HTML estático + capturas). Titulares en **serif** (decisión de Rey; el mockup usa sans).
+- Sidebar fija en escritorio (≥1024 px), bottom nav de 4 destinos en móvil, índice de secciones en la ficha, panel de patologías filtrable, tarjetas de familia con acento propio, tokens del mockup (fondo `#eef2f5`, radios 12/18 px, anillo de foco teal).
+- **Routing por hash**: `#/ficha/<slug>`, `#/familia/<id>`, `#/organo/<slug>`, `#/patologia/<slug>`, `#/buscar/<texto>`, `#/favoritos`. «Copiar enlace» en la ficha copia la URL con el hash.
+- **Exportar**: descarga la ficha como `<slug>.md` (todo el contenido + «Fuente:» + LAGUNA), generado en cliente (`src/exportMarkdown.ts`).
+
 ## Desarrollo
 
 ```sh
