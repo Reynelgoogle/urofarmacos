@@ -16,7 +16,9 @@ function check(name, ok, detail = "") {
 }
 
 // Monta una instancia jsdom y espera a que React monte (selector dado).
-async function mount(url, readySelector) {
+// `seed` opcional siembra el localStorage antes de que corran los
+// scripts (para probar que un estado se recuerda entre visitas).
+async function mount(url, readySelector, seed) {
   const errors = [];
   const vc = new VirtualConsole();
   // jsdom no implementa scrollTo/scrollIntoView: limitación del
@@ -32,6 +34,7 @@ async function mount(url, readySelector) {
     runScripts: "dangerously",
     pretendToBeVisual: true,
     virtualConsole: vc,
+    ...(seed ? { beforeParse: seed } : {}),
   });
   const { window } = dom;
   window.addEventListener("error", (e) => errors.push("window error: " + e.message));
@@ -92,6 +95,48 @@ function blobText(window, blob) {
     ["Inicio", "Índice", "Buscar", "Favoritos"].every((t) =>
       bottomBtns.some((b) => b.textContent.includes(t))));
 
+  // ---------- Sidebar colapsable (escritorio) ----------
+  const sidebar = doc.querySelector(".sidebar");
+  const collapseBtn = doc.querySelector(".side-collapse");
+  check("botón de colapso de la sidebar existe", !!collapseBtn);
+  check("sidebar empieza expandida", !!sidebar && !sidebar.classList.contains("collapsed"));
+  check("sidebar expandida mide 264px", window.getComputedStyle(sidebar).width === "264px", window.getComputedStyle(sidebar).width);
+  collapseBtn?.click(); await tick(); await tick();
+  check("al pulsar colapso la sidebar se contrae (clase)", sidebar.classList.contains("collapsed"));
+  check("sidebar colapsada mide 60px", window.getComputedStyle(sidebar).width === "60px", window.getComputedStyle(sidebar).width);
+  check("estado colapsado persiste en localStorage uf:sidebar",
+    window.localStorage.getItem("uf:sidebar") === "collapsed");
+  check("riel colapsado sigue con Inicio/Favoritos/Créditos",
+    doc.querySelectorAll(".sidebar .side-item").length === 3,
+    `${doc.querySelectorAll(".sidebar .side-item").length} botones`);
+  check("riel colapsado sigue con 9 familias + 7 órganos + 4 patologías",
+    doc.querySelectorAll(".sidebar .side-fam").length === 20,
+    `${doc.querySelectorAll(".sidebar .side-fam").length} botones`);
+  check("riel colapsado con título/tooltip en cada icono",
+    [...doc.querySelectorAll(".sidebar .side-item, .sidebar .side-fam")].every((b) =>
+      (b.getAttribute("title") || "").length > 0));
+  check("botón cambia a Expandir índice",
+    collapseBtn.getAttribute("aria-label") === "Expandir índice");
+  // El riel colapsado sigue navegando: primera familia (alfabloqueadores).
+  doc.querySelector(".sidebar .side-fam")?.click(); await tick(); await tick();
+  check("riel colapsado: pulsar una familia abre su vista (6 filas)",
+    doc.querySelectorAll(".drug-row").length === 6,
+    `${doc.querySelectorAll(".drug-row").length} filas`);
+  doc.querySelector(".brand")?.click(); await tick(); await tick();
+  check("vuelta a Inicio tras navegar desde el riel", !!doc.querySelector(".hero"));
+  collapseBtn?.click(); await tick(); await tick();
+  check("al pulsar de nuevo la sidebar se expande", !sidebar.classList.contains("collapsed"));
+  check("estado expandido persiste en localStorage uf:sidebar",
+    window.localStorage.getItem("uf:sidebar") === "open");
+  // Persistencia entre visitas: una instancia nueva con uf:sidebar
+  // sembrado en "collapsed" arranca ya colapsada.
+  const persisted = await mount("http://localhost/", ".hero",
+    (w) => w.localStorage.setItem("uf:sidebar", "collapsed"));
+  check("sidebar colapsada recordada entre visitas",
+    !!persisted.doc.querySelector(".sidebar")?.classList.contains("collapsed"));
+  check("sidebar recordada: sin errores de ventana/jsdom",
+    persisted.errors.length === 0, persisted.errors.slice(0, 3).join(" | "));
+
   // Contadores del héroe: 9 familias, 7 órganos, 103 fichas, 103 patologías.
   const stats = [...doc.querySelectorAll(".hero-stats .stat")].map((s) => s.textContent.replace(/\s+/g, " ").trim());
   check("9 familias en el héroe", stats.some((s) => /^9familias/.test(s.replace(/\s/g, ""))), stats.join(" | "));
@@ -151,6 +196,60 @@ function blobText(window, blob) {
   check("ficha con índice de secciones", !!doc.querySelector(".sec-index"));
   check("ficha con quicknav móvil", !!doc.querySelector(".m-quicknav"));
   check("ficha sin botón atrás (lo sustituye el breadcrumb)", !doc.querySelector(".page .back-btn"));
+
+  // ---------- Modo lectura ----------
+  const findReadBtn = () =>
+    [...doc.querySelectorAll(".ficha-actions .fav")].find((b) =>
+      b.textContent.includes("Modo lectura"));
+  check("botón Modo lectura existe en la ficha", !!findReadBtn());
+  findReadBtn()?.click(); await tick(); await tick();
+  const rm = doc.querySelector(".reading-mode");
+  check("modo lectura abierto (portal a body)", !!rm);
+  check("modo lectura con fondo blanco",
+    !!rm && window.getComputedStyle(rm).backgroundColor === "rgb(255, 255, 255)",
+    rm ? window.getComputedStyle(rm).backgroundColor : "sin overlay");
+  check("modo lectura con título del fármaco",
+    (rm?.querySelector(".reading-title")?.textContent || "").includes("Tamsulosina"));
+  check("modo lectura con variable --tam-letra 13.5px",
+    rm?.style.getPropertyValue("--tam-letra") === "13.5px",
+    rm?.style.getPropertyValue("--tam-letra") || "");
+  check("modo lectura con píldora 100%",
+    (rm?.querySelector(".reading-pct")?.textContent || "") === "100%");
+  check("modo lectura sin botón Modo lectura dentro (no recursivo)",
+    !!rm && ![...rm.querySelectorAll(".ficha-actions .fav")].some((b) =>
+      b.textContent.includes("Modo lectura")));
+  check("modo lectura sin índice lateral", !!rm && !rm.querySelector(".sec-index"));
+  check("modo lectura con secciones rm- únicas", !!rm?.querySelector("#rm-sec-indicaciones"));
+  check("sin IDs de sección duplicados (el fondo conserva sec-*)",
+    doc.querySelectorAll("#sec-indicaciones").length === 1,
+    `${doc.querySelectorAll("#sec-indicaciones").length} con ese id`);
+  check("modo lectura muestra Indicaciones",
+    !!rm && [...rm.querySelectorAll(".sec h2")].some((h) => h.textContent.trim() === "Indicaciones"));
+  check("modo lectura bloquea el scroll del fondo", doc.body.style.overflow === "hidden");
+  const plusBtn = [...(rm?.querySelectorAll(".reading-zoom button") || [])].find((b) =>
+    b.textContent.trim() === "A+");
+  plusBtn?.click(); await tick(); await tick();
+  check("A+ sube --tam-letra a 14.5px",
+    rm?.style.getPropertyValue("--tam-letra") === "14.5px",
+    rm?.style.getPropertyValue("--tam-letra") || "");
+  check("A+ actualiza la píldora a 107%",
+    (rm?.querySelector(".reading-pct")?.textContent || "") === "107%");
+  check("A+ persiste en localStorage uf:letra",
+    window.localStorage.getItem("uf:letra") === "14.5",
+    window.localStorage.getItem("uf:letra") || "");
+  rm?.querySelector(".reading-pct")?.click(); await tick(); await tick();
+  check("la píldora % resetea a 100%",
+    rm?.style.getPropertyValue("--tam-letra") === "13.5px" &&
+    (rm?.querySelector(".reading-pct")?.textContent || "") === "100%");
+  window.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await tick(); await tick();
+  check("Escape cierra el modo lectura", !doc.querySelector(".reading-mode"));
+  check("al cerrar se restaura el scroll del fondo", doc.body.style.overflow === "");
+  findReadBtn()?.click(); await tick(); await tick();
+  check("el modo lectura reabre y recuerda el 100% reseteado",
+    doc.querySelector(".reading-mode")?.style.getPropertyValue("--tam-letra") === "13.5px");
+  doc.querySelector(".reading-close")?.click(); await tick(); await tick();
+  check("✕ cierra el modo lectura", !doc.querySelector(".reading-mode"));
 
   // Volver y probar la regresión FALLO-1: fichas con gap de
   // contraindicaciones (pero no de indicaciones) deben MOSTRAR
@@ -298,6 +397,39 @@ function blobText(window, blob) {
     fam.doc.querySelectorAll(".drug-row").length === 6,
     `${fam.doc.querySelectorAll(".drug-row").length} filas`);
   check("hash familia: sin errores de ventana/jsdom", fam.errors.length === 0, fam.errors.slice(0, 3).join(" | "));
+
+  // ---------- Créditos ----------
+  const cred = await mount("http://localhost/#/creditos", ".credits");
+  const cdoc = cred.doc;
+  const credText = (cdoc.querySelector(".credits")?.textContent || "").replace(/\s+/g, " ");
+  check("hash #/creditos abre la vista", !!cdoc.querySelector(".credits"));
+  check("créditos con autor", credText.includes("Reynel Busto González"), credText.slice(0, 80));
+  check("créditos con cargo y hospital",
+    credText.includes("Médico Urólogo") && credText.includes("Hermanos Ameijeiras"));
+  check("créditos con ORCID", credText.includes("0009-0003-2233-9021"));
+  check("créditos con 103 fichas en 9 familias",
+    credText.includes("103 fichas") && credText.includes("9 familias"));
+  check("créditos con fuentes EAU 2025 y Urology-Textbook",
+    credText.includes("EAU") && credText.includes("2025") && credText.includes("Urology-Textbook"));
+  check("créditos: sin errores de ventana/jsdom", cred.errors.length === 0, cred.errors.slice(0, 3).join(" | "));
+  const unknown = await mount("http://localhost/#/noexiste", ".hero");
+  check("hash desconocido va a inicio", !!unknown.doc.querySelector(".hero"));
+  // Enlaces a Créditos en la primera instancia (en inicio).
+  const footLink = doc.querySelector(".footer-link");
+  check("enlace Créditos en el pie (fuera de .footer-inner)",
+    !!footLink && footLink.textContent.trim() === "Créditos");
+  check("pie .footer-inner intacto (línea corta)",
+    (doc.querySelector(".footer-inner")?.textContent || "").replace(/\s+/g, " ").trim() ===
+      "UroFármacos · Wiki de fármacos en urología.");
+  footLink?.click(); await tick(); await tick();
+  check("clic en Créditos del pie abre la vista", !!doc.querySelector(".credits"));
+  check("clic en Créditos pone el hash #/creditos",
+    window.location.hash === "#/creditos", window.location.hash);
+  const sideCred = [...doc.querySelectorAll(".sidebar .side-item")].find((b) =>
+    b.textContent.includes("Créditos"));
+  check("enlace Créditos en la sidebar", !!sideCred);
+  sideCred?.click(); await tick(); await tick();
+  check("clic en Créditos de la sidebar abre la vista", !!doc.querySelector(".credits"));
 
   // Sin referencias externas restantes.
   check("sin src/href externos en el HTML", !/src="\/|href="\/|url\(\//.test(html));

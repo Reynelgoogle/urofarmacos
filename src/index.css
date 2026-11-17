@@ -276,7 +276,36 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
   display: flex;
   flex-direction: column;
   gap: 18px;
+  transition: width 150ms ease;
 }
+/* Sidebar colapsable (escritorio ≥1024 px): riel fino de iconos.
+   El contenido principal (.main, flex:1) se expande solo al
+   estrecharse la sidebar. En móvil la sidebar no existe (cajón). */
+.side-collapse-row { display: flex; justify-content: flex-end; padding: 0 2px; }
+.side-collapse {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.side-collapse:hover { background: #f3f6f8; color: var(--ink); }
+.sidebar.collapsed { width: 60px; padding: 18px 8px 24px; overflow-x: hidden; }
+.sidebar.collapsed .side-collapse-row { justify-content: center; }
+.sidebar.collapsed .side-label,
+.sidebar.collapsed .side-divider,
+.sidebar.collapsed .side-foot { display: none; }
+.sidebar.collapsed .side-item,
+.sidebar.collapsed .side-fam { justify-content: center; padding: 0 4px; }
+.sidebar.collapsed .side-fam-name,
+.sidebar.collapsed .side-count { display: none; }
+.sidebar.collapsed .side-item svg { margin: 0; }
 .side-group { display: flex; flex-direction: column; gap: 2px; }
 .side-item {
   display: flex;
@@ -829,16 +858,16 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
   flex: none;
   box-shadow: 0 0 0 3px var(--teal-50);
 }
-.sec p { margin: 0; font-size: 13.5px; line-height: 1.68; color: var(--ink-2); }
+.sec p { margin: 0; font-size: var(--tam-letra, 13.5px); line-height: 1.68; color: var(--ink-2); }
 .sec ul { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 6px; }
-.sec li { font-size: 13.5px; line-height: 1.62; color: var(--ink-2); }
+.sec li { font-size: var(--tam-letra, 13.5px); line-height: 1.62; color: var(--ink-2); }
 .sec li::marker { color: var(--teal); }
 .dose {
   background: linear-gradient(135deg, var(--teal-50), #f7fffd);
   border: 1px solid var(--teal-100);
   border-radius: 10px;
   padding: 14px 16px;
-  font-size: 14px;
+  font-size: var(--tam-letra, 14px);
   line-height: 1.65;
   color: #134e4a;
 }
@@ -874,7 +903,7 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
   border: 1px solid var(--amber-b);
   border-radius: 9px;
   padding: 9px 11px;
-  font-size: 11.5px;
+  font-size: var(--tam-letra, 11.5px);
   line-height: 1.5;
   color: var(--amber-ink);
 }
@@ -1000,12 +1029,139 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
 .footer-inner {
   margin: 0 auto;
   max-width: 72rem;
-  padding: 1.75rem 1rem 6rem;
+  padding: 1.75rem 1rem 0.5rem;
   color: var(--muted);
   font-size: 0.85rem;
   line-height: 1.6;
 }
 .footer-inner b { color: var(--ink); }
+/* El enlace a Créditos va FUERA de .footer-inner: el smoke exige que
+   el texto de .footer-inner sea exactamente la línea corta. El
+   padding inferior grande vive aquí (no en .footer-inner) para que
+   el enlace no quede tapado por la bottom nav en móvil. */
+.footer-links {
+  margin: 0 auto;
+  max-width: 72rem;
+  padding: 0 1rem 6rem;
+}
+.footer-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--teal-d);
+}
+.footer-link:hover { color: var(--teal); }
+
+/* ---------- Créditos ---------- */
+.credits {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 26px 28px;
+  box-shadow: var(--shadow-sm);
+}
+.credits h2 {
+  margin: 0 0 14px;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.credits p { margin: 0 0 12px; font-size: 14px; line-height: 1.65; color: var(--ink-2); }
+.credits p:last-child { margin-bottom: 0; }
+
+/* ---------- Modo lectura (portal a document.body) ---------- */
+/* Fondo BLANCO (decisión de Rey para leer), una sola columna,
+   contenido max-w-3xl con scroll propio. La variable --tam-letra
+   se pone en este contenedor y de ella derivan .sec p, .sec li,
+   .dose y .laguna. */
+.reading-mode {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  color: var(--ink);
+}
+.reading-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  flex: none;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.96);
+}
+.reading-close {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 18px;
+  cursor: pointer;
+}
+.reading-close:hover { background: #f3f6f8; color: var(--ink); }
+.reading-title {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.reading-title span { color: var(--ink); font-weight: 600; }
+.reading-zoom {
+  display: flex;
+  align-items: center;
+  flex: none;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: #fff;
+  overflow: hidden;
+}
+.reading-zoom button {
+  display: grid;
+  place-items: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+}
+.reading-zoom button:hover { background: var(--teal-50); color: var(--teal-d); }
+.reading-zoom button:disabled { opacity: 0.3; cursor: default; background: transparent; }
+.reading-zoom .reading-pct {
+  min-width: 44px;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.reading-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.reading-content { max-width: 48rem; margin: 0 auto; padding: 24px 16px 48px; }
+/* En el overlay no hay índice lateral (una sola columna). */
+.reading-mode .sec-index { display: none; }
+.reading-mode .ficha-layout { grid-template-columns: minmax(0, 1fr); }
 
 /* ---------- Cajón móvil ---------- */
 .drawer-backdrop {
@@ -1076,5 +1232,6 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b,
   .m-quicknav { display: none; }
   .m-fam-list { display: none; }
   .ficha-layout { grid-template-columns: minmax(0, 1fr) 218px; }
-  .footer-inner { padding-bottom: 1.75rem; }
+  .footer-inner { padding-bottom: 0.5rem; }
+  .footer-links { padding-bottom: 1.75rem; }
 }

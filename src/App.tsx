@@ -11,6 +11,7 @@ import {
   type Family,
 } from "./data/drugs";
 import { drugToMarkdown, slugify } from "./exportMarkdown";
+import ReadingMode from "./ReadingMode";
 
 type View =
   | { type: "home" }
@@ -18,7 +19,8 @@ type View =
   | { type: "drug"; id: string }
   | { type: "favorites" }
   | { type: "organ"; name: string }
-  | { type: "condition"; name: string };
+  | { type: "condition"; name: string }
+  | { type: "credits" };
 
 const FAV_KEY = "urofarmacos:favoritos";
 
@@ -28,6 +30,16 @@ function loadFavs(): Set<string> {
     return raw ? new Set(JSON.parse(raw) as string[]) : new Set();
   } catch {
     return new Set();
+  }
+}
+
+// Sidebar de escritorio colapsable: se recuerda entre visitas
+// (clave "uf:sidebar": "open" | "collapsed").
+function loadSidebarCollapsed(): boolean {
+  try {
+    return localStorage.getItem("uf:sidebar") === "collapsed";
+  } catch {
+    return false;
   }
 }
 
@@ -155,6 +167,8 @@ function hashFor(view: View, query: string): string {
       return `#/patologia/${slugify(view.name)}`;
     case "favorites":
       return "#/favoritos";
+    case "credits":
+      return "#/creditos";
     default:
       return query.trim().length >= 2
         ? `#/buscar/${encodeURIComponent(query.trim())}`
@@ -192,6 +206,8 @@ function parseHash(hash: string): { view: View; query: string } {
       return { view: { type: "home" }, query: decodeSafe(tail) };
     case "favoritos":
       return { view: { type: "favorites" }, query: "" };
+    case "creditos":
+      return { view: { type: "credits" }, query: "" };
     default:
       return home;
   }
@@ -257,6 +273,21 @@ const SvgDownload = (
     <path d="M5 21h14" />
   </svg>
 );
+const SvgExpand = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+    <path d="M16 3h3a2 2 0 0 1 2 2v3" />
+    <path d="M8 21H5a2 2 0 0 1-2-2v-3" />
+    <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+  </svg>
+);
+const SvgInfo = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 11v5" />
+    <path d="M12 8h.01" />
+  </svg>
+);
 
 // ---------- Contenido del índice: mismo en la sidebar y en el cajón ----------
 function SidebarContent({
@@ -265,8 +296,10 @@ function SidebarContent({
   favCount,
   organCounts,
   topConds,
+  collapsed,
   onHome,
   onFavorites,
+  onCredits,
   onFamily,
   onOrgan,
   onCondition,
@@ -277,8 +310,10 @@ function SidebarContent({
   favCount: number;
   organCounts: { name: string; count: number }[];
   topConds: { name: string; count: number }[];
+  collapsed?: boolean;
   onHome: () => void;
   onFavorites: () => void;
+  onCredits: () => void;
   onFamily: (id: string) => void;
   onOrgan: (name: string) => void;
   onCondition: (name: string) => void;
@@ -290,15 +325,24 @@ function SidebarContent({
         <button
           className={`side-item${view.type === "home" && !searching ? " active" : ""}`}
           onClick={onHome}
+          title="Inicio"
         >
           {SvgHome}Inicio
         </button>
         <button
           className={`side-item${view.type === "favorites" ? " active" : ""}`}
           onClick={onFavorites}
+          title="Favoritos"
         >
           {SvgStar}Favoritos
           <span className="side-count">{favCount}</span>
+        </button>
+        <button
+          className={`side-item${view.type === "credits" ? " active" : ""}`}
+          onClick={onCredits}
+          title="Créditos"
+        >
+          {SvgInfo}Créditos
         </button>
       </div>
       <div className="side-divider" />
@@ -312,6 +356,7 @@ function SidebarContent({
               key={f.id}
               className={`side-fam${view.type === "family" && view.id === f.id ? " active" : ""}`}
               onClick={() => onFamily(f.id)}
+              title={`${f.name} · ${drugsInFamily(f.id).length} fichas`}
             >
               <span
                 className="fam-dot-side"
@@ -336,7 +381,13 @@ function SidebarContent({
               key={o.name}
               className={`side-fam${view.type === "organ" && view.name === o.name ? " active" : ""}`}
               onClick={() => onOrgan(o.name)}
+              title={o.name}
             >
+              {collapsed && (
+                <span className="fam-dot-side" aria-hidden="true">
+                  {o.name.slice(0, 1)}
+                </span>
+              )}
               <span className="side-fam-name">{o.name}</span>
               <span className="side-count">{o.count}</span>
             </button>
@@ -349,7 +400,12 @@ function SidebarContent({
           Patologías<span className="side-count">{conditions.length}</span>
         </p>
         <div className="side-group">
-          <button className="side-fam" onClick={onAllConditions}>
+          <button className="side-fam" onClick={onAllConditions} title="Todas las patologías">
+            {collapsed && (
+              <span className="fam-dot-side" aria-hidden="true">
+                T
+              </span>
+            )}
             <span className="side-fam-name">Todas las patologías</span>
             <span className="side-count">{conditions.length}</span>
           </button>
@@ -358,7 +414,13 @@ function SidebarContent({
               key={c.name}
               className={`side-fam${view.type === "condition" && view.name === c.name ? " active" : ""}`}
               onClick={() => onCondition(c.name)}
+              title={c.name}
             >
+              {collapsed && (
+                <span className="fam-dot-side" aria-hidden="true">
+                  {c.name.slice(0, 1)}
+                </span>
+              )}
               <span className="side-fam-name">{c.name}</span>
               <span className="side-count">{c.count}</span>
             </button>
@@ -386,7 +448,17 @@ export default function App() {
   const [favs, setFavs] = useState<Set<string>>(loadFavs);
   const [condFilter, setCondFilter] = useState("");
   const [condExpanded, setCondExpanded] = useState(false);
+  const [reading, setReading] = useState(false);
+  const [sideCollapsed, setSideCollapsed] = useState(loadSidebarCollapsed);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("uf:sidebar", sideCollapsed ? "collapsed" : "open");
+    } catch {
+      // Sin almacenamiento: el estado solo vive en esta sesión.
+    }
+  }, [sideCollapsed]);
 
   useEffect(() => {
     localStorage.setItem(FAV_KEY, JSON.stringify([...favs]));
@@ -394,6 +466,12 @@ export default function App() {
 
   useEffect(() => {
     scrollTop();
+  }, [view]);
+
+  // Al navegar (hash, atrás/adelante, enlace interno) el modo lectura
+  // se cierra: el overlay pertenece a la ficha que se estaba viendo.
+  useEffect(() => {
+    setReading(false);
   }, [view]);
 
   // Sincroniza el hash con el estado (replaceState, sin entrada en historial).
@@ -456,6 +534,13 @@ export default function App() {
     setQuery("");
     setHighlight("");
     setView({ type: "favorites" });
+    setDrawer(false);
+  };
+
+  const goCredits = () => {
+    setQuery("");
+    setHighlight("");
+    setView({ type: "credits" });
     setDrawer(false);
   };
 
@@ -583,6 +668,7 @@ export default function App() {
     topConds,
     onHome: goHome,
     onFavorites: goFavorites,
+    onCredits: goCredits,
     onFamily: openFamily,
     onOrgan: openOrgan,
     onCondition: openCondition,
@@ -606,7 +692,7 @@ export default function App() {
           {SvgMenu}
         </button>
         <button className="brand" onClick={goHome} aria-label="UroFármacos inicio">
-          <img src="/icon-512.png" alt="UroFármacos" className="brand-img" />
+          <img src={`${import.meta.env.BASE_URL}icon-512.png`} alt="UroFármacos" className="brand-img" />
           <span className="brand-text">
             Uro<b>Fármacos</b>
             <small>Wiki de fármacos en urología</small>
@@ -653,8 +739,20 @@ export default function App() {
       )}
 
       <div className="shell">
-        <aside className="sidebar">
-          <SidebarContent {...sidebarProps} />
+        <aside className={`sidebar${sideCollapsed ? " collapsed" : ""}`}>
+          <div className="side-collapse-row">
+            <button
+              type="button"
+              className="side-collapse"
+              onClick={() => setSideCollapsed((v) => !v)}
+              aria-label={sideCollapsed ? "Expandir índice" : "Contraer índice"}
+              aria-expanded={!sideCollapsed}
+              title={sideCollapsed ? "Expandir índice" : "Contraer índice"}
+            >
+              {sideCollapsed ? "»" : "«"}
+            </button>
+          </div>
+          <SidebarContent {...sidebarProps} collapsed={sideCollapsed} />
         </aside>
 
         <main className="main animate-fade-in">
@@ -967,6 +1065,8 @@ export default function App() {
               onOpen={openDrug}
               emptyText="Aún no hay fichas para esta patología."
             />
+          ) : view.type === "credits" ? (
+            <CreditsView onHome={goHome} />
           ) : view.type === "drug" && currentDrug ? (
             <DrugView
               drug={currentDrug}
@@ -979,6 +1079,7 @@ export default function App() {
               onSearch={(q) => setQuery(q)}
               onOpenOrgan={openOrgan}
               onOpenCondition={openCondition}
+              onOpenReading={() => setReading(true)}
             />
           ) : view.type === "favorites" ? (
             <div className="page">
@@ -1022,7 +1123,29 @@ export default function App() {
         <div className="footer-inner">
           <b>UroFármacos</b> · Wiki de fármacos en urología.
         </div>
+        <div className="footer-links">
+          <button className="footer-link" onClick={goCredits}>
+            Créditos
+          </button>
+        </div>
       </footer>
+
+      {/* ---------- Modo lectura (portal a document.body) ---------- */}
+      {reading && currentDrug && (
+        <ReadingMode
+          drug={currentDrug}
+          highlight={highlight}
+          fav={favs.has(currentDrug.id)}
+          onToggleFav={() => toggleFav(currentDrug.id)}
+          onHome={goHome}
+          onOpenFamily={openFamily}
+          onOpen={openDrug}
+          onSearch={(q) => setQuery(q)}
+          onOpenOrgan={openOrgan}
+          onOpenCondition={openCondition}
+          onClose={() => setReading(false)}
+        />
+      )}
 
       {/* ---------- Barra inferior móvil ---------- */}
       <nav className="m-bottomnav" aria-label="Navegación inferior">
@@ -1164,6 +1287,40 @@ function AxisView({
   );
 }
 
+function CreditsView({ onHome }: { onHome: () => void }) {
+  return (
+    <div className="page">
+      <button className="back-btn" onClick={onHome}>
+        ← Inicio
+      </button>
+      <div className="credits">
+        <h2>Créditos</h2>
+        <p>
+          <b>Autor:</b> Reynel Busto González, Médico Urólogo, Hospital
+          «Hermanos Ameijeiras».
+        </p>
+        <p>
+          <b>ORCID:</b> 0009-0003-2233-9021
+        </p>
+        <p>
+          UroFármacos es una wiki de fármacos en urología, en español, con{" "}
+          {drugs.length} fichas agrupadas en {families.length} familias:
+          mecanismo de acción, indicaciones, dosis habitual, efectos
+          adversos, contraindicaciones e interacciones de cada fármaco.
+        </p>
+        <p>
+          <b>Fuentes:</b> guías de la Asociación Europea de Urología (EAU)
+          2025 y farmacología de Urology-Textbook.
+        </p>
+        <p className="disclaimer">
+          Material docente para profesionales de la salud. No sustituye el
+          juicio clínico ni la ficha técnica oficial de cada fármaco.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 const SECTIONS = [
   { id: "sec-mecanismo", label: "Mecanismo de acción", short: "Mecanismo de acción" },
   { id: "sec-indicaciones", label: "Indicaciones", short: "Indicaciones" },
@@ -1184,7 +1341,7 @@ const QUICKNAV = [
   { id: "sec-contraindicaciones", label: "Contraindic." },
 ] as const;
 
-function DrugView({
+export function DrugView({
   drug,
   highlight,
   fav,
@@ -1195,6 +1352,9 @@ function DrugView({
   onSearch,
   onOpenOrgan,
   onOpenCondition,
+  onOpenReading,
+  hideReadingButton,
+  readingMode,
 }: {
   drug: Drug;
   highlight: string;
@@ -1206,11 +1366,19 @@ function DrugView({
   onSearch: (q: string) => void;
   onOpenOrgan: (name: string) => void;
   onOpenCondition: (name: string) => void;
+  onOpenReading?: () => void;
+  hideReadingButton?: boolean;
+  readingMode?: boolean;
 }) {
   const fam = familyOf(drug);
   const [activeSec, setActiveSec] = useState<string>(SECTIONS[0].id);
   const [copied, setCopied] = useState(false);
   const copyTimer = useRef<number | undefined>(undefined);
+
+  // En el modo lectura la ficha de fondo sigue montada: las secciones
+  // del overlay llevan el prefijo "rm-" para no duplicar IDs, y el
+  // índice lateral no se renderiza (una sola columna).
+  const secId = (id: string) => (readingMode ? `rm-${id}` : id);
 
   useEffect(
     () => () => {
@@ -1223,7 +1391,12 @@ function DrugView({
 
   // Índice lateral: marca la sección visible (guardado para jsdom,
   // que no implementa IntersectionObserver; sin él queda la primera).
+  // En el modo lectura está DESACTIVADO: la ficha de fondo sigue
+  // montada y el observer observaría sus elementos (IDs duplicados)
+  // y marcaría secciones equivocadas; además el overlay no tiene
+  // índice lateral (una sola columna).
   useEffect(() => {
+    if (readingMode) return;
     if (typeof IntersectionObserver === "undefined") return;
     const obs = new IntersectionObserver(
       (entries) => {
@@ -1238,7 +1411,7 @@ function DrugView({
       if (el) obs.observe(el);
     }
     return () => obs.disconnect();
-  }, [drug.id]);
+  }, [drug.id, readingMode]);
 
   const copyLink = async () => {
     const url = window.location.href;
@@ -1297,7 +1470,7 @@ function DrugView({
     }
   };
 
-  const scrollToSec = (id: string) => scrollToId(id);
+  const scrollToSec = (id: string) => scrollToId(secId(id));
 
   return (
     <div className="page">
@@ -1352,6 +1525,12 @@ function DrugView({
             {SvgDownload}
             Exportar
           </button>
+          {!hideReadingButton && (
+            <button className="fav" onClick={onOpenReading}>
+              {SvgExpand}
+              Modo lectura
+            </button>
+          )}
         </div>
       </div>
 
@@ -1365,7 +1544,7 @@ function DrugView({
 
       <div className="ficha-layout">
         <div className="ficha-main">
-          <section className="sec" id="sec-mecanismo">
+          <section className="sec" id={secId("sec-mecanismo")}>
             <h2>Mecanismo de acción</h2>
             {isGap(drug, "mechanism", "mecanismo") || !drug.mechanism.trim() ? (
               <p className="laguna">{LAGUNA}</p>
@@ -1376,7 +1555,7 @@ function DrugView({
             )}
           </section>
 
-          <section className="sec" id="sec-indicaciones">
+          <section className="sec" id={secId("sec-indicaciones")}>
             <h2>Indicaciones</h2>
             {isGap(drug, "indications", "indicaciones") ||
             drug.indications.length === 0 ? (
@@ -1392,7 +1571,7 @@ function DrugView({
             )}
           </section>
 
-          <section className="sec" id="sec-dosis">
+          <section className="sec" id={secId("sec-dosis")}>
             <h2>Dosis habitual</h2>
             {isGap(drug, "dose", "dosis") || !drug.dose.trim() ? (
               <p className="laguna">{LAGUNA}</p>
@@ -1403,7 +1582,7 @@ function DrugView({
             )}
           </section>
 
-          <section className="sec" id="sec-efectos">
+          <section className="sec" id={secId("sec-efectos")}>
             <h2>Efectos adversos</h2>
             {isGap(drug, "adverse", "efectos adversos", "efectos") ||
             drug.adverse.length === 0 ? (
@@ -1419,7 +1598,7 @@ function DrugView({
             )}
           </section>
 
-          <section className="sec" id="sec-contraindicaciones">
+          <section className="sec" id={secId("sec-contraindicaciones")}>
             <h2>Contraindicaciones y precauciones</h2>
             {isGap(drug, "contraindications", "contraindicaciones") ||
             drug.contraindications.length === 0 ? (
@@ -1435,7 +1614,7 @@ function DrugView({
             )}
           </section>
 
-          <section className="sec" id="sec-interacciones">
+          <section className="sec" id={secId("sec-interacciones")}>
             <h2>Interacciones</h2>
             {isGap(drug, "interactions", "interacciones") ||
             drug.interactions.length === 0 ? (
@@ -1451,7 +1630,7 @@ function DrugView({
             )}
           </section>
 
-          <section className="sec" id="sec-relacionados">
+          <section className="sec" id={secId("sec-relacionados")}>
             <h2>Fármacos relacionados</h2>
             {drug.relatedDrugs.length === 0 ||
             isGap(drug, "related", "farmacos relacionados") ? (
@@ -1475,7 +1654,7 @@ function DrugView({
             )}
           </section>
 
-          <section className="sec" id="sec-patologias">
+          <section className="sec" id={secId("sec-patologias")}>
             <h2>Patologías que trata</h2>
             <div className="rel-chips">
               {drug.conditions.map((c) => (
@@ -1490,7 +1669,7 @@ function DrugView({
             </div>
           </section>
 
-          <section className="sec" id="sec-organos">
+          <section className="sec" id={secId("sec-organos")}>
             <h2>Órganos</h2>
             <div className="rel-chips">
               {drug.organs.map((o) => (
@@ -1521,18 +1700,20 @@ function DrugView({
           )}
         </div>
 
-        <aside className="sec-index">
-          <p className="lbl">En esta ficha</p>
-          {SECTIONS.map((s) => (
-            <a
-              key={s.id}
-              className={activeSec === s.id ? "on" : ""}
-              onClick={() => scrollToSec(s.id)}
-            >
-              {s.short}
-            </a>
-          ))}
-        </aside>
+        {!readingMode && (
+          <aside className="sec-index">
+            <p className="lbl">En esta ficha</p>
+            {SECTIONS.map((s) => (
+              <a
+                key={s.id}
+                className={activeSec === s.id ? "on" : ""}
+                onClick={() => scrollToSec(s.id)}
+              >
+                {s.short}
+              </a>
+            ))}
+          </aside>
+        )}
       </div>
     </div>
   );

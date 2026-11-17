@@ -52,6 +52,10 @@ Los datos viven en `src/data/drugs.ts`.
 - Sidebar fija en escritorio (≥1024 px), bottom nav de 4 destinos en móvil, índice de secciones en la ficha, panel de patologías filtrable, tarjetas de familia con acento propio, tokens del mockup (fondo `#eef2f5`, radios 12/18 px, anillo de foco teal).
 - **Routing por hash**: `#/ficha/<slug>`, `#/familia/<id>`, `#/organo/<slug>`, `#/patologia/<slug>`, `#/buscar/<texto>`, `#/favoritos`. «Copiar enlace» en la ficha copia la URL con el hash.
 - **Exportar**: descarga la ficha como `<slug>.md` (todo el contenido + «Fuente:» + LAGUNA), generado en cliente (`src/exportMarkdown.ts`).
+- **Modo lectura** (`src/ReadingMode.tsx`): overlay a pantalla completa con fondo blanco, A− / % / A+ (fuente 11–21 px, persistente en `localStorage` `uf:letra`), pantalla completa con degradado silencioso, Escape para salir. Patrón de UroCampus (estructura) + UroApp (variable CSS `--tam-letra`).
+- **Créditos** (`#/creditos`): vista propia con autor (Reynel Busto González, Médico Urólogo, Hospital «Hermanos Ameijeiras», ORCID 0009-0003-2233-9021), qué es la app y sus fuentes. Enlaces en la sidebar y en el pie.
+- **Sidebar colapsable** en escritorio (≥1024 px): botón «/» arriba de la sidebar; colapsada queda un riel de 60 px con iconos (estado persistente en `localStorage` `uf:sidebar`). Ojo: UroCampus NO tiene este mecanismo (sus «collapsed» son acordeones); el riel es el patrón estándar. En móvil no cambia nada (cajón).
+- **Preparación de empaquetado**: `vite.config.ts` con `base: './'` (rutas relativas, funciona desde `file://` y en WebView); sin `fetch`/XHR ni referencias externas; hash routing apto para `file://`. Faltan por generar durante el empaquetado: derivados del icono para Tauri (`tauri icon` desde el maestro 1024) y para Capacitor (icono adaptativo + splash con `@capacitor/assets`).
 
 ## Desarrollo
 

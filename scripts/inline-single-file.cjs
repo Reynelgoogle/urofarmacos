@@ -16,8 +16,9 @@ const root = path.resolve(__dirname, "..");
 const out = process.argv[2] || path.join(root, "dist-single", "urofarmacos.html");
 
 const distHtml = fs.readFileSync(path.join(root, "dist", "index.html"), "utf8");
-const jsName = distHtml.match(/src="\/assets\/([^"]+\.js)"/)[1];
-const cssName = distHtml.match(/href="\/assets\/([^"]+\.css)"/)[1];
+// Con base './' (Vite) las rutas en dist/ son relativas ("./assets/...").
+const jsName = distHtml.match(/src="(?:\.\/)?assets\/([^"]+\.js)"/)[1];
+const cssName = distHtml.match(/href="(?:\.\/)?assets\/([^"]+\.css)"/)[1];
 let js = fs.readFileSync(path.join(root, "dist", "assets", jsName), "utf8");
 let css = fs.readFileSync(path.join(root, "dist", "assets", cssName), "utf8");
 
@@ -29,13 +30,14 @@ function dataUri(file, mime) {
 const icon512 = dataUri("icon-512.png", "image/png");
 const heroBg = dataUri("hero-bg.jpg", "image/jpeg");
 
-// Imágenes dentro del CSS y del JS (las rutas aparecen como literales).
-css = css.replace(/url\(\/hero-bg\.jpg\)/g, () => `url(${heroBg})`);
-js = js.replace(/\/icon-512\.png/g, () => icon512);
+// Imágenes dentro del CSS y del JS (las rutas aparecen como literales;
+// con base './' el CSS referencia "../hero-bg.jpg" desde assets/).
+css = css.replace(/url\([^)]*hero-bg\.jpg\)/g, () => `url(${heroBg})`);
+js = js.replace(/\.?\/icon-512\.png/g, () => icon512);
 
 let html = distHtml;
 // Favicon -> data URI.
-html = html.replace(/href="\/icon-512\.png"/, () => `href="${icon512}"`);
+html = html.replace(/href="(?:\.\/)?icon-512\.png"/, () => `href="${icon512}"`);
 // CSS inlinado.
 html = html.replace(
   /<link rel="stylesheet"[^>]*>/,
