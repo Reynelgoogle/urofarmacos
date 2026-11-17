@@ -27,13 +27,11 @@ function dataUri(file, mime) {
 }
 
 const icon512 = dataUri("icon-512.png", "image/png");
-const heroLogo = dataUri("urofarmacos-icon.png", "image/png");
 const heroBg = dataUri("hero-bg.jpg", "image/jpeg");
 
 // Imágenes dentro del CSS y del JS (las rutas aparecen como literales).
 css = css.replace(/url\(\/hero-bg\.jpg\)/g, () => `url(${heroBg})`);
 js = js.replace(/\/icon-512\.png/g, () => icon512);
-js = js.replace(/\/urofarmacos-icon\.png/g, () => heroLogo);
 
 let html = distHtml;
 // Favicon -> data URI.

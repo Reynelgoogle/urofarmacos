@@ -26,8 +26,9 @@ Los datos viven en `src/data/drugs.ts`.
   — ICONO OFICIAL** (diseño plano: dos riñones con uréteres hacia la
   vejiga, jeringa, cápsula y pastilla, todo en blanco sobre círculo teal
   oscuro), elegido por Rey el 2026-11-17 04:35 para seguir la misma línea
-  que el icono de UroCampus. Es la tarjeta de logo del héroe (sobre fondo
-  blanco), el favicon y la marca de la cabecera. **La imagen maestra para
+  que el icono de UroCampus. Es el favicon y la marca de la cabecera. Ya
+  NO va en el héroe (decisión de Rey 2026-11-17 04:43: el héroe lleva
+  solo la foto de fondo, como en UroCampus). **La imagen maestra para
   la APK Android y la app de escritorio Tauri es
   `~/workspace/urofarmacos/urofarmacos-icon-master.png` (1024×1024,
   fuera de `public/` para no empaquetarlo en la web).** El original

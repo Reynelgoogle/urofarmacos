@@ -114,12 +114,11 @@ mark.hl {
 .hero {
   position: relative; overflow: hidden;
   background-color: var(--brand-950);
-  background-image: linear-gradient(160deg, rgba(4,47,46,.88) 0%, rgba(11,59,56,.85) 55%, rgba(4,47,46,.92) 100%), url(/hero-bg.jpg);
+  background-image: linear-gradient(160deg, rgba(4,47,46,.80) 0%, rgba(11,59,56,.75) 55%, rgba(4,47,46,.86) 100%), url(/hero-bg.jpg);
   background-size: cover;
   background-position: center;
   color: #fff;
 }
-.hero-logo { display: block; margin: 0 auto 1.25rem; max-width: 300px; width: 80%; border-radius: 1.25rem; background: #fff; padding: .5rem; box-shadow: 0 12px 32px rgba(0,0,0,.35); }
 .hero-inner { position: relative; margin: 0 auto; max-width: 72rem; padding: 3.5rem 1rem 3rem; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 0.5rem;
