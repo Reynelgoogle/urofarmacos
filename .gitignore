@@ -12,6 +12,8 @@ dist
 dist-single
 dist-ssr
 *.local
+src-tauri/target
+src-tauri/gen/
 
 # Editor directories and files
 .vscode/*
@@ -26,3 +28,5 @@ dist-ssr
 
 __pycache__/
 *.pyc
+
+android/

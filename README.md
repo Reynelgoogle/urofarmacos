@@ -64,5 +64,22 @@ npm install
 npm run dev
 ```
 
-No empaquetar nada ahora: ni instalador Tauri ni APK. El empaquetado se
-decide aparte, cuando Rey lo pida.
+## Empaquetado (2026-11-17)
+
+- **Android (Capacitor 8.5.0)** — appId `com.reynel.urofarmacos`, v1.0.0. `android/` NO viaja al repo (se regenera). En el PC de Rey:
+  ```sh
+  npm install
+  npm run build
+  npx cap add android   # solo la primera vez
+  npx cap sync android
+  ```
+  Tras `cap add android`, re-aplicar a mano al inicio de `android/app/build.gradle` (el `cap sync` no lo borra):
+  ```groovy
+  configurations.all {
+      exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
+      exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
+  }
+  ```
+  Luego compilar en Android Studio o `./gradlew :app:assembleDebug`, con **JDK 21** como Gradle JDK y build-tools **35.0.0** (compileSdk/targetSdk 36, minSdk 24). Verificado en verde aquí (`assembleDebug --offline`, APK debug 5,3 MB) con el entorno cacheado (AGP 8.13.0, Gradle 9.1.0, JDK 21).
+- **Escritorio (Tauri 2.12.6)** — `src-tauri/` (identifier `com.reynel.urofarmacos`, ventana 1280×800, CSP estricta 100% local). El exe de Windows lo construye GitHub Actions al pushear a `main`: workflow `.github/workflows/tauri-windows.yml` (windows-latest, `npm ci`, `tauri build`), artefacto `UroFarmacos-windows-installer` con el instalador NSIS. Tauri no produce un `.exe` portable único: el artefacto es el instalador NSIS. `cargo check`/`cargo build` verificados en Linux (necesitan las dev libs de GTK/WebKit; no sobreviven a un reemplazo de la VM).
+- Icono adaptativo de Android (432×432) y splash: pendientes de generar (el maestro llena casi todo el cuadro; hay que darle margen). Para la APK debug no hacen falta.

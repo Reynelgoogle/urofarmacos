@@ -1,0 +1,63 @@
+# UroFármacos Desktop — build Windows (Tauri)
+#
+# Compila la app de escritorio (Tauri) en windows-latest y sube el
+# instalador NSIS como artefacto.
+#
+# Se dispara POR PUSH a main (además de a mano con workflow_dispatch),
+# para que el exe de Windows se construya al subir. El repo es PÚBLICO
+# (Reynelgoogle/urofarmacos), así que los Actions son gratis.
+#
+# Requisitos previos (una sola vez, en el repo):
+#   - Este workflow usa @tauri-apps/cli (devDependency): `npm ci` lo instala
+#     y su postinstall descarga el binario del CLI.
+#   - Los iconos .ico/.icns se generan en el propio workflow con
+#     `tauri icon` a partir de src-tauri/icons/icon.png (512x512, generado
+#     desde el maestro ~/workspace/urofarmacos/urofarmacos-icon-master.png).
+#     Los derivados 32x32/128x128/icon.ico ya están en src-tauri/icons/
+#     (generados con PIL); el paso `tauri icon` los regenera/asegura.
+#   - .icns (macOS) no es necesario para el target Windows (nsis); el paso
+#     `tauri icon` lo genera igualmente si hace falta en el futuro.
+#
+# Limitaciones conocidas:
+#   - Tauri no produce un .exe portable único: el artefacto es un
+#     instalador NSIS. Si Rey quiere "un solo exe sin instalar", habrá
+#     que empaquetarlo a mano o aceptar el instalador.
+
+name: UroFármacos Desktop (Tauri, Windows)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Generate icons (.ico/.icns)
+        run: npx @tauri-apps/cli icon src-tauri/icons/icon.png
+
+      - name: Build Tauri app
+        run: npx @tauri-apps/cli build
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: UroFarmacos-windows-installer
+          path: src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error
