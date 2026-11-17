@@ -11,10 +11,17 @@ con buscador y enlaces fármaco ↔ patología y fármaco ↔ órgano.
 
 ## Contenido
 
-**103 fichas auditadas y firmadas** contra el corpus congelado (Gauntlet
-firmado, ronda 4, 0 fallos). El corpus y las fichas de referencia viven en
-el documento `~/workspace/urofarmacos/documento/DOCUMENTO-FICHAS.md`
-(guías EAU 2025, Urology-Textbook, UroCampus, Campbell y Protocolos HHA).
+**103 fichas** verificadas contra el corpus congelado (guías EAU 2025,
+Urology-Textbook, UroCampus, Campbell y Protocolos HHA; Gauntlet firmado,
+ronda 4, 0 fallos). El corpus y las fichas de referencia viven en el
+documento `~/workspace/urofarmacos/documento/DOCUMENTO-FICHAS.md`.
+
+**Ampliación 2026-11-17, verificada por árbitro independiente:** dosis,
+adversos, contraindicaciones e interacciones de vinflunina (SmPC de Javlor,
+EMA) y ondansetrón (ficha técnica de Zofran, AEMPS/CIMA), y nombres
+comerciales en España (CIMA) para las 85 fichas que los tenían vacíos
+(7 no se comercializan en España). Documentos, dictámenes y registro de
+aplicación en `~/workspace/urofarmacos/corpus-ampliacion/`.
 
 Las secciones sin datos en el corpus se muestran como laguna explícita
 («Sin datos en el corpus (LAGUNA).»); nunca se inventa contenido clínico.
