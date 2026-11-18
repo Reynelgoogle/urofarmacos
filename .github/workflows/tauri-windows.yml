@@ -4,11 +4,12 @@
 # instalador NSIS y el exe portable como artefactos.
 #
 # Se dispara POR PUSH a main SOLO cuando el cambio toca la app de
-# escritorio directamente (src-tauri/ o el propio workflow), además
-# de a mano con workflow_dispatch. Así no se construye un exe en cada
-# commit: los cambios de la web, Android, scripts o README no lo
-# disparan. Cuando Rey quiera un exe nuevo con los últimos cambios
-# de la web, lo lanza a mano (Actions → Run workflow). El repo es
+# escritorio: src-tauri/, el propio workflow, o la WEB (src/, public/,
+# index.html, package.json, package-lock.json, vite.config.ts,
+# tsconfig*.json) — el exe empaqueta la web, así que un cambio web SÍ
+# es un cambio de la app de escritorio. Además a mano con
+# workflow_dispatch. Así no se construye un exe en cada commit: los
+# cambios de Android, scripts o README no lo disparan. El repo es
 # PÚBLICO (Reynelgoogle/urofarmacos), así que los Actions son gratis.
 #
 # Requisitos previos (una sola vez, en el repo):
@@ -36,6 +37,13 @@ on:
     paths:
       - 'src-tauri/**'
       - '.github/workflows/tauri-windows.yml'
+      - 'src/**'
+      - 'public/**'
+      - 'index.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'tsconfig*.json'
   workflow_dispatch:
 
 jobs:
