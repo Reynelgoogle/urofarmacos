@@ -203,13 +203,19 @@ function ruleBody(css, sel) {
   burger?.click(); await tick(); await tick();
   drawer?.querySelector('[aria-label="Cerrar menú"]')?.click(); await tick(); await tick();
   check("✕ cierra el cajón", !drawer?.classList.contains("open"));
-  // El botón Índice de la bottom nav abre el mismo cajón.
+  // El botón Índice de la bottom nav abre el índice A–Z real (no el cajón):
+  // el cajón sigue disponible con la hamburguesa y con las acciones.
   const idxBtn = [...doc.querySelectorAll(".m-bottomnav button")].find((b) =>
     b.textContent.includes("Índice"));
   idxBtn?.click(); await tick(); await tick();
-  check("Índice de la bottom nav abre el mismo cajón", !!drawer?.classList.contains("open"));
-  window.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
-  await tick(); await tick();
+  check("Índice de la bottom nav abre el índice A–Z", !!doc.querySelector(".idx-page"));
+  check("Índice A–Z con hash #/farmacos", window.location.hash === "#/farmacos",
+    window.location.hash);
+  check("Índice A–Z con las 103 fichas", doc.querySelectorAll(".idx-row").length === 103,
+    `${doc.querySelectorAll(".idx-row").length} filas`);
+  check("la bottom nav marca Índice como activo", !!idxBtn?.classList.contains("active"));
+  doc.querySelector(".brand")?.click(); await tick(); await tick();
+  check("volver a Inicio desde el índice A–Z", !!doc.querySelector(".hero"));
 
   // ---------- Barra de desplazamiento modernizada ----------
   check("CSS con ::-webkit-scrollbar", styleText.includes("::-webkit-scrollbar"));
@@ -381,25 +387,24 @@ function ruleBody(css, sel) {
   doc.querySelector(".reading-close")?.click(); await tick(); await tick();
   check("✕ cierra el modo lectura", !doc.querySelector(".reading-mode"));
 
-  // Volver y probar la regresión FALLO-1: fichas con gap de
-  // contraindicaciones (pero no de indicaciones) deben MOSTRAR
-  // sus Indicaciones. Antes del arreglo, isGap() por subcadena
-  // hacía desaparecer esa sección en 18 fichas.
+  // Volver y comprobar que las fichas que antes tenían lagunas ya
+  // muestran sus secciones completas y sin marcas editoriales.
   const crumbHome = doc.querySelector(".crumb button");
   crumbHome?.click(); await tick(); await tick();
   check("vuelta a Inicio con el breadcrumb", !!doc.querySelector(".hero"));
   for (const name of ["naftopidil", "cabazitaxel", "denosumab"]) {
     await search(name);
     const row = [...doc.querySelectorAll(".drug-row")].find((r) => r.textContent.toLowerCase().includes(name));
-    if (!row) { check(`FALLO-1 ${name}: encontrado en búsqueda`, false); continue; }
+    if (!row) { check(`ficha ${name}: encontrada en búsqueda`, false); continue; }
     row.click(); await tick(); await tick();
     const h = headings(doc);
-    const hasIndic = h.includes("Indicaciones");
-    const laguna = doc.querySelector(".sec#sec-contraindicaciones .laguna");
-    const hasLagunaContra = h.includes("Contraindicaciones y precauciones") &&
-      laguna?.textContent.trim() === "Sin datos en el corpus (LAGUNA).";
-    check(`FALLO-1 ${name}: muestra Indicaciones`, hasIndic);
-    check(`FALLO-1 ${name}: marca LAGUNA en contraindicaciones`, hasLagunaContra);
+    const contra = doc.querySelector(".sec#sec-contraindicaciones");
+    check(`ficha ${name}: muestra Indicaciones`, h.includes("Indicaciones"));
+    check(`ficha ${name}: contraindicaciones con contenido`,
+      h.includes("Contraindicaciones y precauciones") &&
+      (contra?.textContent || "").includes("Hipersensibilidad"));
+    check(`ficha ${name}: sin LAGUNA visible`,
+      !/LAGUNA|laguna/i.test(doc.body.textContent || ""));
     doc.querySelector(".crumb button")?.click(); await tick(); await tick();
   }
 
@@ -445,17 +450,28 @@ function ruleBody(css, sel) {
   check("Ver menos del encabezado colapsa a 12",
     doc.querySelectorAll(".panel .chips .chip").length === 12);
 
-  // ---------- Atajo Ctrl+K ----------
-  input.blur();
+  // ---------- Paleta de comandos (Ctrl/⌘ + K) ----------
+  // El atajo ya no enfoca el buscador: abre la paleta. Al cerrar,
+  // devuelve el foco a quien la abrió.
+  input.focus();
   window.dispatchEvent(new window.KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }));
-  await tick();
-  check("Ctrl+K enfoca el buscador", doc.activeElement === input);
+  await tick(); await tick();
+  const cpPanel = doc.querySelector(".cp-panel");
+  check("Ctrl+K abre la paleta de comandos", !!cpPanel);
+  check("paleta enfoca su buscador", doc.activeElement === doc.querySelector(".cp-input"));
+  check("paleta incluye acciones de producto",
+    (cpPanel?.textContent || "").includes("Comparar fármacos") &&
+    (cpPanel?.textContent || "").includes("Índice alfabético completo"));
+  window.dispatchEvent(new window.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await tick(); await tick();
+  check("Escape cierra la paleta", !doc.querySelector(".cp-panel"));
+  check("al cerrar la paleta, el foco vuelve al buscador", doc.activeElement === input);
 
   // ---------- Sin metadatos en el texto visible ----------
   const bodyText = doc.body.textContent || "";
   check("texto visible sin metadatos",
-    !/auditad|Gauntlet|corpus congelado|fuente citada|ronda 4/i.test(bodyText),
-    (bodyText.match(/auditad|Gauntlet|corpus congelado|fuente citada|ronda 4/i) || [""])[0]);
+    !/auditad|Gauntlet|corpus|fuente citada|ronda 4|transparencia editorial|sabes lo que está|laguna|cobertura editorial/i.test(bodyText),
+    (bodyText.match(/auditad|Gauntlet|corpus|fuente citada|ronda 4|transparencia editorial|sabes lo que está|laguna|cobertura editorial/i) || [""])[0]);
 
   // ---------- Routing por hash: ficha ----------
   const ficha = await mount("http://localhost/#/ficha/tamsulosina", ".ficha-title");
@@ -466,7 +482,7 @@ function ruleBody(css, sel) {
   check("hash ficha: quicknav presente", !!fdoc.querySelector(".m-quicknav"));
   check("hash ficha: sin errores de ventana/jsdom", ficha.errors.length === 0, ficha.errors.slice(0, 3).join(" | "));
   check("hash ficha: texto visible sin metadatos",
-    !/auditad|Gauntlet|corpus congelado|fuente citada|ronda 4/i.test(fdoc.body.textContent || ""));
+    !/auditad|Gauntlet|corpus|fuente citada|ronda 4|transparencia editorial|sabes lo que está|laguna|cobertura editorial/i.test(fdoc.body.textContent || ""));
 
   // Copiar enlace (clipboard stubbeado).
   const copyBtn = [...fdoc.querySelectorAll(".ficha-actions .fav")].find((b) =>
@@ -500,7 +516,7 @@ function ruleBody(css, sel) {
   check("exportar: nombre de archivo tamsulosina.md", capturedDownload === "tamsulosina.md", capturedDownload);
   fwin.HTMLAnchorElement.prototype.click = origAnchorClick;
 
-  // Exportar una ficha con laguna: el markdown marca LAGUNA.
+  // Exportar una ficha antes incompleta: ya no debe contener marcas de laguna.
   const lag = await mount("http://localhost/#/ficha/naftopidil", ".ficha-title");
   const lagDoc = lag.doc, lagWin = lag.window, lagTick = lag.tick;
   let lagBlob = null;
@@ -512,14 +528,13 @@ function ruleBody(css, sel) {
     b.textContent.includes("Exportar"));
   lagExport?.click(); await lagTick(); await lagTick();
   const lagMd = lagBlob ? await blobText(lagWin, lagBlob) : "";
-  check("exportar naftopidil: markdown con LAGUNA",
-    lagMd.includes("Sin datos en el corpus (LAGUNA)."));
+  check("exportar naftopidil: sin LAGUNA", !lagMd.includes("LAGUNA"));
+  check("exportar naftopidil: contraindicaciones completas",
+    lagMd.includes("Hipersensibilidad a naftopidil"));
   check("exportar naftopidil: archivo naftopidil.md", lagDownload === "naftopidil.md", lagDownload);
   lagWin.HTMLAnchorElement.prototype.click = origClick2;
-  const lagunaEl = lagDoc.querySelector(".sec#sec-contraindicaciones .laguna");
-  check(".laguna existe en ficha con gap y texto exacto",
-    lagunaEl?.textContent.trim() === "Sin datos en el corpus (LAGUNA).",
-    lagunaEl?.textContent.trim() || "sin .laguna");
+  check("ficha naftopidil: sin bloque .laguna",
+    !lagDoc.querySelector(".laguna"));
 
   // ---------- Routing por hash: familia ----------
   const fam = await mount("http://localhost/#/familia/alfabloqueadores", ".drug-row");
@@ -542,6 +557,43 @@ function ruleBody(css, sel) {
   check("créditos con fuentes EAU 2025 y Urology-Textbook",
     credText.includes("EAU") && credText.includes("2025") && credText.includes("Urology-Textbook"));
   check("créditos: sin errores de ventana/jsdom", cred.errors.length === 0, cred.errors.slice(0, 3).join(" | "));
+
+  // ---------- Routing por hash: índice A–Z y comparador ----------
+  const idx = await mount("http://localhost/#/farmacos", ".idx-page");
+  check("hash #/farmacos abre el índice A–Z", !!idx.doc.querySelector(".idx-page"));
+  check("índice A–Z: 103 filas", idx.doc.querySelectorAll(".idx-row").length === 103,
+    `${idx.doc.querySelectorAll(".idx-row").length} filas`);
+  check("índice A–Z: buscador y filtros de familia",
+    !!idx.doc.querySelector(".idx-search input") && idx.doc.querySelectorAll(".idx-fam").length === 10);
+  check("índice A–Z: sin errores de ventana/jsdom", idx.errors.length === 0, idx.errors.slice(0, 3).join(" | "));
+
+  const cmp = await mount("http://localhost/#/comparar/tamsulosina,naftopidil", ".cmp-table");
+  check("hash #/comparar/... abre el comparador", !!cmp.doc.querySelector(".cmp-table"));
+  check("comparador: 2 fármacos en 3 columnas",
+    cmp.doc.querySelectorAll(".cmp-table thead th").length === 3,
+    `${cmp.doc.querySelectorAll(".cmp-table thead th").length} columnas`);
+  const cmpText = (cmp.doc.querySelector(".cmp-table")?.textContent || "").replace(/\s+/g, " ");
+  check("comparador: secciones clínicas",
+    cmpText.includes("Mecanismo de acción") &&
+    cmpText.includes("Dosis habitual") &&
+    cmpText.includes("Interacciones"));
+  check("comparador: sin cobertura ni lagunas",
+    !/cobertura editorial|LAGUNA|laguna/i.test(cmp.doc.body.textContent || ""));
+  const cmpCells = [...cmp.doc.querySelectorAll(".cmp-table td[data-drug]")];
+  check("comparador móvil: cada celda declara su fármaco",
+    cmpCells.length > 0 && cmpCells.every((td) => !!td.getAttribute("data-drug")),
+    `${cmpCells.length} celdas`);
+  check("comparador móvil: chips de fármacos presentes",
+    cmp.doc.querySelectorAll(".cmp-cols .cmp-col-chip").length === 2);
+  const diffToggle = cmp.doc.querySelector(".cmp-toggle");
+  const rowsBefore = cmp.doc.querySelectorAll(".cmp-table tbody tr").length;
+  diffToggle?.click(); await cmp.tick();
+  const rowsAfter = cmp.doc.querySelectorAll(".cmp-table tbody tr").length;
+  check("comparador: 'solo diferencias' reduce filas",
+    rowsBefore > 0 && rowsAfter > 0 && rowsAfter <= rowsBefore,
+    `${rowsBefore} → ${rowsAfter}`);
+  check("comparador: sin errores de ventana/jsdom", cmp.errors.length === 0, cmp.errors.slice(0, 3).join(" | "));
+
   const unknown = await mount("http://localhost/#/noexiste", ".hero");
   check("hash desconocido va a inicio", !!unknown.doc.querySelector(".hero"));
   // Enlaces a Créditos en la primera instancia (en inicio).

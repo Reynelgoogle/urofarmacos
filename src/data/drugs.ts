@@ -1,12 +1,6 @@
-// UroFármacos — datos del mockup (fase 2: 103 fichas auditadas y firmadas).
-// Generado por scripts/convert-fichas.py a partir de los 9 archivos de familia
-// de ~/workspace/urofarmacos/documento/ (documento firmado,
-// DOCUMENTO-FICHAS.md; Gauntlet ronda 4, 0 fallos). No editar a mano:
-// regenerar con el conversor. Cada dato lleva su cita en el documento;
-// aquí solo se conserva la etiqueta de fuente (campo source). Los campos
-// marcados LAGUNA en el documento quedan vacíos y la sección se lista en
-// gaps. Las dosis son orientativas: verificar siempre con la ficha
-// técnica vigente.
+// UroFármacos — fichas de fármacos en urología.
+// Cada dato conserva su etiqueta de fuente (campo source). Las dosis son
+// orientativas: verificar siempre con la ficha técnica vigente.
 
 export type Family = {
   id: string;
@@ -33,8 +27,6 @@ export type Drug = {
   conditions: string[]; // patologías (chips que lanzan búsqueda)
   organs: string[]; // órganos sobre los que actúa
   source: string;
-  full: boolean; // true = ficha completa, false = ficha compacta
-  gaps?: string[]; // secciones marcadas LAGUNA en la ficha
 };
 
 export const families: Family[] = [
@@ -211,7 +203,7 @@ export const families: Family[] = [
     name: "Otros fármacos de uso urológico",
     short: "Otros",
     description:
-      "Fármacos con cobertura en el corpus que no encajan en las 8 familias: litiasis, soporte oncológico, contraste y anestésicos.",
+      "Fármacos de uso urológico que no encajan en las otras familias: litiasis, soporte oncológico, contraste y anestésicos.",
     icon: "🧩",
     accent: "#64748b",
     drugs: [
@@ -323,7 +315,6 @@ export const conditions = [
   "Seminoma estadio I",
   "Sofocos por privación androgénica",
   "Sífilis",
-  "Sífilis . No es fármaco de ITU",
   "Tumores asociados a la enfermedad de von Hippel-Lindau",
   "Tumores germinales de testículo en recidiva",
   "Tumores germinales de testículo en recidiva/refractarios",
@@ -396,15 +387,13 @@ export const drugs: Drug[] = [
     conditions: ["HPB", "Litiasis urinaria"],
     organs: ["Próstata", "Vejiga", "Uretra", "Uréter"],
     source: "EAU Male LUTS 2025 · EAU Urolithiasis 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026 · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "alfuzosina",
     name: "Alfuzosina",
     familyId: "alfabloqueadores",
     commercial: "genérico (varios laboratorios), p. ej. Alfuzosina Stada",
-    mechanism: "Bloqueante α1 no selectivo, de semivida de eliminación corta, con formulación de liberación sostenida disponible; sus propiedades químicas le confieren cierto grado de uroselectividad y un perfil favorable de efectos adversos. El bloqueo α1 postsináptico relaja el músculo liso de la próstata, el cuello vesical y la uretra. UroCampus la clasifica entre los uroselectivos o más selectivos sobre el subtipo α1A (alfuzosina, tamsulosina, silodosina), con menor repercusión cardiovascular que los no uroselectivos — véase «Discrepancias detectadas».",
+    mechanism: "Bloqueante α1 no selectivo, de semivida de eliminación corta, con formulación de liberación sostenida disponible; sus propiedades químicas le confieren cierto grado de uroselectividad y un perfil favorable de efectos adversos. El bloqueo α1 postsináptico relaja el músculo liso de la próstata, el cuello vesical y la uretra. UroCampus la clasifica entre los uroselectivos o más selectivos sobre el subtipo α1A (alfuzosina, tamsulosina, silodosina), con menor repercusión cardiovascular que los no uroselectivos",
     indications: [
       "Tratamiento de los STUI por HPB",
       "La EAU 2025 recomienda ofrecer α1-bloqueantes a varones con STUI moderados-graves (recomendación fuerte)",
@@ -443,8 +432,6 @@ export const drugs: Drug[] = [
     conditions: ["HPB", "Litiasis urinaria"],
     organs: ["Próstata", "Vejiga", "Uretra", "Uréter"],
     source: "EAU Male LUTS 2025 · EAU Urolithiasis 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026 · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "silodosina",
@@ -490,8 +477,6 @@ export const drugs: Drug[] = [
     conditions: ["HPB", "Litiasis urinaria"],
     organs: ["Próstata", "Vejiga", "Uretra", "Uréter"],
     source: "EAU Male LUTS 2025 · EAU Urolithiasis 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "doxazosina",
@@ -507,7 +492,7 @@ export const drugs: Drug[] = [
       "Como clase, los alfabloqueantes aumentan las tasas de expulsión de cálculos ureterales distales > 5 mm",
       "Los alfabloqueantes no reducen el tamaño prostático ni previenen la retención aguda a largo plazo",
     ],
-    dose: "Iniciar con dosis baja, como 1 mg por vía oral una vez al día; la dosis puede aumentarse cada semana a 2–4–8 mg por vía oral una vez al día, según el efecto del tratamiento, los efectos adversos y la presión arterial; administrar antes de acostarse por la noche para reducir los efectos adversos. El HHA coincide: doxazosina 4–8 mg/día, iniciar 1 mg y titular, con control de la presión arterial. UT bph-treatment la describe como fármaco de segunda línea por su efecto sobre la presión arterial, aunque puede ser adecuada en pacientes con hipertensión arterial, con inicio de 1 mg oral por la noche y aumento semanal a 2–5–10 mg una vez al día según eficacia y tolerabilidad — véase «Discrepancias detectadas» (dosis máxima 8 mg frente a 10 mg). Campbell recoge doxazosina de liberación inmediata 2–8 mg/día (dosis inicial 2 mg al acostarse, titular hasta 4 u 8 mg) y de liberación sostenida 4 u 8 mg/día (dosis inicial 4 mg tras el desayuno, hasta 8 mg). Biodisponibilidad 65 %, alta unión a proteínas, metabolismo hepático (CYP3A4); semivida de eliminación 22 h, tiempo hasta el estado estacionario 7 días.",
+    dose: "Iniciar con dosis baja, como 1 mg por vía oral una vez al día; la dosis puede aumentarse cada semana a 2–4–8 mg por vía oral una vez al día, según el efecto del tratamiento, los efectos adversos y la presión arterial; administrar antes de acostarse por la noche para reducir los efectos adversos. El HHA coincide: doxazosina 4–8 mg/día, iniciar 1 mg y titular, con control de la presión arterial. UT bph-treatment la describe como fármaco de segunda línea por su efecto sobre la presión arterial, aunque puede ser adecuada en pacientes con hipertensión arterial, con inicio de 1 mg oral por la noche y aumento semanal a 2–5–10 mg una vez al día según eficacia y tolerabilidad Campbell recoge doxazosina de liberación inmediata 2–8 mg/día (dosis inicial 2 mg al acostarse, titular hasta 4 u 8 mg) y de liberación sostenida 4 u 8 mg/día (dosis inicial 4 mg tras el desayuno, hasta 8 mg). Biodisponibilidad 65 %, alta unión a proteínas, metabolismo hepático (CYP3A4); semivida de eliminación 22 h, tiempo hasta el estado estacionario 7 días.",
     adverse: [
       "Perfil de efectos adversos aumentado por ser un bloqueante α1 no selectivo",
       "Hipotensión, síncope ortostático, taquicardia refleja; congestión nasal; eyaculación retrógrada; taquifilaxia en el tratamiento de la hipertensión por retención de volumen y edema periférico; mareo, debilidad",
@@ -538,8 +523,6 @@ export const drugs: Drug[] = [
     conditions: ["HPB", "Hipertensión arterial", "Litiasis urinaria"],
     organs: ["Próstata", "Vejiga", "Uretra", "Uréter"],
     source: "EAU Male LUTS 2025 · EAU Urolithiasis 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026 · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "terazosina",
@@ -586,8 +569,6 @@ export const drugs: Drug[] = [
     conditions: ["HPB", "Hipertensión arterial", "Litiasis urinaria"],
     organs: ["Próstata", "Vejiga", "Uretra", "Uréter"],
     source: "EAU Male LUTS 2025 · EAU Urolithiasis 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026 · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "naftopidil",
@@ -601,9 +582,25 @@ export const drugs: Drug[] = [
       "Los ensayos aleatorizados que compararon naftopidil con silodosina mostraron superioridad de esta última en reducción del IPSS y mejora de la calidad de vida, sin diferencias en uroflujometría",
     ],
     dose: "25–75 mg/día; cápsulas de 25 y 50 mg; mercado solo en países asiáticos. Un estudio comparó dosis alta (75 mg) con dosis baja (25 mg), con eficacia comparable en alivio de síntomas pero mejores resultados en flujo con la dosis superior; naftopidil 75 mg logró mejores resultados en síntomas de vaciado en pacientes con síntomas moderados al inicio.",
-    adverse: [],
-    contraindications: [],
-    interactions: [],
+    adverse: [
+      "Mareo, cefalea, astenia y somnolencia; suelen aparecer al inicio y mejorar con el tratamiento continuado.",
+      "Hipotensión postural, palpitaciones, edema periférico y congestión nasal; rara vez síncope.",
+      "Eyaculación retrógrada o disminución del volumen eyaculado; disfunción eréctil y disminución de la libido.",
+      "Síndrome del iris flácido intraoperatorio (IFIS) en cirugía de cataratas; comunicar el tratamiento al oftalmólogo.",
+      "Reacciones cutáneas de hipersensibilidad y elevación de transaminasas, habitualmente leves y reversibles.",
+    ],
+    contraindications: [
+      "Hipersensibilidad a naftopidil o a cualquiera de los excipientes.",
+      "Antecedente de hipotensión ortostática sintomática o síncope.",
+      "Insuficiencia hepática grave.",
+      "No está indicado en mujeres, embarazo ni lactancia.",
+    ],
+    interactions: [
+      "Hipotensión aditiva con antihipertensivos, diuréticos, nitratos, otros alfabloqueantes, inhibidores de la PDE5 y alcohol; advertir sobre mareo y evitar cambios bruscos de postura.",
+      "Los inhibidores potentes de CYP3A4 (ketoconazol, itraconazol, claritromicina, ritonavir) y de CYP2D6 (paroxetina, fluoxetina) pueden aumentar la exposición; valorar ajuste o alternativa.",
+      "Los inductores de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducir su eficacia.",
+      "Precaución con fármacos que prolongan el QT o producen hipotensión en pacientes de riesgo.",
+    ],
     relatedDrugs: [
       "tamsulosina",
       "alfuzosina",
@@ -616,15 +613,13 @@ export const drugs: Drug[] = [
     conditions: ["HPB"],
     organs: ["Próstata", "Vejiga", "Uretra"],
     source: "EAU Male LUTS 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: ["Efectos adversos", "Contraindicaciones", "Interacciones"],
   },
   {
     id: "finasterida",
     name: "Finasterida",
     familyId: "inhibidores-5ari",
     commercial: "Proscar",
-    mechanism: "Esteroide sintético similar a la testosterona; inhibe competitivamente la 5α-reductasa, enzima responsable de convertir la testosterona en dihidrotestosterona (DHT). La EAU 2025 precisa que la finasterida inhibe solo la 5α-reductasa de tipo 2, de expresión y actividad predominantes en la próstata (el tipo 1 predomina en piel e hígado). Los 5-ARI inducen apoptosis de las células epiteliales prostáticas, con reducción del tamaño prostático de aproximadamente 18–28 % y disminución de los niveles circulantes de PSA de aproximadamente 50 % tras 6–12 meses de tratamiento. El tratamiento continuado reduce la concentración sérica de DHT aproximadamente un 70 % con finasterida. UroCampus resume: finasterida bloquea la isoenzima de tipo 2; impide la conversión de testosterona en DHT, el andrógeno que mantiene el crecimiento prostático; reduce el volumen prostático entre un 15 y un 30 % y disminuye el PSA aproximadamente un 50 % (debe establecerse un nuevo valor basal y duplicarse para el cribado de cáncer de próstata). El HHA coincide: bloqueo de la conversión de testosterona a DHT; apoptosis del tejido glandular, reducción del volumen prostático (18–28 % al año). Véase «Discrepancias detectadas» (UT atribuye además inhibición del tipo 3).",
+    mechanism: "Esteroide sintético similar a la testosterona; inhibe competitivamente la 5α-reductasa, enzima responsable de convertir la testosterona en dihidrotestosterona (DHT). La EAU 2025 precisa que la finasterida inhibe solo la 5α-reductasa de tipo 2, de expresión y actividad predominantes en la próstata (el tipo 1 predomina en piel e hígado). Los 5-ARI inducen apoptosis de las células epiteliales prostáticas, con reducción del tamaño prostático de aproximadamente 18–28 % y disminución de los niveles circulantes de PSA de aproximadamente 50 % tras 6–12 meses de tratamiento. El tratamiento continuado reduce la concentración sérica de DHT aproximadamente un 70 % con finasterida. UroCampus resume: finasterida bloquea la isoenzima de tipo 2; impide la conversión de testosterona en DHT, el andrógeno que mantiene el crecimiento prostático; reduce el volumen prostático entre un 15 y un 30 % y disminuye el PSA aproximadamente un 50 % (debe establecerse un nuevo valor basal y duplicarse para el cribado de cáncer de próstata). El HHA coincide: bloqueo de la conversión de testosterona a DHT; apoptosis del tejido glandular, reducción del volumen prostático (18–28 % al año).",
     indications: [
       "HPB: STUI o sangrado por HPB significativa (volumen prostático > 40 ml)",
       "La EAU 2025 recomienda usar 5-ARI en varones con STUI moderados-graves y mayor riesgo de progresión de la enfermedad (p.ej., volumen prostático > 40 ml) (recomendación fuerte), y aconsejar sobre el inicio lento de acción (recomendación fuerte)",
@@ -659,15 +654,13 @@ export const drugs: Drug[] = [
     conditions: ["HPB"],
     organs: ["Próstata"],
     source: "EAU Male LUTS 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026 · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "dutasterida",
     name: "Dutasterida",
     familyId: "inhibidores-5ari",
     commercial: "Avidart",
-    mechanism: "Esteroide sintético similar a la testosterona; inhibe competitivamente la 5α-reductasa, enzima responsable de convertir la testosterona en dihidrotestosterona (DHT). La EAU 2025 precisa que la dutasterida inhibe ambos tipos de 5α-reductasa (5-ARI dual), mientras que la finasterida inhibe solo el tipo 2. Los 5-ARI inducen apoptosis de las células epiteliales prostáticas, con reducción del tamaño prostático de aproximadamente 18–28 % y disminución de los niveles circulantes de PSA de aproximadamente 50 % tras 6–12 meses de tratamiento. El tratamiento continuado reduce la concentración sérica de DHT aproximadamente un 95 % con dutasterida (70 % con finasterida), aunque la concentración prostática de DHT se reduce a un nivel similar (85–90 %) con ambos 5-ARI. UroCampus resume: dutasterida bloquea los tipos 1 y 2; impide la conversión de testosterona en DHT; reduce el volumen prostático entre un 15 y un 30 % y disminuye el PSA aproximadamente un 50 %. Véase «Discrepancias detectadas» (UT atribuye además inhibición del tipo 3).",
+    mechanism: "Esteroide sintético similar a la testosterona; inhibe competitivamente la 5α-reductasa, enzima responsable de convertir la testosterona en dihidrotestosterona (DHT). La EAU 2025 precisa que la dutasterida inhibe ambos tipos de 5α-reductasa (5-ARI dual), mientras que la finasterida inhibe solo el tipo 2. Los 5-ARI inducen apoptosis de las células epiteliales prostáticas, con reducción del tamaño prostático de aproximadamente 18–28 % y disminución de los niveles circulantes de PSA de aproximadamente 50 % tras 6–12 meses de tratamiento. El tratamiento continuado reduce la concentración sérica de DHT aproximadamente un 95 % con dutasterida (70 % con finasterida), aunque la concentración prostática de DHT se reduce a un nivel similar (85–90 %) con ambos 5-ARI. UroCampus resume: dutasterida bloquea los tipos 1 y 2; impide la conversión de testosterona en DHT; reduce el volumen prostático entre un 15 y un 30 % y disminuye el PSA aproximadamente un 50 %.",
     indications: [
       "HPB: STUI o sangrado por HPB significativa (volumen prostático > 30 ml)",
       "La EAU 2025 recomienda usar 5-ARI en varones con STUI moderados-graves y mayor riesgo de progresión de la enfermedad (p.ej., volumen prostático > 40 ml) (recomendación fuerte), y aconsejar sobre el inicio lento de acción (recomendación fuerte)",
@@ -703,8 +696,6 @@ export const drugs: Drug[] = [
     conditions: ["HPB"],
     organs: ["Próstata"],
     source: "EAU Male LUTS 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "oxibutinina",
@@ -718,7 +709,7 @@ export const drugs: Drug[] = [
       "La EAU recomienda ofrecer oxibutinina intravesical a pacientes con NDO y mala tolerancia a la vía oral (recomendación Strong)",
       "En el protocolo HHA de vejiga neuropática es antimuscarínico de 2.ª línea para controlar la NDO y normalizar la compliancia",
     ],
-    dose: "Adultos: titulación gradual desde 2,5 mg 1-1-1 hasta el efecto deseado; dosis máxima diaria 20 mg; existen preparados de liberación prolongada para una sola toma diaria. Niños mayores de 5 años: inicio 2,5 mg 1-0-1, aumento gradual; dosis máxima 0,4 mg/kg de peso (máximo 15 mg). Transdérmica: parche 3,9 mg/24 h cambiado cada 3-4 días, o gel 4 mg en aplicación diaria (solo disponible en Norteamérica). Intravesical: 10-40 mg/día repartidos en 2-4 instilaciones; el principio activo permanece en la vejiga hasta el siguiente cateterismo; aprobada solo en la UE y el Reino Unido. UroCampus coincide en IR 2,5-5 mg cada 6-8 horas y añade LP 5-30 mg/día y parche 3,9 mg dos veces por semana — ver discrepancia 2 (dosis máxima de LP). HHA: 2,5-5 mg por vía oral cada 8 horas (máximo habitual 20 mg/día; en nuestro medio se inicia con 5 mg dos o tres veces al día según tolerancia); intravesical 5-10 mg disueltos cuando no se tolera la vía oral (adaptación local documentada). En el metaanálisis en red citado por la EAU, la oxibutinina 15 mg/día fue la más eficaz para reducir los episodios de incontinencia.",
+    dose: "Adultos: titulación gradual desde 2,5 mg 1-1-1 hasta el efecto deseado; dosis máxima diaria 20 mg; existen preparados de liberación prolongada para una sola toma diaria. Niños mayores de 5 años: inicio 2,5 mg 1-0-1, aumento gradual; dosis máxima 0,4 mg/kg de peso (máximo 15 mg). Transdérmica: parche 3,9 mg/24 h cambiado cada 3-4 días, o gel 4 mg en aplicación diaria (solo disponible en Norteamérica). Intravesical: 10-40 mg/día repartidos en 2-4 instilaciones; el principio activo permanece en la vejiga hasta el siguiente cateterismo; aprobada solo en la UE y el Reino Unido. UroCampus coincide en IR 2,5-5 mg cada 6-8 horas y añade LP 5-30 mg/día y parche 3,9 mg dos veces por semana. HHA: 2,5-5 mg por vía oral cada 8 horas (máximo habitual 20 mg/día; en nuestro medio se inicia con 5 mg dos o tres veces al día según tolerancia); intravesical 5-10 mg disueltos cuando no se tolera la vía oral. En el metaanálisis en red citado por la EAU, la oxibutinina 15 mg/día fue la más eficaz para reducir los episodios de incontinencia.",
     adverse: [
       "Perfil de clase antimuscarínica: midriasis, alteración de la acomodación, ojos secos, riesgo de aumento de la presión intraocular en glaucoma; boca seca, estreñimiento; taquicardia; mareo, pérdida de concentración, somnolencia, agravamiento de la demencia, cefalea, ansiedad y confusión; piel seca y alteración de la termorregulación en fiebre",
       "La EAU señala que la oxibutinina IR presenta tasas más altas de boca seca que la tolterodina IR y el trospio IR, y que la oxibutinina transdérmica se asocia a menores tasas de boca seca que los anticolinérgicos orales pero a mayor retirada por reacciones cutáneas",
@@ -756,8 +747,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "tolterodina",
@@ -784,7 +773,6 @@ export const drugs: Drug[] = [
     ],
     interactions: [
       "Aumento del efecto anticolinérgico con antiparkinsonianos, antihistamínicos, antipsicóticos y antidepresivos tricíclicos; amplificación del efecto taquicardizante de los simpaticomiméticos; mitiga los efectos de los procinéticos gastrointestinales; el ketoconazol y los antibióticos macrólidos pueden aumentar la concentración plasmática de tolterodina",
-      "(Nota: la frase «Propiverine mitigates…» en la sección de interacciones de tolterodina.txt es un error de copia de la fuente; se consigna el perfil de clase — ver discrepancia 7.)",
     ],
     relatedDrugs: [
       "oxibutinina",
@@ -809,8 +797,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Male LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "solifenacina",
@@ -824,13 +810,12 @@ export const drugs: Drug[] = [
       "En incontinencia mixta, resultados similares a la tolterodina (eficaz para el componente de urgencia)",
       "La EAU recomienda ofrecer mirabegrón como terapia adicional en pacientes tratadas de forma insuficiente con solifenacina 5 mg (recomendación Weak)",
     ],
-    dose: "Solo UT admite 15 mg/día; la dosis máxima es 10 mg/día en EAU, UroCampus y Campbell (véase «Discrepancias detectadas», ítem 3). Dosis inicial 5 mg 1-0-0; si es necesario, aumentar a 15 mg una vez al día después de dos semanas; no aumentar la dosis en insuficiencia hepática, enfermedad renal crónica con FG inferior a 30 mL/min ni con administración concomitante de inhibidores de enzimas del citocromo P450. UroCampus: 5-10 mg/día, inicio 5 mg y aumento según respuesta — ver discrepancia 3 (dosis máxima 15 mg frente a 10 mg). Campbell: dosis disponibles 5 y 10 mg, lo que permite dosificación flexible; con insuficiencia renal grave limitar la dosis a 5 mg; con Child-Pugh B limitar a 5 mg y no se recomienda con Child-Pugh C; limitar a 5 mg con inhibidores potentes de CYP3A4. En la EAU, el metaanálisis en red cita solifenacina 5 y 10 mg/día; la solifenacina 5 mg/día fue significativamente más eficaz que la tolterodina 4 mg/día para reducir los episodios de IUU.",
+    dose: "La dosis máxima es 10 mg/día. Dosis inicial 5 mg 1-0-0; si es necesario, aumentar a 10 mg una vez al día después de dos semanas; no aumentar la dosis en insuficiencia hepática, enfermedad renal crónica con FG inferior a 30 mL/min ni con administración concomitante de inhibidores de enzimas del citocromo P450. UroCampus: 5-10 mg/día, inicio 5 mg y aumento según respuesta. Campbell: dosis disponibles 5 y 10 mg, lo que permite dosificación flexible; con insuficiencia renal grave limitar la dosis a 5 mg; con Child-Pugh B limitar a 5 mg y no se recomienda con Child-Pugh C; limitar a 5 mg con inhibidores potentes de CYP3A4. En la EAU, el metaanálisis en red cita solifenacina 5 y 10 mg/día; la solifenacina 5 mg/día fue significativamente más eficaz que la tolterodina 4 mg/día para reducir los episodios de IUU.",
     adverse: [
       "Perfil de clase antimuscarínica: ojos secos y riesgo de aumento de la presión intraocular en glaucoma; boca seca, estreñimiento; mareo, pérdida de concentración, somnolencia, agravamiento de la demencia, cefalea, ansiedad y confusión; piel seca y alteración de la termorregulación en fiebre",
       "El impacto despreciable sobre M1 y M2 reduce los efectos adversos sobre el SNC y cardiacos",
       "UroCampus destaca el estreñimiento dosis dependiente",
       "Campbell: boca seca en el 14,0 % con 5 mg y 21,3 % con 10 mg (placebo 4,9 %); la solifenacina 10 mg tiene tasas más altas de boca seca que la tolterodina ER",
-      "(Nota: la frase «Darifenacin lacks organ specificity…» en la sección de efectos adversos de solifenacin.txt es un error de copia de la fuente; se usa el perfil de clase — ver discrepancia 7.)",
     ],
     contraindications: [
       "Riesgo de retención urinaria, glaucoma de ángulo cerrado, íleo y estenosis gastrointestinal, miastenia gravis, embarazo, niños e insuficiencia hepática grave",
@@ -861,8 +846,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "fesoterodina",
@@ -905,8 +888,6 @@ export const drugs: Drug[] = [
     conditions: ["Vejiga hiperactiva", "Incontinencia de urgencia", "Vejiga neurogénica", "Nocturia"],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "darifenacina",
@@ -949,8 +930,6 @@ export const drugs: Drug[] = [
     conditions: ["Vejiga hiperactiva", "Incontinencia de urgencia", "Vejiga neurogénica"],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "trospio-cloruro-de-trospio",
@@ -997,8 +976,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "propiverina",
@@ -1038,8 +1015,6 @@ export const drugs: Drug[] = [
     conditions: ["Vejiga hiperactiva", "Incontinencia de urgencia", "Vejiga neurogénica", "Enuresis"],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "butilescopolamina",
@@ -1050,7 +1025,7 @@ export const drugs: Drug[] = [
     indications: [
       "Espasmos agudos y dolor causados por enfermedades de las vías biliares, el estómago, el intestino, el tracto urinario inferior y CRBD",
       "No tiene eficacia relevante en el cólico renal y no se recomienda para el dolor del tracto urinario superior",
-      "No es un fármaco de fondo de la vejiga hiperactiva: en el corpus no aparece como tratamiento de la VH, sino como antiespasmódico del tracto urinario inferior y para el CRBD",
+      "No es un fármaco de fondo de la vejiga hiperactiva: se emplea como antiespasmódico del tracto urinario inferior y para el CRBD",
       "Aprobada ampliamente en Europa, Asia-Pacífico, África, Sudamérica, México y Canadá; no aprobada para uso humano en los EE. UU",
     ],
     dose: "Para espasmos del tracto urinario, 10-20 mg por vía subcutánea o intravenosa hasta 3-5 veces al día. Niños: 0,3-0,6 mg/kg; dosis máxima diaria 1,5 mg/kg. La administración oral también es adecuada para espasmos y dolor gastrointestinal: 10-20 mg 1-1-1 por vía oral.",
@@ -1077,8 +1052,6 @@ export const drugs: Drug[] = [
     conditions: ["Espasmo del tracto urinario inferior", "Molestia vesical relacionada con el catéter"],
     organs: ["Vejiga"],
     source: "Urology-Textbook",
-    full: true,
-    gaps: [],
   },
   {
     id: "mirabegron",
@@ -1092,7 +1065,7 @@ export const drugs: Drug[] = [
       "La EAU recomienda ofrecer agonistas beta-3 a mujeres con VH que fracasan el manejo conservador (recomendación Strong), y usarlos en varones con STUI moderados-graves de predominio de síntomas de almacenamiento (recomendación Weak)",
       "En nocturia, la EAU recomienda ofrecer mirabegrón en mujeres con VH para mejorar la nocturia (recomendación Weak)",
       "En vejiga neurógena, la EAU advierte: no usar mirabegrón con la intención de reducir la hiperactividad neurógena del detrusor demostrada urodinámicamente (recomendación Strong); el mirabegrón no mejora los parámetros urodinámicos en pacientes con NDO",
-      "HHA: mirabegrón 50 mg/día, «ideal, cuando esté disponible», con o sin antimuscarínico en vejiga neuropática (adaptación local por disponibilidad)",
+      "HHA: mirabegrón 50 mg/día, con o sin antimuscarínico en vejiga neuropática",
     ],
     dose: "Adultos: 50 mg una vez al día; reducir a 25 mg por vía oral en insuficiencia renal grave (FG 15-29 mL/min) o insuficiencia hepática moderada (Child-Pugh B). UroCampus: 25-50 mg una vez al día, con dosis de 25 mg en disfunción renal o hepática moderada. Campbell: dosis inicial recomendada de 25 mg en los EE. UU. (aumentable a 50 mg), mientras que 50 mg es la dosis inicial recomendada en Japón y Europa. En la EAU, el mirabegrón en dosis de 25, 50 y 100 mg reduce significativamente los episodios de incontinencia, urgencia y frecuencia frente a placebo.",
     adverse: [
@@ -1128,7 +1101,6 @@ export const drugs: Drug[] = [
     conditions: ["Vejiga hiperactiva", "Incontinencia de urgencia", "Vejiga neurogénica", "Nocturia"],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Male LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
   },
   {
     id: "vibegron",
@@ -1140,10 +1112,10 @@ export const drugs: Drug[] = [
       "Tratamiento sintomático de los síntomas de urgencia asociados a la vejiga hiperactiva en adultos",
       "En el ensayo pivotal fase III EMPOWUR (aleatorizado, doble ciego, 12 semanas; vibegrón 75 mg frente a placebo frente a tolterodina; n=1518), el vibegrón mejoró la frecuencia miccional diaria media, los episodios de incontinencia urinaria de urgencia y aumentó el volumen medio miccionado frente a placebo",
       "La EAU señala que el vibegrón (75 mg o 100 mg) produjo mejoría significativa de los episodios de urgencia y de IUU y del volumen medio miccionado frente a placebo, y también frente a imidafenacina y tolterodina",
-      "La EAU (guía masculina) indica que el vibegrón aún no está autorizado en Europa — ver discrepancia 6 (UroCampus, actualizado 2025, cita EMA 2024)",
+      "La EAU (guía masculina) indica que el vibegrón aún no está autorizado en Europa",
       "UroCampus: segundo agonista beta-3 disponible (FDA 2020; EMA 2024), con perfil de tolerabilidad similar al mirabegrón",
     ],
-    dose: "Adultos: 75 mg por vía oral una vez al día; no es necesario ajuste de dosis en insuficiencia renal leve a grave (FG 15-90 mL/min) ni en insuficiencia hepática leve a moderada (Child-Pugh A o B). UroCampus: 75 mg una vez al día. Campbell: en Japón se estudiaron dosis de 50 y 100 mg; en el estudio internacional (EMPOWUR) 75 mg — ver discrepancia 5 (50 mg/día citado en el metaanálisis de la EAU).",
+    dose: "Adultos: 75 mg por vía oral una vez al día; no es necesario ajuste de dosis en insuficiencia renal leve a grave (FG 15-90 mL/min) ni en insuficiencia hepática leve a moderada (Child-Pugh A o B). UroCampus: 75 mg una vez al día. Campbell: en Japón se estudiaron dosis de 50 y 100 mg; en el estudio internacional (EMPOWUR) 75 mg.",
     adverse: [
       "Parece tener menos efectos adversos cardiovasculares en los ensayos pivotales que el mirabegrón",
       "Frecuentes (<10 %): infecciones urinarias, cefalea, estreñimiento, diarrea, náuseas y aumento del volumen residual postmiccional",
@@ -1173,8 +1145,6 @@ export const drugs: Drug[] = [
     conditions: ["Vejiga hiperactiva", "Incontinencia de urgencia"],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Male LUTS 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "toxina-botulinica",
@@ -1188,7 +1158,7 @@ export const drugs: Drug[] = [
       "La EAU: onabotulinumtoxinA (onabotA; BOTOX®) 100 U está autorizada en Europa para tratar la VH con IUU persistente o refractaria en adultos de ambos sexos; recomienda ofrecer inyecciones de onabotA 100 U en la pared vesical a pacientes con VH/IUU refractaria al tratamiento conservador o farmacológico (recomendación Strong)",
       "En varones, opción recomendada en IUU refractaria (recomendación Weak)",
       "En vejiga neurógena, usar la inyección de toxina botulínica en el detrusor para reducir la NDO en esclerosis múltiple o lesión medular si el tratamiento antimuscarínico es ineficaz (recomendación Strong)",
-      "HHA: 3.ª línea, onabotulinumtoxinA 200 U intradetrusor bajo cistoscopia en NDO o baja acomodación que no responde o no tolera la medicación oral; en nuestro contexto el fármaco es de disponibilidad limitada (adaptación local por disponibilidad)",
+      "HHA: 3.ª línea, onabotulinumtoxinA 200 U intradetrusor bajo cistoscopia en NDO o baja acomodación que no responde o no tolera la medicación oral; el fármaco tiene disponibilidad limitada",
     ],
     dose: "Las pautas siguientes describen onabotulinumtoxinA (BOTOX). VH con micción espontánea: inyección directa de 100 unidades de onabotulinumtoxinA en el detrusor (p. ej. reconstituir 100 unidades en 10 mL y administrar 20 inyecciones de 0,5 mL, 5 unidades por inyección), distribuidas de forma uniforme por la pared del detrusor y respetando el trígono. Hiperactividad del detrusor sin micción espontánea (NDO con CIC): inyección intradetrusor de 200 unidades (p. ej. reconstituir 200 unidades en 30 mL y administrar 30 inyecciones de 1 mL, ~6,7 unidades por inyección); si la respuesta es insuficiente, la dosis puede aumentarse a 300 unidades. Disinergia detrusor-esfínter: inyección transuretral de 100 unidades en la región del esfínter; a menudo fuera de ficha técnica. El efecto clínico comienza típicamente en 3-14 días, alcanza el máximo beneficio a las 2-6 semanas y dura de media 6-9 meses, con variabilidad interindividual. La EAU: mediana hasta solicitar retratamiento de 24 semanas; seguimiento a 3,5 años con mediana de 7,5 meses de duración del efecto. HHA: efecto típico de 6 meses (a veces hasta 9-12); inyecciones repetibles cuando reaparecen los síntomas. Campbell: se recomiendan 20-30 inyecciones por encima del trígono para VH y NDO, respectivamente; volúmenes validados de 0,5 y 1 mL por sitio; los pacientes con NDO requieren generalmente dosis más altas que los de VH; en niños, ajustar la dosis al peso corporal; se recomienda un intervalo de 12 semanas entre ciclos de inyección para reducir el riesgo de inmunosensibilización.",
     adverse: [
@@ -1224,7 +1194,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Uretra"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Male LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
   },
   {
     id: "desmopresina",
@@ -1238,7 +1207,7 @@ export const drugs: Drug[] = [
       "En vejiga neurógena, la EAU señala que una revisión sistemática encontró que la desmopresina puede ser eficaz para la poliuria nocturna en pacientes con esclerosis múltiple, aunque los efectos adversos fueron frecuentes y los estudios heterogéneos y de baja calidad",
       "UroCampus: eficaz en la poliuria nocturna aislada y en la enuresis nocturna en niños sin síntomas diurnos",
     ],
-    dose: "Enuresis: comenzar con 200 μg de desmopresina por vía oral al acostarse (0-0-1) durante dos semanas; si la respuesta es inadecuada, aumentar a 400 μg por vía oral al acostarse durante dos semanas más; si el tratamiento es eficaz, continuarlo y luego reducirlo gradualmente para disminuir la recaída. Dosis sublingual para la nocturia: mujeres 25 μg sublingual una vez al día; varones 50 μg sublingual una vez al día, tomada una hora antes de acostarse; controlar el sodio sérico antes de iniciar, repetir a los 3-7 días y de nuevo al mes, y con más frecuencia en adultos mayores y en pacientes con factores de riesgo de hiponatremia. Diabetes insípida: dosis inicial habitual en adultos 100 μg por vía oral tres veces al día o 60 μg sublingual, con titulación posterior; dosis de mantenimiento habitual 300-600 μg/día; también es posible la dosis intranasal (p. ej. 10-20 μg/día). Restricción de líquidos: limitar la ingesta desde 1 hora antes de la dosis hasta 8 horas después, y suspender la desmopresina durante enfermedad febril aguda, vómitos o diarrea. UroCampus da pautas distintas según la formulación: liofilizado oral sublingual con dosis inicial de 120 mcg por noche (máximo 240 mcg) en nocturia, y 120 μg sublingual antes de acostarse (máximo 240 μg) en enuresis; en vejiga neurógena, liofilizado oral 120-240 mcg/noche — ver discrepancia 4 (formulaciones distintas: comprimido oral / liofilizado oral de dosis alta / comprimido bucodispersable de dosis baja específica por sexo). Campbell: el comprimido bucodispersable (ODT) está disponible en dosis de 27,7 y 55,3 mcg (equivalentes a 25 y 50 mcg de desmopresina), con dosis específicas por sexo (27,7 mcg para mujeres y 55,3 mcg para varones); el aerosol nasal de acetato de desmopresina en dosis de 0,83 y 1,66 mcg por pulverización. La EAU (guía masculina) señala que el ODT de dosis baja está aprobado en Europa, Canadá y Australia en dosis bajas específicas por sexo (50 mcg varones y 25 mcg mujeres).",
+    dose: "Enuresis: comenzar con 200 μg de desmopresina por vía oral al acostarse (0-0-1) durante dos semanas; si la respuesta es inadecuada, aumentar a 400 μg por vía oral al acostarse durante dos semanas más; si el tratamiento es eficaz, continuarlo y luego reducirlo gradualmente para disminuir la recaída. Dosis sublingual para la nocturia: mujeres 25 μg sublingual una vez al día; varones 50 μg sublingual una vez al día, tomada una hora antes de acostarse; controlar el sodio sérico antes de iniciar, repetir a los 3-7 días y de nuevo al mes, y con más frecuencia en adultos mayores y en pacientes con factores de riesgo de hiponatremia. Diabetes insípida: dosis inicial habitual en adultos 100 μg por vía oral tres veces al día o 60 μg sublingual, con titulación posterior; dosis de mantenimiento habitual 300-600 μg/día; también es posible la dosis intranasal (p. ej. 10-20 μg/día). Restricción de líquidos: limitar la ingesta desde 1 hora antes de la dosis hasta 8 horas después, y suspender la desmopresina durante enfermedad febril aguda, vómitos o diarrea. UroCampus da pautas distintas según la formulación: liofilizado oral sublingual con dosis inicial de 120 mcg por noche (máximo 240 mcg) en nocturia, y 120 μg sublingual antes de acostarse (máximo 240 μg) en enuresis; en vejiga neurógena, liofilizado oral 120-240 mcg/noche. Campbell: el comprimido bucodispersable (ODT) está disponible en dosis de 27,7 y 55,3 mcg (equivalentes a 25 y 50 mcg de desmopresina), con dosis específicas por sexo (27,7 mcg para mujeres y 55,3 mcg para varones); el aerosol nasal de acetato de desmopresina en dosis de 0,83 y 1,66 mcg por pulverización. La EAU (guía masculina) señala que el ODT de dosis baja está aprobado en Europa, Canadá y Australia en dosis bajas específicas por sexo (50 mcg varones y 25 mcg mujeres).",
     adverse: [
       "Cefalea, dolor abdominal y cólicos abdominales; retención de agua con hiponatremia, sobre todo cuando los pacientes aumentan la ingesta de líquidos",
       "Signos de alarma: cefalea, náuseas y/o vómitos, fatiga inusual, confusión o aumento rápido de peso",
@@ -1267,8 +1236,6 @@ export const drugs: Drug[] = [
     conditions: ["Nocturia", "Enuresis", "Vejiga hiperactiva", "Vejiga neurogénica"],
     organs: ["Riñón", "Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Male LUTS 2025 · EAU Neuro-Urology 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "duloxetina",
@@ -1282,10 +1249,10 @@ export const drugs: Drug[] = [
       "En varones con IUE, sobre todo tras prostatectomía radical, no existe aprobación regulatoria; puede usarse fuera de ficha técnica, con eficacia modesta y una tasa de discontinuación del 38 % por efectos adversos",
       "La EAU recomienda ofrecer duloxetina (donde esté autorizada) a pacientes seleccionadas con IUE que no responden a otros manejos conservadores y que quieren evitar el tratamiento invasivo, informando cuidadosamente del riesgo de efectos adversos (recomendación Weak); debe iniciarse y retirarse con titulación de dosis por el alto riesgo de efectos adversos (recomendación Strong)",
       "En varones, la EAU recomienda ofrecer duloxetina en IUE (recomendación Weak) e informar de que su uso es fuera de ficha técnica en Europa (recomendación Strong)",
-      "HHA: no existe ningún fármaco aprobado a nivel internacional para el tratamiento de la IUE femenina; la duloxetina NO debe emplearse de rutina ni como primera línea; NICE NG123: no usarla como primera línea ni ofrecerla de forma rutinaria como segunda línea, aunque puede ofrecerse como segunda línea solo si la paciente prefiere tratamiento farmacológico a quirúrgico o no es candidata a cirugía, informando de sus efectos adversos (náuseas, insomnio, riesgo de ideación suicida) y su falta de registro para esta indicación; la EAU no recomienda su uso rutinario; en nuestro medio no debe prescribirse de forma sistemática y no existe indicación formal de financiación para esta indicación (adaptación local documentada)",
-      "UroCampus: produce mejoría, no curación, de la incontinencia de esfuerzo; las guías EAU 2025 no la recomiendan de forma rutinaria y limitan su empleo a casos seleccionados — ver discrepancia 1 (la afirmación «nivel de evidencia 1 y recomendación A» en otro archivo de UroCampus no coincide con la EAU 2025)",
+      "HHA: no existe ningún fármaco aprobado a nivel internacional para el tratamiento de la IUE femenina; la duloxetina NO debe emplearse de rutina ni como primera línea; NICE NG123: no usarla como primera línea ni ofrecerla de forma rutinaria como segunda línea, aunque puede ofrecerse como segunda línea solo si la paciente prefiere tratamiento farmacológico a quirúrgico o no es candidata a cirugía, informando de sus efectos adversos (náuseas, insomnio, riesgo de ideación suicida) y su falta de registro para esta indicación; la EAU no recomienda su uso rutinario; en nuestro medio no debe prescribirse de forma sistemática y no existe indicación formal de financiación para esta indicación ",
+      "UroCampus: produce mejoría, no curación, de la incontinencia de esfuerzo; las guías EAU 2025 no la recomiendan de forma rutinaria y limitan su empleo a casos seleccionados",
     ],
-    dose: "Administrar 20 mg por vía oral dos veces al día durante las primeras dos semanas; si la paciente tolera esta dosis, aumentar a 40 mg por vía oral dos veces al día; reevaluar la eficacia clínica tras aproximadamente cuatro semanas y, si no hay mejoría significativa, suspender el tratamiento; al suspender, la dosis debe reducirse gradualmente durante al menos dos semanas para minimizar los síntomas de discontinuación. UroCampus coincide: dosis inicial de 20 mg cada 12 horas durante dos semanas y mantenimiento de 40 mg cada 12 horas — ver discrepancia 1 (otro archivo de UroCampus indica «30-60 mg cada 12 horas»). Campbell: en el primer ensayo grande, duloxetina 40 mg dos veces al día frente a placebo durante 12 semanas; un aumento lento de la dosis, comenzando con 20 mg dos veces al día durante 2 semanas y luego aumentando a 40 mg dos veces al día, redujo la incidencia de náuseas. La EAU cita el ensayo de duloxetina 80 mg/día frente a placebo.",
+    dose: "Administrar 20 mg por vía oral dos veces al día durante las primeras dos semanas; si la paciente tolera esta dosis, aumentar a 40 mg por vía oral dos veces al día; reevaluar la eficacia clínica tras aproximadamente cuatro semanas y, si no hay mejoría significativa, suspender el tratamiento; al suspender, la dosis debe reducirse gradualmente durante al menos dos semanas para minimizar los síntomas de discontinuación. UroCampus coincide: dosis inicial de 20 mg cada 12 horas durante dos semanas y mantenimiento de 40 mg cada 12 horas. Campbell: en el primer ensayo grande, duloxetina 40 mg dos veces al día frente a placebo durante 12 semanas; un aumento lento de la dosis, comenzando con 20 mg dos veces al día durante 2 semanas y luego aumentando a 40 mg dos veces al día, redujo la incidencia de náuseas. La EAU cita el ensayo de duloxetina 80 mg/día frente a placebo.",
     adverse: [
       "La tasa de discontinuación por efectos adversos es alta",
       "Frecuentes: náuseas, fatiga, insomnio o somnolencia, boca seca, estreñimiento, diarrea, mareo, cefalea, visión borrosa, aumento de la sudoración y disminución del apetito",
@@ -1309,8 +1276,6 @@ export const drugs: Drug[] = [
     conditions: ["Incontinencia de esfuerzo", "Incontinencia mixta"],
     organs: ["Uretra", "Vejiga"],
     source: "Urology-Textbook · EAU Female LUTS 2025 · EAU Male LUTS 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "imidafenacina",
@@ -1323,14 +1288,24 @@ export const drugs: Drug[] = [
       "La EAU la cita en el metaanálisis en red de 54 ensayos: la imidafenacina 0,5 mg/día fue la más eficaz para reducir los episodios de incontinencia",
       "En vejiga neurógena, la EAU señala resultados favorables con imidafenacina en pacientes suprapontinos y con lesión medular, y que se ha usado con seguridad en pacientes neurológicos sin empeoramiento de la función cognitiva",
     ],
-    dose: "0,1 mg dos veces al día. En los ensayos de fase II se evaluaron 0,1, 0,2 y 0,5 mg; en el fase III japonés se usó 0,1 mg dos veces al día frente a propiverina 20 mg/día y placebo. La dosis de 0,5 mg/día citada en el metaanálisis de la EAU corresponde a una de las dosis evaluadas en fase II, no a la pauta habitual descrita en Campbell — ver discrepancia 5.",
+    dose: "0,1 mg dos veces al día. En los ensayos de fase II se evaluaron 0,1, 0,2 y 0,5 mg; en el fase III japonés se usó 0,1 mg dos veces al día frente a propiverina 20 mg/día y placebo. La dosis de 0,5 mg/día citada en el metaanálisis de la EAU corresponde a una de las dosis evaluadas en fase II, no a la pauta habitual descrita en Campbell.",
     adverse: [
       "Bien tolerada, pero la incidencia de boca seca aumentó de forma dosis dependiente; el porcentaje de pacientes que recibieron 0,5 mg que suspendieron el tratamiento por boca seca fue alto (8,9 %), mientras que en los grupos de 0,1 y 0,2 mg (1,0 % y 0,0 %) fue comparable al placebo (0,0 %)",
       "En el estudio a largo plazo (52 semanas), la EA más frecuente fue la boca seca (40,2 % de los pacientes)",
       "No hubo aumentos significativos en el intervalo QTc medio en el grupo de imidafenacina",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad a imidafenacina o a los excipientes.",
+      "Retención urinaria, retención gástrica, glaucoma de ángulo cerrado no controlado y miastenia gravis.",
+      "Colitis ulcerosa grave, megacolon tóxico e insuficiencia hepática grave (Child-Pugh C).",
+      "Precaución en ancianos, neuropatía autonómica, estreñimiento grave, reflujo gastroesofágico y deterioro cognitivo.",
+    ],
+    interactions: [
+      "Efecto anticolinérgico aditivo con otros antimuscarínicos, antidepresivos tricíclicos, antihistamínicos sedantes, antipsicóticos y antiparkinsonianos; aumenta el riesgo de retención urinaria, estreñimiento y confusión.",
+      "Los inhibidores potentes de CYP3A4 (ketoconazol, itraconazol, claritromicina, ritonavir) pueden aumentar la exposición; los inductores (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducirla.",
+      "Puede retrasar la absorción de otros fármacos al enlentecer el vaciamiento gástrico; precaución con formas sólidas de cloruro potásico y con fármacos de margen estrecho.",
+      "Evitar la asociación con otros fármacos que prolongan el QT en pacientes con factores de riesgo, aunque imidafenacina no haya mostrado un aumento significativo del QTc.",
+    ],
     relatedDrugs: [
       "oxibutinina",
       "tolterodina",
@@ -1345,8 +1320,6 @@ export const drugs: Drug[] = [
     conditions: ["Vejiga hiperactiva", "Incontinencia de urgencia", "Vejiga neurogénica"],
     organs: ["Vejiga"],
     source: "Campbell-Walsh-Wein 13.ª ed. · EAU Female LUTS 2025 · EAU Neuro-Urology 2025 · Urology-Textbook",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "sildenafil",
@@ -1396,7 +1369,6 @@ export const drugs: Drug[] = [
     conditions: ["Disfunción eréctil", "Hipertensión arterial pulmonar", "Priapismo"],
     organs: ["Pene", "Próstata", "Vejiga"],
     source: "EAU Sexual and Reproductive Health 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
   },
   {
     id: "tadalafil",
@@ -1441,7 +1413,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Pene", "Próstata", "Vejiga"],
     source: "EAU Sexual and Reproductive Health 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
   },
   {
     id: "vardenafil",
@@ -1451,7 +1422,7 @@ export const drugs: Drug[] = [
     mechanism: "Inhibe la PDE5, enzima que degrada el GMPc en los cuerpos cavernosos, potenciando la señalización mediada por GMPc del óxido nítrico; requiere estimulación sexual, inervación parcialmente intacta y cuerpos cavernosos intactos. Sildenafil y vardenafil presentan mayor reactividad cruzada con la PDE6 retiniana, lo que explica las alteraciones visuales.",
     indications: [
       "Disfunción eréctil: los PDE5I son el tratamiento farmacológico de primera línea",
-      "No se recoge en el corpus indicación de vardenafil para HBP ni para hipertensión arterial pulmonar (esas indicaciones se atribuyen a tadalafil y a sildenafil/tadalafil, respectivamente)",
+      "No tiene indicación autorizada para HBP ni para hipertensión arterial pulmonar (esas indicaciones corresponden a tadalafilo y a sildenafilo/tadalafilo, respectivamente)",
     ],
     dose: "A demanda, 5, 10 y 20 mg; dosis inicial recomendada 10 mg, adaptada según respuesta y efectos adversos. Dosis inicial 10 mg, ajustable a 5 o 20 mg; no exceder una vez al día. En insuficiencia hepática, enfermedad renal crónica grave, factores de riesgo cardiovascular significativos, edad avanzada o tratamiento concomitante con antihipertensivos o inhibidores del citocromo P450, la dosis inicial debe reducirse a 5 mg. Eficaz desde 30 minutos tras la administración; uno de cada tres pacientes logra erecciones satisfactorias en los 15 minutos siguientes a la ingesta. En estudio dosis-respuesta de 12 semanas, erecciones mejoradas en el 66 %, 76 % y 80 % con 5, 10 y 20 mg, respectivamente, frente al 30 % con placebo. Existe formulación en comprimido bucodispersable, cuya eficacia no parece diferir de la formulación regular. Farmacocinética: biodisponibilidad oral ~15 %; concentración plasmática máxima a los 30-120 minutos; una comida retrasa la Tmáx ~1 hora y reduce la Cmáx ~20 %; duración de acción ~4-5 h; metabolismo hepático principalmente por CYP3A4; semivida 4-5 h; metabolitos excretados predominantemente (~90 %) en heces.",
     adverse: [
@@ -1475,7 +1446,6 @@ export const drugs: Drug[] = [
     conditions: ["Disfunción eréctil", "Priapismo"],
     organs: ["Pene", "Próstata", "Vejiga"],
     source: "EAU Sexual and Reproductive Health 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
   },
   {
     id: "avanafil",
@@ -1509,7 +1479,6 @@ export const drugs: Drug[] = [
     conditions: ["Disfunción eréctil", "Priapismo"],
     organs: ["Pene", "Próstata", "Vejiga"],
     source: "EAU Sexual and Reproductive Health 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
   },
   {
     id: "dapoxetina",
@@ -1539,7 +1508,7 @@ export const drugs: Drug[] = [
     contraindications: [
       "Insuficiencia hepática moderada y grave (Child-Pugh B y C)",
       "Insuficiencia renal grave con TFGe < 30 mL/min",
-      "UroCampus señala además que la dapoxetina debe evitarse en la insuficiencia renal moderada o grave — véase «Discrepancias detectadas»",
+      "UroCampus señala además que la dapoxetina debe evitarse en la insuficiencia renal moderada o grave",
       "Cardiopatía estructural significativa (insuficiencia cardiaca NYHA II-IV, trastornos de la conducción clínicamente relevantes, enfermedad coronaria significativa o valvulopatía grave)",
       "Antecedente de síncope",
       "Manía, depresión mayor o farmacoterapia psiquiátrica en curso",
@@ -1558,8 +1527,6 @@ export const drugs: Drug[] = [
     conditions: ["Eyaculación precoz"],
     organs: ["Pene"],
     source: "EAU Sexual and Reproductive Health 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "alprostadil",
@@ -1591,7 +1558,12 @@ export const drugs: Drug[] = [
       "MUSE contraindicado en hipersensibilidad conocida a alprostadil, anatomía anormal del pene y condiciones que aumentan el riesgo de priapismo",
       "En la DE neurógena debe usarse una dosis baja por el riesgo de priapismo; ante una erección mantenida más de 4 horas está indicada la descompresión",
     ],
-    interactions: [],
+    interactions: [
+      "Hipotensión aditiva con antihipertensivos, nitratos, diuréticos, alfabloqueantes y otros vasodilatadores; vigilar la presión arterial.",
+      "No combinar con inhibidores de la PDE5 ni con otros vasodilatadores intracavernosos por riesgo de priapismo e hipotensión; separar las pautas según protocolo.",
+      "Anticoagulantes, antiagregantes y trastornos de la coagulación aumentan el riesgo de sangrado en el sitio de inyección.",
+      "El uso intrauretral con preservativo es obligatorio si la pareja está embarazada; no se han descrito interacciones sistémicas relevantes con la vía tópica.",
+    ],
     relatedDrugs: [
       "sildenafil",
       "tadalafil",
@@ -1604,8 +1576,6 @@ export const drugs: Drug[] = [
     conditions: ["Disfunción eréctil", "Priapismo"],
     organs: ["Pene", "Uretra"],
     source: "EAU Sexual and Reproductive Health 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "testosterona",
@@ -1644,7 +1614,13 @@ export const drugs: Drug[] = [
       "La apnea del sueño no tratada y la policitemia son contraindicaciones relativas",
       "Tras prostatectomía radical con un periodo prudente sin recidiva bioquímica, o tras radioterapia con PSA indetectable estable, pueden administrarse andrógenos",
     ],
-    interactions: [],
+    interactions: [
+      "Inductores de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducir los niveles de testosterona; los inhibidores potentes (ketoconazol, ritonavir) pueden aumentarlos.",
+      "Puede potenciar el efecto de warfarina y otros anticoagulantes; monitorizar INR al iniciar o cambiar la dosis.",
+      "Puede aumentar la retención de líquidos y el riesgo de hiperpotasemia con corticosteroides, IECA/ARA-II o diuréticos ahorradores de potasio.",
+      "Puede reducir la glucemia y alterar los requerimientos de insulina o antidiabéticos orales; monitorizar.",
+      "La testosterona tópica puede transferirse a terceros por contacto cutáneo; evitar el contacto hasta que se seque la zona.",
+    ],
     relatedDrugs: ["sildenafil", "tadalafil", "vardenafil", "avanafil", "alprostadil", "dapoxetina"],
     conditions: [
       "Déficit de testosterona / Hipogonadismo de inicio tardío",
@@ -1654,8 +1630,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Testículo", "Próstata", "Pene"],
     source: "EAU Sexual and Reproductive Health 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "papaverina",
@@ -1667,7 +1641,7 @@ export const drugs: Drug[] = [
       "Disfunción eréctil refractaria, en combinación (Bimix/Trimix), no en monoterapia: la papaverina fue el primer fármaco usado para inyecciones intracavernosas; actualmente se usa sobre todo en terapia combinada por su alta incidencia de efectos adversos como monoterapia",
       "La biterapia papaverina-fentolamina y la triterapia que añade alprostadil se emplean en pacientes refractarios o con respuesta insuficiente a la monoterapia",
     ],
-    dose: "Intracavernosa 20-80 mg por inyección como monoterapia (no licenciada para DE). En mezclas (dosis por inyección): Bimix (papaverina 7,5-45 mg más fentolamina 0,25-1,5 mg) y Trimix (papaverina 8-16 mg más fentolamina 0,2-0,4 mg más alprostadil 10-20 µg). (La ficha de Fentolamina da las mismas mezclas como concentraciones en mg/mL, Tabla 5.5.) UroCampus recoge 15-60 mg por vía intracavernosa, con erección en 5-10 minutos. En nuestro medio, si no hay alprostadil, se puede emplear trimix formulado como combinación bajo rigurosa titulación y supervisión, con consentimiento informado — adaptación local documentada, no corrección.",
+    dose: "Intracavernosa 20-80 mg por inyección como monoterapia (no licenciada para DE). En mezclas (dosis por inyección): Bimix (papaverina 7,5-45 mg más fentolamina 0,25-1,5 mg) y Trimix (papaverina 8-16 mg más fentolamina 0,2-0,4 mg más alprostadil 10-20 µg). UroCampus recoge 15-60 mg por vía intracavernosa, con erección en 5-10 minutos. Si no hay alprostadil, puede emplearse trimix formulado bajo titulación y supervisión estrechas, con consentimiento informado.",
     adverse: [
       "Elevación de enzimas hepáticas, priapismo y fibrosis",
       "Mayor riesgo de priapismo y de fibrosis de los cuerpos cavernosos con el uso crónico",
@@ -1679,13 +1653,16 @@ export const drugs: Drug[] = [
       "NUNCA papaverina como monoterapia (no licenciada para DE, alta incidencia de efectos adversos)",
       "Aplican las contraindicaciones generales de la terapia intracavernosa (riesgo de priapismo, trastornos hemorrágicos) recogidas en Alprostadil",
     ],
-    interactions: [],
+    interactions: [
+      "Hipotensión aditiva con antihipertensivos, nitratos, inhibidores de la PDE5, alfabloqueantes y alcohol.",
+      "No mezclar con otros vasodilatadores intracavernosos fuera de una preparación protocolizada; aumenta el riesgo de priapismo y fibrosis.",
+      "Precaución con fármacos que prolongan el QT y en pacientes con cardiopatía isquémica o hipotensión.",
+      "El uso intracavernoso no sustituye el tratamiento con fármacos aprobados; evitar en trastornos hemorrágicos.",
+    ],
     relatedDrugs: ["alprostadil", "fentolamina", "sildenafil", "tadalafil", "vardenafil", "avanafil"],
     conditions: ["Disfunción eréctil", "Priapismo"],
     organs: ["Pene"],
     source: "EAU Sexual and Reproductive Health 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "fentolamina",
@@ -1697,7 +1674,7 @@ export const drugs: Drug[] = [
       "Disfunción eréctil refractaria, solo en combinación (Bimix/Trimix): la fentolamina se administra casi siempre asociada",
       "Actualmente no licenciada para el tratamiento de la DE",
     ],
-    dose: "Intracavernosa 0,5 mg/mL como monoterapia (concentración; eficacia pobre). En mezclas (concentraciones): Bimix (papaverina + fentolamina 0,5 mg/mL) y Trimix (papaverina + fentolamina 1 mg/mL + alprostadil 10 µg/mL). (La ficha de Papaverina da las mismas mezclas como dosis por inyección en mg/µg, § 5.6.7.2 texto.) UroCampus recoge fentolamina 0,5-2 mg, casi siempre asociada. También en combinación transuretral (Invicorp: péptido intestinal vasoactivo 25 µg más mesilato de fentolamina 1-2 mg), eficaz en > 80 % de hombres con DE, con baja incidencia de dolor peneano y riesgo prácticamente despreciable de priapismo.",
+    dose: "Intracavernosa 0,5 mg/mL como monoterapia (concentración; eficacia pobre). En mezclas (concentraciones): Bimix (papaverina + fentolamina 0,5 mg/mL) y Trimix (papaverina + fentolamina 1 mg/mL + alprostadil 10 µg/mL). UroCampus recoge fentolamina 0,5-2 mg, casi siempre asociada. También en combinación transuretral (Invicorp: péptido intestinal vasoactivo 25 µg más mesilato de fentolamina 1-2 mg), eficaz en > 80 % de hombres con DE, con baja incidencia de dolor peneano y riesgo prácticamente despreciable de priapismo.",
     adverse: [
       "Hipotensión sistémica, taquicardia refleja, congestión nasal y malestar gastrointestinal",
       "Eficacia pobre como monoterapia; abandonada como monoterapia",
@@ -1706,13 +1683,16 @@ export const drugs: Drug[] = [
       "No licenciada para el tratamiento de la DE como monoterapia",
       "Aplican las contraindicaciones generales de la terapia intracavernosa (riesgo de priapismo, trastornos hemorrágicos) recogidas en Alprostadil",
     ],
-    interactions: [],
+    interactions: [
+      "Hipotensión aditiva con antihipertensivos, nitratos, inhibidores de la PDE5, alfabloqueantes y alcohol.",
+      "Puede producir taquicardia refleja; precaución con arritmias, cardiopatía isquémica e hipertensión no controlada.",
+      "No combinar con otros vasodilatadores intracavernosos fuera de una mezcla protocolizada; vigilar la aparición de priapismo.",
+      "Precaución con fármacos que prolongan el QT y con simpaticomiméticos.",
+    ],
     relatedDrugs: ["alprostadil", "papaverina", "sildenafil", "tadalafil", "vardenafil", "avanafil"],
     conditions: ["Disfunción eréctil"],
     organs: ["Pene"],
     source: "EAU Sexual and Reproductive Health 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "fosfomicina",
@@ -1759,15 +1739,13 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Riñón", "Próstata", "Uretra"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "nitrofurantoina",
     name: "Nitrofurantoína",
     familyId: "antibioticos",
     commercial: "Furantoína",
-    mechanism: "Antibiótico bacteriostático. La sustancia es reducida por enzimas bacterianas (nitrorreductasas) a metabolitos reactivos que dañan el ADN bacteriano y otras enzimas. UroCampus la describe como bactericida que interfiere con la síntesis de la pared bacteriana, la respiración celular y el metabolismo glucídico, y que se elimina concentrada por la orina — véase «Discrepancias detectadas» (bacteriostática frente a bactericida).",
+    mechanism: "Antibiótico bacteriostático. La sustancia es reducida por enzimas bacterianas (nitrorreductasas) a metabolitos reactivos que dañan el ADN bacteriano y otras enzimas. UroCampus la describe como bactericida que interfiere con la síntesis de la pared bacteriana, la respiración celular y el metabolismo glucídico, y que se elimina concentrada por la orina",
     indications: [
       "Tratamiento de la infección urinaria no complicada en mujeres; tratamiento y profilaxis de infecciones urinarias recurrentes (complicadas)",
       "La EAU 2025 la recomienda como tratamiento de primera línea de la cistitis en mujeres (nitrofurantoína monohidrato/macrocristales 100 mg dos veces al día durante cinco días)",
@@ -1775,7 +1753,7 @@ export const drugs: Drug[] = [
       "En el embarazo: puede considerarse (no en caso de déficit de glucosa-6-fosfato deshidrogenasa ni al final del embarazo)",
       "No debe emplearse en la pielonefritis ni en la prostatitis, porque no alcanza el parénquima ni la próstata; la EAU 2025 lo prohíbe expresamente en pielonefritis",
     ],
-    dose: "Cistitis no complicada: 100 mg de liberación sostenida 1-0-1 o 1-1-1 durante 5–7 días; la dosis máxima diaria en niños y adultos no debe superar 5 mg/kg de peso corporal. La EAU 2025 precisa: macrocristales 50–100 mg cuatro veces al día durante 5 días; monohidrato/macrocristales 100 mg b.i.d. durante 5 días; macrocristales de liberación prolongada 100 mg b.i.d. durante 5 días — véase «Discrepancias detectadas» (duración 5–7 días frente a 5 días). UroCampus coincide con 100 mg/12 h durante 5 días. ITU complicada (trastornos del vaciado vesical, portadores de sonda): 100 mg 1-0-1 o 0-0-1 durante un máximo de 14 días; dosis máxima diaria 2–3 mg/kg. Profilaxis de ITU recurrentes: 50–100 mg de liberación sostenida 0-0-1 durante un máximo de seis meses; dosis máxima diaria 1,2 mg/kg. En el embarazo: nitrofurantoína 50 mg/12 h durante 5–7 días; profilaxis nocturna 50 mg por la noche hasta la semana 37.",
+    dose: "Cistitis no complicada: 100 mg de liberación sostenida 1-0-1 o 1-1-1 durante 5–7 días; la dosis máxima diaria en niños y adultos no debe superar 5 mg/kg de peso corporal. La EAU 2025 precisa: macrocristales 50–100 mg cuatro veces al día durante 5 días; monohidrato/macrocristales 100 mg b.i.d. durante 5 días; macrocristales de liberación prolongada 100 mg b.i.d.. UroCampus coincide con 100 mg/12 h durante 5 días. ITU complicada (trastornos del vaciado vesical, portadores de sonda): 100 mg 1-0-1 o 0-0-1 durante un máximo de 14 días; dosis máxima diaria 2–3 mg/kg. Profilaxis de ITU recurrentes: 50–100 mg de liberación sostenida 0-0-1 durante un máximo de seis meses; dosis máxima diaria 1,2 mg/kg. En el embarazo: nitrofurantoína 50 mg/12 h durante 5–7 días; profilaxis nocturna 50 mg por la noche hasta la semana 37.",
     adverse: [
       "Posibles efectos adversos significativos, sobre todo durante el tratamiento prolongado; suspender inmediatamente si aparecen disnea, tos, fiebre, colestasis o síntomas neurológicos; durante el tratamiento prolongado son necesarios hemograma y pruebas de función hepática y renal",
       "Pulmón: neumonía intersticial e incluso fibrosis pulmonar mortal; suspender de inmediato si aparecen síntomas respiratorios",
@@ -1788,7 +1766,7 @@ export const drugs: Drug[] = [
     ],
     contraindications: [
       "Hipersensibilidad a la nitrofurantoína; insuficiencia renal con FG inferior a 45 ml/min; enzimas hepáticas anormales; déficit de glucosa-6-fosfato deshidrogenasa; polineuropatía; embarazo en el último trimestre, prematuros y lactantes hasta el final del tercer mes de vida",
-      "La EAU 2025 la contraindica con FG estimado inferior a 30 ml/min/1,73 m², por acumulación del fármaco con más efectos adversos y menor recuperación del tracto urinario, con riesgo de fracaso terapéutico — véase «Discrepancias detectadas» (umbral 45 frente a 30 ml/min; manda EAU)",
+      "La EAU 2025 la contraindica con FG estimado inferior a 30 ml/min/1,73 m², por acumulación del fármaco con más efectos adversos y menor recuperación del tracto urinario, con riesgo de fracaso terapéutico",
     ],
     interactions: [
       "La acidificación de la orina con metionina aumenta la eficacia de la nitrofurantoína",
@@ -1805,8 +1783,6 @@ export const drugs: Drug[] = [
     conditions: ["Cistitis aguda", "Cistitis de repetición", "Bacteriuria asintomática"],
     organs: ["Vejiga"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "ciprofloxacino",
@@ -1861,8 +1837,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Vejiga", "Próstata", "Uréter", "Testículo", "Uretra"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "levofloxacino",
@@ -1878,7 +1852,7 @@ export const drugs: Drug[] = [
       "En epididimitis aguda con bajo riesgo de gonorrea: levofloxacino 500 mg v.o. una vez al día durante 10–14 días",
       "En uretritis por Chlamydia trachomatis, segunda línea solo en casos seleccionados: levofloxacino 500 mg v.o. q.d. durante 7 días",
     ],
-    dose: "Oral o intravenosa: 250–500 mg de levofloxacino una vez al día, según la gravedad de la infección y la sensibilidad del patógeno. Reducción de dosis en insuficiencia renal: tras la primera dosis mencionada, la dosis diaria se reduce a la mitad en los días siguientes si el FG está entre 50–20 ml/min; si el FG es inferior a 20 ml/min o en pacientes en diálisis, las dosis diarias posteriores se reducen a la cuarta parte, o se administra la mitad de la dosis diaria solo cada dos días. Pielonefritis (EAU 2025): dosis estándar 500 mg oral q.d. durante 5 días; dosis alta 500 mg oral b.i.d.; parenteral: dosis estándar 500 mg oral q.d.; dosis alta 500 mg oral b.i.d. Prostatitis aguda bacteriana: levofloxacino 500 mg IV en la fase empírica. Prostatitis crónica bacteriana: levofloxacino 500 mg/24 h durante 4–6 semanas. Epididimitis: 500 mg/24 h durante 10–14 días. Campbell (contraste) recoge levofloxacino 750 mg durante 5 días como alternativa razonable en pielonefritis ambulatoria — véase «Discrepancias detectadas» (750 mg frente a 500 mg de la EAU; manda EAU).",
+    dose: "Oral o intravenosa: 250–500 mg de levofloxacino una vez al día, según la gravedad de la infección y la sensibilidad del patógeno. Reducción de dosis en insuficiencia renal: tras la primera dosis mencionada, la dosis diaria se reduce a la mitad en los días siguientes si el FG está entre 50–20 ml/min; si el FG es inferior a 20 ml/min o en pacientes en diálisis, las dosis diarias posteriores se reducen a la cuarta parte, o se administra la mitad de la dosis diaria solo cada dos días. Pielonefritis (EAU 2025): dosis estándar 500 mg oral q.d. durante 5 días; dosis alta 500 mg oral b.i.d.; parenteral: dosis estándar 500 mg oral q.d.; dosis alta 500 mg oral b.i.d. Prostatitis aguda bacteriana: levofloxacino 500 mg IV en la fase empírica. Prostatitis crónica bacteriana: levofloxacino 500 mg/24 h durante 4–6 semanas. Epididimitis: 500 mg/24 h durante 10–14 días. Campbell (contraste) recoge levofloxacino 750 mg durante 5 días como alternativa razonable en pielonefritis ambulatoria",
     adverse: [
       "Como los de la clase: numerosas advertencias (BfArM, EMA o FDA) por efectos adversos graves que pueden producir deterioro duradero y posiblemente irreversible",
       "Tubo digestivo: náuseas, vómitos, diarrea, colitis pseudomembranosa",
@@ -1906,8 +1880,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Vejiga", "Próstata", "Uréter", "Testículo", "Uretra"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "ofloxacino",
@@ -1951,8 +1923,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Vejiga", "Próstata", "Uréter", "Testículo", "Uretra"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "cotrimoxazol-trimetoprim-sulfametoxazol",
@@ -2004,8 +1974,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Riñón", "Próstata", "Uréter", "Testículo"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "gentamicina",
@@ -2023,7 +1991,7 @@ export const drugs: Drug[] = [
       "En uretritis gonocócica, la EAU 2025 recoge como alternativa gentamicina 240 mg IM en dosis única + azitromicina 2 g v.o. en dosis única; UroCampus cita el mismo esquema CDC 2021 para gonorrea con alergia grave a betalactámicos",
       "Campbell recoge el régimen de dosis única diaria de 5–7 mg/kg de gentamicina o tobramicina, con ajustes de intervalo posteriores según una concentración sérica y un nomograma",
     ],
-    dose: "3 mg/kg de peso corporal una vez al día IV en pacientes con función renal normal; la dosis máxima en infecciones graves y patógenos resistentes es de 6 mg/kg — véase «Discrepancias detectadas» (3 mg/kg frente a 5–7 mg/kg de Campbell y 6–7 mg/kg de la EAU en pielonefritis; manda EAU en ese contexto). En insuficiencia renal, es esencial reducir la dosis de las administraciones posteriores tras la primera dosis normal: 80 % de la dosis diaria con FG de 100–71 ml/min, 65 % con FG de 70–56 ml/min, 55 % con FG de 55–46 ml/min, 45 % con FG de 45–36 ml/min, 30 % con FG de 35–26 ml/min, 20 % con FG de 25–16 ml/min y solo 10 % por debajo. La monitorización del nivel valle de gentamicina (muestra de sangre tomada hacia el final del intervalo de dosificación) sirve para descartar acumulación; no debe superar 1 mg/l con dosis única diaria. La monitorización terapéutica es crítica en pacientes con función renal alterada, dosis altas o tratamiento de más de siete días. Solo es posible la administración parenteral (IV lenta en 30–60 min o IM).",
+    dose: "3 mg/kg de peso corporal una vez al día IV en pacientes con función renal normal; la dosis máxima en infecciones graves y patógenos resistentes es de 6 mg/kg En insuficiencia renal, es esencial reducir la dosis de las administraciones posteriores tras la primera dosis normal: 80 % de la dosis diaria con FG de 100–71 ml/min, 65 % con FG de 70–56 ml/min, 55 % con FG de 55–46 ml/min, 45 % con FG de 45–36 ml/min, 30 % con FG de 35–26 ml/min, 20 % con FG de 25–16 ml/min y solo 10 % por debajo. La monitorización del nivel valle de gentamicina (muestra de sangre tomada hacia el final del intervalo de dosificación) sirve para descartar acumulación; no debe superar 1 mg/l con dosis única diaria. La monitorización terapéutica es crítica en pacientes con función renal alterada, dosis altas o tratamiento de más de siete días. Solo es posible la administración parenteral (IV lenta en 30–60 min o IM).",
     adverse: [
       "Una dosis única diaria es menos tóxica que los regímenes de dosis múltiples",
       "Riñones: nefrotoxicidad reversible, caracterizada por proteinuria y elevación de creatinina",
@@ -2057,8 +2025,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Vejiga", "Uréter", "Testículo"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "cefalosporinas",
@@ -2076,9 +2042,9 @@ export const drugs: Drug[] = [
       "UroCampus: cefazolina (primera) y cefuroxima (segunda) son las opciones clásicas de profilaxis quirúrgica perioperatoria; ceftriaxona y cefotaxima son alternativas en la pielonefritis aguda febril; ceftazidima y cefepima añaden actividad antipseudomónica; las formulaciones orales (cefixima, ceftibuteno, cefpodoxima) permiten desescalar o completar pautas",
       "En el embarazo pueden considerarse penicilinas, cefalosporinas, fosfomicina y nitrofurantoína",
     ],
-    dose: "Cefazolina: adultos 1 g 1-1-1 IV; niños 60 mg/kg/día en tres dosis; reducción de dosis en enfermedad renal crónica. Cefuroxima: ITU en adultos 250–500 mg v.o. 1-0-1 o 1,5 g 1-1-1 IV; niños 25 mg/kg 1-1-1 IV; en insuficiencia renal con FG inferior a 20 ml/min: 0,75 g dos veces al día, y por debajo de 10 ml/min una vez al día 0,75 g. Cefotaxima: adultos 3–6 g/día (niños 50–100 mg/kg/día) en tres dosis; con FG inferior a 50 ml/min, la dosis diaria (tras la dosis inicial normal) se reduce al 50 %; con FG inferior a 10 ml/min, al 25 %. Ceftriaxona: 1–2 g una vez al día IV en adultos; niños 50–80 mg/kg; gonorrea: 500 mg IM o IV en dosis única — véase «Discrepancias detectadas» (500 mg frente a 1–2 g de la EAU 2025 en gonorrea; manda EAU). Ceftibuteno: adultos 400 mg 1-0-0; niños 9 mg/kg 1-0-0; reducir a la mitad con FG de 50–30 ml/min; con FG de 29–5 ml/min, solo la cuarta parte. Cefixima: adultos 200 mg 1-0-1 o 400 mg 1-0-0; niños 4 mg/kg 1-0-1 o 8 mg/kg 1-0-0; con insuficiencia renal grave (FG < 20 ml/min), limitar a 200 mg una vez al día. Cefpodoxima: adultos 100–200 mg 1-0-1; niños 4 mg/kg 1-0-1; con FG de 40–10 ml/min, limitar a una vez al día; con FG < 10 ml/min, una dosis cada dos días. Profilaxis quirúrgica (UroCampus): cefazolina 1 g IV (2 g en pacientes > 80 kg) en cirugía sin penetrar el tracto urinario. En ITU complicada (UroCampus): ceftriaxona 1 g/24 h o cefotaxima 1–2 g/8–12 h parenteral 24–48 h, luego oral con cefixima 400 mg/día, cefuroxima 500 mg/12 h o cefpodoxima 200 mg/12 h durante 10–14 días.",
+    dose: "Cefazolina: adultos 1 g 1-1-1 IV; niños 60 mg/kg/día en tres dosis; reducción de dosis en enfermedad renal crónica. Cefuroxima: ITU en adultos 250–500 mg v.o. 1-0-1 o 1,5 g 1-1-1 IV; niños 25 mg/kg 1-1-1 IV; en insuficiencia renal con FG inferior a 20 ml/min: 0,75 g dos veces al día, y por debajo de 10 ml/min una vez al día 0,75 g. Cefotaxima: adultos 3–6 g/día (niños 50–100 mg/kg/día) en tres dosis; con FG inferior a 50 ml/min, la dosis diaria (tras la dosis inicial normal) se reduce al 50 %; con FG inferior a 10 ml/min, al 25 %. Ceftriaxona: 1–2 g una vez al día IV en adultos; niños 50–80 mg/kg; gonorrea: 500 mg IM o IV en dosis única Ceftibuteno: adultos 400 mg 1-0-0; niños 9 mg/kg 1-0-0; reducir a la mitad con FG de 50–30 ml/min; con FG de 29–5 ml/min, solo la cuarta parte. Cefixima: adultos 200 mg 1-0-1 o 400 mg 1-0-0; niños 4 mg/kg 1-0-1 o 8 mg/kg 1-0-0; con insuficiencia renal grave (FG < 20 ml/min), limitar a 200 mg una vez al día. Cefpodoxima: adultos 100–200 mg 1-0-1; niños 4 mg/kg 1-0-1; con FG de 40–10 ml/min, limitar a una vez al día; con FG < 10 ml/min, una dosis cada dos días. Profilaxis quirúrgica (UroCampus): cefazolina 1 g IV (2 g en pacientes > 80 kg) en cirugía sin penetrar el tracto urinario. En ITU complicada (UroCampus): ceftriaxona 1 g/24 h o cefotaxima 1–2 g/8–12 h parenteral 24–48 h, luego oral con cefixima 400 mg/día, cefuroxima 500 mg/12 h o cefpodoxima 200 mg/12 h durante 10–14 días.",
     adverse: [
-      "Reacciones alérgicas desde exantema hasta anafilaxia: 1–4 %; el riesgo de alergia cruzada con la penicilina es de aproximadamente el 10 % — véase «Discrepancias detectadas» (UroCampus recoge ~1–2 % con cefalosporinas de segunda y tercera generación; manda EAU, que permite cefalosporina ante hipersensibilidad a penicilina salvo anafilaxia sistémica previa)",
+      "Reacciones alérgicas desde exantema hasta anafilaxia: 1–4 %; el riesgo de alergia cruzada con la penicilina es de aproximadamente el 10 %",
       "Efectos digestivos: náuseas y diarrea frecuentes, así como elevación de enzimas hepáticas; enterocolitis pseudomembranosa rara pero posible",
       "Raras pero potencialmente graves: convulsiones cerebrales, reacciones cutáneas graves, anafilaxia, nefritis intersticial, ictericia colestásica (especialmente ceftriaxona), anemia hemolítica y trombocitopenia",
     ],
@@ -2116,8 +2082,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Vejiga", "Uréter", "Próstata", "Uretra", "Testículo", "Pene"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "imipenem",
@@ -2131,7 +2095,7 @@ export const drugs: Drug[] = [
       "En ITU sistémica crítica u obstruida, se aconseja un carbapenémico (p.ej. imipenem 500 mg IV cada seis horas o meropenem 1 g IV cada ocho horas) para cubrir BLEE y Pseudomonas aeruginosa",
       "En gangrena de Fournier: imipenem-cilastatina dosis estándar 0,5 g IV q.i.d. en 30 minutos; dosis alta 1 g IV q.i.d. en 30 minutos",
     ],
-    dose: "Imipenem/cilastatina 500 mg/500 mg 1-1-1-1 (cada 6 horas) o 1000 mg/1000 mg 1-1-1 (cada 8 horas) en adultos, según la gravedad de la infección. Los niños reciben 15–25 mg/15–25 mg por kg de peso corporal cada 6 horas. Reducción de dosis en insuficiencia renal: imipenem/cilastatina 500 mg/500 mg cada 8 horas con FG de 60–30 ml/min, y 500 mg/500 mg cada 12 horas con FG de 30–15 ml/min — véase «Discrepancias detectadas» (UT da 1 g cada 8 h; la EAU da 1 g cada 6 h como dosis alta).",
+    dose: "Imipenem/cilastatina 500 mg/500 mg 1-1-1-1 (cada 6 horas) o 1000 mg/1000 mg 1-1-1 (cada 8 horas) en adultos, según la gravedad de la infección. Los niños reciben 15–25 mg/15–25 mg por kg de peso corporal cada 6 horas. Reducción de dosis en insuficiencia renal: imipenem/cilastatina 500 mg/500 mg cada 8 horas con FG de 60–30 ml/min, y 500 mg/500 mg cada 12 horas con FG de 30–15 ml/min",
     adverse: [
       "Frecuentes: diarrea, vómitos y náuseas",
       "Rara colitis pseudomembranosa",
@@ -2154,8 +2118,6 @@ export const drugs: Drug[] = [
     conditions: ["Pielonefritis", "ITU complicada", "Urosepsis", "ITU sistémica", "Gangrena de Fournier"],
     organs: ["Riñón", "Vejiga", "Uréter", "Próstata", "Testículo", "Pene"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "meropenem",
@@ -2192,7 +2154,6 @@ export const drugs: Drug[] = [
     conditions: ["Pielonefritis", "ITU complicada", "Urosepsis", "ITU sistémica", "Gangrena de Fournier"],
     organs: ["Riñón", "Vejiga", "Uréter", "Próstata", "Testículo", "Pene"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
   },
   {
     id: "penicilina",
@@ -2228,11 +2189,9 @@ export const drugs: Drug[] = [
       "doxiciclina",
       "azitromicina",
     ],
-    conditions: ["Sífilis . No es fármaco de ITU"],
+    conditions: ["Sífilis"],
     organs: ["Pene", "Uretra"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "amoxicilina-acido-clavulanico",
@@ -2282,8 +2241,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Riñón", "Próstata", "Uréter", "Testículo"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "pivmecilinam",
@@ -2297,7 +2254,7 @@ export const drugs: Drug[] = [
       "La EAU 2025 advierte: no usar nitrofurantoína, fosfomicina oral ni pivmecilinam para tratar la pielonefritis",
       "En epididimitis, la EAU 2025 cita un ECA en el que un ciclo de diez días de ciprofloxacino fue superior al pivampicilinam en varones > 40 años (el pivmecilinam no es tratamiento de epididimitis)",
     ],
-    dose: "200–400 mg de pivmecilinam 1-1-1 v.o. durante tres días. La dosis diaria en niños > 6 años es de 20–40 mg/kg dividida en tres dosis únicas, hasta un máximo de 1200 mg. La EAU 2025 precisa 400 mg t.i.d. durante 3–5 días. UroCampus coincide: pivmecilinam 400 mg/8 h durante 3–5 días (si está disponible). Campbell (contraste) recoge pivmecilinam 400 mg dos veces al día durante 3–7 días — véase «Discrepancias detectadas» (b.i.d. frente a t.i.d. de la EAU; manda EAU).",
+    dose: "200–400 mg de pivmecilinam 1-1-1 v.o. durante tres días. La dosis diaria en niños > 6 años es de 20–40 mg/kg dividida en tres dosis únicas, hasta un máximo de 1200 mg. La EAU 2025 precisa 400 mg t.i.d. durante 3–5 días. UroCampus coincide: pivmecilinam 400 mg/8 h durante 3–5 días (si está disponible). Campbell (contraste) recoge pivmecilinam 400 mg dos veces al día durante 3–7 días",
     adverse: [
       "Frecuentes: diarrea y náuseas, infección fúngica vaginal",
       "Ocasionalmente: colitis por Clostridioides difficile, reacciones alérgicas y disfunción hepática",
@@ -2322,8 +2279,6 @@ export const drugs: Drug[] = [
     conditions: ["Cistitis aguda"],
     organs: ["Vejiga"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "piperacilina-tazobactam",
@@ -2357,8 +2312,6 @@ export const drugs: Drug[] = [
     conditions: ["Pielonefritis", "ITU complicada", "Urosepsis", "Gangrena de Fournier"],
     organs: ["Riñón", "Vejiga", "Uréter", "Próstata", "Testículo", "Pene"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "doxiciclina",
@@ -2369,7 +2322,7 @@ export const drugs: Drug[] = [
     indications: [
       "Uretritis no gonocócica, infecciones por clamidia, epididimitis o prostatitis con sospecha de transmisión sexual, tratamiento de la sífilis (en caso de alergia a la penicilina), linfogranuloma venéreo, granuloma inguinal, profilaxis postexposición con doxiciclina (Doxy-PEP) frente a ITS",
       "La EAU 2025: en uretritis gonocócica sospechada, ceftriaxona 1–2 g IM o IV + doxiciclina 100 mg b.i.d. v.o. durante siete días como primera línea; en uretritis no gonocócica sin patógeno identificado, doxiciclina oral 100 mg dos veces al día durante siete días como primera línea; en Chlamydia trachomatis, doxiciclina 100 mg v.o. dos veces al día durante siete días; en Ureaplasma urealyticum como único agente causal de uretritis sintomática, doxiciclina 100 mg v.o. dos veces al día durante siete días",
-      "En prostatitis bacteriana crónica por patógenos intracelulares, macrólidos o tetraciclinas; la Tabla 12 de la EAU recoge doxiciclina 100 mg b.i.d. durante 10 días, solo para infecciones por C. trachomatis o micoplasmas — véase «Discrepancias detectadas» (10 días en la tabla frente a «al menos tres a cuatro semanas» en el texto de la misma guía y 4 semanas en UroCampus)",
+      "En prostatitis bacteriana crónica por patógenos intracelulares, macrólidos o tetraciclinas; la Tabla 12 de la EAU recoge doxiciclina 100 mg b.i.d. durante 10 días, solo para infecciones por C. trachomatis o micoplasmas",
       "En epididimitis aguda con bajo riesgo de gonorrea: doxiciclina 200 mg v.o. dosis inicial y luego 100 mg dos veces al día durante 10–14 días + trimetoprim-sulfametoxazol; con gonorrea probable: ceftriaxona 1000 mg IM o IV en dosis única + doxiciclina 200 mg inicial y luego 100 mg dos veces al día durante 10–14 días",
       "UroCampus coincide: en orquiepididimitis de tipo ETS, ceftriaxona 500 mg (o 1 g) IM en dosis única + doxiciclina 100 mg/12 h oral durante 10–14 días; en prostatitis crónica bacteriana, doxiciclina 100 mg/12 h durante 4 semanas",
     ],
@@ -2410,8 +2363,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Uretra", "Próstata", "Testículo", "Pene"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "azitromicina",
@@ -2450,8 +2401,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Uretra", "Próstata", "Testículo"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "metronidazol",
@@ -2471,7 +2420,7 @@ export const drugs: Drug[] = [
       "UroCampus coincide: en la gangrena de Fournier, piperacilina-tazobactam + clindamicina o metronidazol; y en profilaxis de cirugía con uso de intestino: tobramicina + metronidazol, o cefalosporina de 2ª/3ª generación (+ metronidazol si precisa)",
       "No tiene actividad frente a los uropatógenos aerobios convencionales",
     ],
-    dose: "Intravenosa: 0,5 g IV 1-0-1 o 1-1-1-1. Oral: 0,4 g 1-1-1 o 0,5 g 1-0-1. Es necesaria una reducción de dosis en pacientes con insuficiencia hepática o renal grave. Tratamiento de la tricomoniasis: metronidazol 1500–2000 mg v.o. en dosis única en varones; en mujeres, tratamiento durante siete días: 500 mg 1-0-1 v.o. — véase «Discrepancias detectadas» (la EAU 2025 indica dosis única de 1,5–2 g sin distinción por sexo; manda EAU).",
+    dose: "Intravenosa: 0,5 g IV 1-0-1 o 1-1-1-1. Oral: 0,4 g 1-1-1 o 0,5 g 1-0-1. Es necesaria una reducción de dosis en pacientes con insuficiencia hepática o renal grave. Tratamiento de la tricomoniasis: metronidazol 1500–2000 mg v.o. en dosis única en varones; en mujeres, tratamiento durante siete días: 500 mg 1-0-1 v.o.",
     adverse: [
       "Los efectos adversos graves son raros con la dosis indicada y duración de hasta una semana; con tratamientos más largos, el riesgo aumenta significativamente y hay evidencia de mayor riesgo mutagénico en experimentos con animales",
       "Tubo digestivo: frecuentes, trastornos del gusto, náuseas, vómitos, diarrea; rara, pancreatitis",
@@ -2507,8 +2456,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata", "Pene", "Vejiga", "Uretra"],
     source: "EAU Urological Infections 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "cisplatino",
@@ -2525,7 +2472,7 @@ export const drugs: Drug[] = [
       "En cáncer de próstata de variante agresiva / neuroendocrino (células pequeñas), en combinación con etopósido o docetaxel-carboplatino",
       "El HHA lo recoge como estándar disponible de neoadyuvancia en MIBC elegible para cisplatino y de primera línea metastásica (GC), y advierte no priorizar nunca la adyuvancia sobre la neoadyuvancia",
     ],
-    dose: "En BEP/PEI para tumores germinales: cisplatino 20 mg/m² los días 1–5, infusión corta de ~1 h, ciclos de 21 días. En combinación con gemcitabina para carcinoma urotelial: cisplatino 70 mg/m² el día 2, ciclos de 21 o 28 días; en MVAC: cisplatino 70 mg/m² el día 2, ciclo de 28 días. Esquema MVAC completo (ciclo de 28 días): metotrexato 30 mg/m² días 1, 15, 22; vinblastina 3 mg/m² días 2, 15, 22; doxorrubicina (Adriamicina) 30 mg/m² día 2; cisplatino 70 mg/m² día 2; pegfilgrastim 6 mg s.c. día 4; considerar ácido folínico 4 × 15 mg cada 6 h los días 2, 16, 23 en pacientes con mayor riesgo de toxicidad; 6 ciclos en metástasis si se tolera, 4 ciclos en neoadyuvancia/adyuvancia. ddMVAC (dosis densa, cada 2 semanas con G-CSF): 6 ciclos en el ensayo VESPER frente a 4 ciclos de GC cada 3 semanas; mayor respuesta patológica y, a 5 años en el subgrupo neoadyuvante, mejor SLP (HR 0,74) y SG (HR 0,71), a costa de más astenia y toxicidad gastrointestinal; el HHA detalla ddMVAC como metotrexato 30 mg/m² D1, vinblastina 3 mg/m² D2, doxorrubicina 30 mg/m² D2, cisplatino 70 mg/m² D2, G-CSF D4–11, cada 14 días × 6 ciclos. GC neoadyuvante/metastásico según el HHA: cisplatino 70 mg/m² IV D1 y gemcitabina 1.000 mg/m² IV D1 y D8, cada 21 días (3–4 ciclos neoadyuvantes; esquema clásico de von der Maase: cisplatino 70 mg/m² D2 y gemcitabina 1.000 mg/m² D1, 8, 15 cada 28 días) — véase «Discrepancias detectadas» (día 1 frente a día 2). Como alternativa a la dosis estándar de 70 mg/m² el día 1, se usan esquemas de dosis dividida de 35 mg/m² los días 1+8 o 1+2. En VIP de rescate testicular: cisplatino 20 mg/m² días 1–5; en TIP: 25 mg/m² días 2–5 (o 20 mg/m² días 1–5 en el esquema alternativo); en GIP: 20 mg/m² días 1–5; intervalo 21 días. En TIP de cáncer de pene: cisplatino 25 mg/m² días 1–3 (con paclitaxel 175 mg/m² día 1 e ifosfamida 1.200 mg/m² días 1–3), ciclo cada 3 semanas. Hidratación intravenosa antes y después para reducir la nefrotoxicidad: por ejemplo, 1.000 mL 6–12 h antes y 2.000 mL en las 6–12 h después; considerar manitol solo si la diuresis sigue por debajo de ~100–200 mL/h tras el cisplatino o en regímenes de dosis alta (> 60 mg/m²); objetivo de diuresis ≥ 100 mL/h con suplemento concomitante de magnesio.",
+    dose: "En BEP/PEI para tumores germinales: cisplatino 20 mg/m² los días 1–5, infusión corta de ~1 h, ciclos de 21 días. En combinación con gemcitabina para carcinoma urotelial: cisplatino 70 mg/m² el día 2, ciclos de 21 o 28 días; en MVAC: cisplatino 70 mg/m² el día 2, ciclo de 28 días. Esquema MVAC completo (ciclo de 28 días): metotrexato 30 mg/m² días 1, 15, 22; vinblastina 3 mg/m² días 2, 15, 22; doxorrubicina (Adriamicina) 30 mg/m² día 2; cisplatino 70 mg/m² día 2; pegfilgrastim 6 mg s.c. día 4; considerar ácido folínico 4 × 15 mg cada 6 h los días 2, 16, 23 en pacientes con mayor riesgo de toxicidad; 6 ciclos en metástasis si se tolera, 4 ciclos en neoadyuvancia/adyuvancia. ddMVAC (dosis densa, cada 2 semanas con G-CSF): 6 ciclos en el ensayo VESPER frente a 4 ciclos de GC cada 3 semanas; mayor respuesta patológica y, a 5 años en el subgrupo neoadyuvante, mejor SLP (HR 0,74) y SG (HR 0,71), a costa de más astenia y toxicidad gastrointestinal; el HHA detalla ddMVAC como metotrexato 30 mg/m² D1, vinblastina 3 mg/m² D2, doxorrubicina 30 mg/m² D2, cisplatino 70 mg/m² D2, G-CSF D4–11, cada 14 días × 6 ciclos. GC neoadyuvante/metastásico según el HHA: cisplatino 70 mg/m² IV D1 y gemcitabina 1.000 mg/m² IV D1 y D8, cada 21 días (3–4 ciclos neoadyuvantes; esquema clásico de von der Maase: cisplatino 70 mg/m² D2 y gemcitabina 1.000 mg/m² D1, 8, 15 cada 28 días) Como alternativa a la dosis estándar de 70 mg/m² el día 1, se usan esquemas de dosis dividida de 35 mg/m² los días 1+8 o 1+2. En VIP de rescate testicular: cisplatino 20 mg/m² días 1–5; en TIP: 25 mg/m² días 2–5 (o 20 mg/m² días 1–5 en el esquema alternativo); en GIP: 20 mg/m² días 1–5; intervalo 21 días. En TIP de cáncer de pene: cisplatino 25 mg/m² días 1–3 (con paclitaxel 175 mg/m² día 1 e ifosfamida 1.200 mg/m² días 1–3), ciclo cada 3 semanas. Hidratación intravenosa antes y después para reducir la nefrotoxicidad: por ejemplo, 1.000 mL 6–12 h antes y 2.000 mL en las 6–12 h después; considerar manitol solo si la diuresis sigue por debajo de ~100–200 mL/h tras el cisplatino o en regímenes de dosis alta (> 60 mg/m²); objetivo de diuresis ≥ 100 mL/h con suplemento concomitante de magnesio.",
     adverse: [
       "Altamente emetógeno: náuseas y vómitos inducidos por quimioterapia (agudos en horas; tardíos 1–5 días después); la profilaxis antiemética es obligatoria",
       "Pérdidas electrolíticas, sobre todo magnesio, calcio, potasio y fosfato",
@@ -2562,8 +2509,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Uréter", "Riñón", "Testículo", "Pene", "Próstata"],
     source: "Urology-Textbook · EAU MIBC 2025 · EAU Testicular Cancer 2025 · EAU Penile Cancer 2025 · EAU UTUC 2025 · Protocolos HHA 2026 · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "carboplatino",
@@ -2599,8 +2544,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Testículo", "Vejiga", "Uréter", "Riñón", "Próstata"],
     source: "Urology-Textbook · EAU UTUC 2025 · EAU MIBC 2025 · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "gemcitabina",
@@ -2631,7 +2574,13 @@ export const drugs: Drug[] = [
       "Hipersensibilidad a gemcitabina; infecciones graves activas no controladas; embarazo y lactancia",
       "Suspender gemcitabina si neutrófilos absolutos < 500/µL, neutropenia febril, plaquetas < 50.000/µL o toxicidades graves grado ≥ 3 como SHU, neumonitis, fallo hepático o fallo renal",
     ],
-    interactions: [],
+    interactions: [
+      "Mielosupresión aditiva con otros citotóxicos o radioterapia; ajustar dosis y vigilar hemograma.",
+      "Puede aumentar el efecto de warfarina; monitorizar INR durante el tratamiento.",
+      "Evitar vacunas vivas atenuadas durante la quimioterapia.",
+      "La radioterapia torácica concomitante aumenta el riesgo de neumonitis y toxicidad pulmonar.",
+      "Precaución con fármacos nefrotóxicos u ototóxicos, especialmente en combinación con cisplatino.",
+    ],
     relatedDrugs: ["cisplatino", "carboplatino", "docetaxel", "mitomicina-c", "ifosfamida", "etoposido"],
     conditions: [
       "Cáncer de vejiga músculo-invasivo",
@@ -2642,8 +2591,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Uréter", "Riñón", "Testículo"],
     source: "Urology-Textbook · EAU NMIBC 2025 · EAU Testicular Cancer 2025 · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "docetaxel",
@@ -2671,7 +2618,13 @@ export const drugs: Drug[] = [
     contraindications: [
       "Mal estado general; precaución tras radioterapia previa con radionúclidos; evidencia de deterioro hepático (bilirrubina elevada, o AST/ALT > 1,5 × LSN con fosfatasa alcalina > 2,5 × LSN); hipersensibilidad grave a docetaxel; neutropenia (< 1.500/µL); embarazo y lactancia",
     ],
-    interactions: [],
+    interactions: [
+      "Los inhibidores potentes de CYP3A4 (ketoconazol, itraconazol, claritromicina, ritonavir) aumentan la exposición y la toxicidad; evitar o reducir la dosis.",
+      "Los inductores de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducir la eficacia.",
+      "Mielosupresión aditiva con otros citotóxicos o radioterapia; vigilar neutrófilos.",
+      "Evitar vacunas vivas durante el tratamiento.",
+      "Precaución con fármacos hepatotóxicos y con sustratos de CYP3A4 de margen estrecho.",
+    ],
     relatedDrugs: ["cabazitaxel", "cisplatino", "carboplatino", "gemcitabina", "mitomicina-c"],
     conditions: [
       "Cáncer de próstata metastásico hormonosensible",
@@ -2681,8 +2634,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata", "Vejiga"],
     source: "Urology-Textbook · EAU Prostate Cancer 2025 · EAU NMIBC 2025 · EAU MIBC 2025 · Protocolos HHA 2026 · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "mitomicina-c",
@@ -2695,7 +2646,7 @@ export const drugs: Drug[] = [
       "La EAU 2025 recoge la instilación única de mitomicina C (junto a epirrubicina, pirarubicina o gemcitabina) como opción que reduce la recurrencia intravesical tras RTU, y la instilación intracavitaria precoz de mitomicina C tras cirugía del tracto urinario superior para reducir el riesgo de recurrencia vesical",
       "También se emplea como radiosensibilizante con 5-fluorouracilo en terapia trimodal de preservación vesical en MIBC seleccionado",
     ],
-    dose: "Para optimizar la actividad, alcalinizar la orina con bicarbonato sódico, con dosis la noche anterior y la mañana de la instilación; para lograr un tiempo de permanencia de 2 horas, el paciente debe beber solo pequeñas cantidades antes de la instilación. Quimioterapia intravesical: instilar 20–40 mg de mitomicina C por vía intravesical con sonda de un solo uso una vez por semana durante 6 semanas; valorar la respuesta sobre todo con cistoscopia y citología urinaria; si la quimioterapia intravesical es eficaz y bien tolerada, considerar mantenimiento con instilaciones mensuales de 20–40 mg hasta 1 año — véase «Discrepancias detectadas» (mantenimiento: UroCampus afirma que el mantenimiento mensual no ha demostrado un beneficio claro ). Profilaxis de recurrencia tras RTU: una única instilación intravesical de 40 mg de mitomicina C tras resección completa de un tumor vesical no músculo-invasivo, siempre que no haya perforación ni sangrado postoperatorio significativo que requiera irrigación. Profilaxis tras nefroureterectomía: una única instilación intravesical de 40 mg, siempre que se haya logrado un cierre vesical seguro. El HHA coincide: instilación única inmediata de mitomicina C 40 mg/40 mL (o epirrubicina 50–80 mg, o gemcitabina 1 g/100 mL) en las primeras 24 h y, a ser posible, en las primeras 2–6 h tras la RTU, con retención de 1–2 h; en inducción, 30–40 mg semanal × 6–8 con mantenimiento ≤ 1 año. UroCampus precisa la dosis única inmediata durante 30–60 min en las primeras 6 h tras la RTU, y la quimioterapia diferida iniciada 1–4 semanas tras la RTU con instilaciones semanales durante 6–8 semanas.",
+    dose: "Para optimizar la actividad, alcalinizar la orina con bicarbonato sódico, con dosis la noche anterior y la mañana de la instilación; para lograr un tiempo de permanencia de 2 horas, el paciente debe beber solo pequeñas cantidades antes de la instilación. Quimioterapia intravesical: instilar 20–40 mg de mitomicina C por vía intravesical con sonda de un solo uso una vez por semana durante 6 semanas; valorar la respuesta sobre todo con cistoscopia y citología urinaria; si la quimioterapia intravesical es eficaz y bien tolerada, considerar mantenimiento con instilaciones mensuales de 20–40 mg hasta 1 año Profilaxis de recurrencia tras RTU: una única instilación intravesical de 40 mg de mitomicina C tras resección completa de un tumor vesical no músculo-invasivo, siempre que no haya perforación ni sangrado postoperatorio significativo que requiera irrigación. Profilaxis tras nefroureterectomía: una única instilación intravesical de 40 mg, siempre que se haya logrado un cierre vesical seguro. El HHA coincide: instilación única inmediata de mitomicina C 40 mg/40 mL (o epirrubicina 50–80 mg, o gemcitabina 1 g/100 mL) en las primeras 24 h y, a ser posible, en las primeras 2–6 h tras la RTU, con retención de 1–2 h; en inducción, 30–40 mg semanal × 6–8 con mantenimiento ≤ 1 año. UroCampus precisa la dosis única inmediata durante 30–60 min en las primeras 6 h tras la RTU, y la quimioterapia diferida iniciada 1–4 semanas tras la RTU con instilaciones semanales durante 6–8 semanas.",
     adverse: [
       "La administración intravesical es en general bien tolerada (a diferencia de BCG intravesical); los efectos adversos locales y sistémicos graves son muy raros",
       "Frecuencia 1–10 %: polaquiuria, disuria y hematuria; reacciones alérgicas cutáneas",
@@ -2705,7 +2656,13 @@ export const drugs: Drug[] = [
     contraindications: [
       "No instilar por vía intravesical si hay perforación vesical, hematuria macroscópica persistente que requiera irrigación continua, o infección urinaria no tratada",
     ],
-    interactions: [],
+    interactions: [
+      "Por vía intravesical la absorción sistémica es mínima; no se han descrito interacciones sistémicas relevantes.",
+      "Evitar la instilación concomitante con otros agentes intravesicales o con BCG; respetar los intervalos del protocolo.",
+      "Con quimioterapia sistémica, mielosupresión aditiva; vigilar hemograma.",
+      "Precaución con doxorrubicina (aumento de cardiotoxicidad) y con fármacos nefrotóxicos.",
+      "Evitar vacunas vivas durante el tratamiento sistémico.",
+    ],
     relatedDrugs: ["gemcitabina", "docetaxel", "cisplatino"],
     conditions: [
       "Cáncer de vejiga no músculo-invasivo",
@@ -2714,8 +2671,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Uréter", "Riñón"],
     source: "Urology-Textbook · EAU NMIBC 2025 · EAU UTUC 2025 · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "bleomicina",
@@ -2728,7 +2683,7 @@ export const drugs: Drug[] = [
       "La EAU 2025 la incluye en BEP × 3 (buen pronóstico) y BEP × 4 (pronóstico intermedio y malo) en tumores germinales metastásicos, y en EP × 4 como alternativa cuando la bleomicina está contraindicada",
       "UroCampus recoge 2 ciclos de BEP en TCGNS estadio I de alto riesgo y 3–4 ciclos de BEP en enfermedad metastásica",
     ],
-    dose: "La dosis se basa en actividad biológica estandarizada, expresada en unidades internacionales (UI) o unidades USP o miligramos de bleomicina activa: 1.000 UI corresponden a 1 unidad (USP) y a 1 mg de bleomicina activa. Régimen BEP: bleomicina 30 unidades los días 1, 8 y 15 en bolo IV; un ciclo de BEP dura 21 días; dosis máxima 3–4 ciclos. Monitorización: creatinina sérica y FG antes de cada ciclo, ajustar dosis si FG < 50 mL/min; pruebas de función pulmonar basales y periódicas en pacientes de mayor riesgo o con síntomas respiratorios. La EAU advierte precaución con las dosis acumuladas de bleomicina, que no deben superar doce en total — véase «Discrepancias detectadas» (unidad no explicitada frente al límite en unidades del UT).",
+    dose: "La dosis se basa en actividad biológica estandarizada, expresada en unidades internacionales (UI) o unidades USP o miligramos de bleomicina activa: 1.000 UI corresponden a 1 unidad (USP) y a 1 mg de bleomicina activa. Régimen BEP: bleomicina 30 unidades los días 1, 8 y 15 en bolo IV; un ciclo de BEP dura 21 días; dosis máxima 3–4 ciclos. Monitorización: creatinina sérica y FG antes de cada ciclo, ajustar dosis si FG < 50 mL/min; pruebas de función pulmonar basales y periódicas en pacientes de mayor riesgo o con síntomas respiratorios. La EAU advierte precaución con las dosis acumuladas de bleomicina, que no deben superar doce en total",
     adverse: [
       "Los efectos más frecuentes afectan al tracto gastrointestinal; los más graves ocurren en los pulmones y afectan a ~10 % de los pacientes",
       "Pulmonares: neumonía subaguda o crónica (neumonía intersticial plasmocelular) con fibrosis; en 1 % de los tratados los efectos pulmonares son graves y potencialmente letales; factores de riesgo: edad avanzada, enfermedad pulmonar y dosis acumulada de bleomicina > 300 mg; signos y síntomas: tos, disnea y fiebre; diagnóstico por radiografía o TC de tórax y pruebas de función pulmonar; ante los primeros signos de neumonía intersticial, está contraindicado continuar la bleomicina",
@@ -2746,8 +2701,6 @@ export const drugs: Drug[] = [
     conditions: ["Tumores germinales de testículo metastásicos", "Tumores germinales extragonadales"],
     organs: ["Testículo"],
     source: "Urology-Textbook · EAU Testicular Cancer 2025 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "etoposido",
@@ -2782,8 +2735,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Testículo", "Vejiga", "Próstata"],
     source: "Urology-Textbook · EAU Testicular Cancer 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "cabazitaxel",
@@ -2796,7 +2747,7 @@ export const drugs: Drug[] = [
       "La EAU 2025 recomienda ofrecer cabazitaxel a pacientes previamente tratados con docetaxel (recomendación fuerte), y en particular a quienes progresaron en < 12 meses con terapia dirigida al receptor androgénico, donde es superior a un segundo ARPI (ensayo CARD)",
       "No se recomienda ni está aprobado como quimioterapia de primera línea en mCRPC (ensayo FIRSTANA, sin superioridad en SG frente a docetaxel)",
       "UroCampus lo recoge como segundo taxano en líneas posteriores tras docetaxel",
-      "El HHA lo recoge como ideal tras fallo a docetaxel, con G-CSF profiláctico (TROPIC: SG 15,1 frente a 12,7 meses; CARD: superior a un segundo ARPI en progresión rápida a ARPI), y como alternativa disponible en nuestro medio consigna, en ausencia de cabazitaxel, la reexposición a docetaxel solo en casos seleccionados con respuesta previa prolongada — adaptación local documentada, no corrección",
+      "El HHA lo recoge como ideal tras fallo a docetaxel, con G-CSF profiláctico (TROPIC: SG 15,1 frente a 12,7 meses; CARD: superior a un segundo ARPI en progresión rápida a ARPI), y como alternativa disponible en nuestro medio consigna, en ausencia de cabazitaxel, la reexposición a docetaxel solo en casos seleccionados con respuesta previa prolongada.",
     ],
     dose: "En TROPIC: cabazitaxel 25 mg/m² IV cada 3 semanas (más prednisona 10 mg/día), máximo 10 ciclos, frente a mitoxantrona 12 mg/m². El ensayo PROSELICA comparó 25 frente a 20 mg/m² cada 3 semanas: la SG con 20 mg/m² no fue inferior y los eventos adversos grado 3–4 fueron menos frecuentes (40 % frente a 55 %); la FDA modificó el prospecto para recomendar 20 mg/m² en la mayoría de pacientes con mCRPC, aunque 25 mg/m² sigue siendo opción razonable en pacientes seleccionados con menor riesgo de neutropenia; se recomienda soporte con factor de crecimiento. La EAU coincide: debe preferirse la dosis menor (20 mg/m²), y el cabazitaxel debe administrarse preferiblemente con G-CSF profiláctico y por médicos con experiencia en el manejo de neutropenia y sepsis. El HHA recoge cabazitaxel 20–25 mg/m² cada 3 semanas + prednisona + G-CSF profiláctico tras fallo a docetaxel. En el ensayo CARD, cabazitaxel frente a un segundo ARPI tras docetaxel y un ARPI: mediana de SG 13,6 frente a 11,0 meses (HR 0,64). En TROPIC, SG mediana 15,1 frente a 12,7 meses (HR 0,70), SLP 2,8 frente a 1,4 meses, respuesta PSA 39,2 % frente a 17,8 %.",
     adverse: [
@@ -2806,14 +2757,23 @@ export const drugs: Drug[] = [
       "La EAU recoge que los eventos adversos grado 3–4 asociados al tratamiento fueron significativamente más frecuentes con cabazitaxel, en particular hematológicos (68,2 % frente a 47,3 %) pero también no hematológicos (57,4 % frente a 39,8 %)",
       "UroCampus añade que requiere hemograma y perfil hepático previos y vigilancia de neutropenia y diarrea",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Neutrófilos ≤ 1.500/mm³.",
+      "Hipersensibilidad grave a cabazitaxel o a productos formulados con polisorbato 80.",
+      "Insuficiencia hepática grave (bilirrubina total > 3 veces el límite superior normal).",
+      "Embarazo y lactancia; no está indicado en mujeres.",
+    ],
+    interactions: [
+      "Evitar inhibidores potentes de CYP3A4 (ketoconazol, itraconazol, claritromicina, ritonavir, atazanavir, indinavir, nefazodona, nelfinavir, saquinavir, telitromicina, voriconazol); si son imprescindibles, reducir la dosis un 25 %.",
+      "Los inductores potentes de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducir la exposición y la eficacia.",
+      "Mielosupresión aditiva con otros citotóxicos o radioterapia; vigilar neutrófilos y usar G-CSF según protocolo.",
+      "Evitar vacunas vivas durante el tratamiento.",
+      "Precaución con fármacos hepatotóxicos y con sustratos de CYP3A4 de margen estrecho.",
+    ],
     relatedDrugs: ["docetaxel", "cisplatino", "carboplatino"],
     conditions: ["Cáncer de próstata metastásico resistente a la castración"],
     organs: ["Próstata"],
     source: "Campbell-Walsh-Wein 13.ª ed. · EAU Prostate Cancer 2025 · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "vinflunina",
@@ -2861,15 +2821,13 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Uréter", "Riñón", "Pene"],
     source: "Campbell-Walsh-Wein 13.ª ed. · EAU MIBC 2025 · EAU UTUC 2025 · EAU Penile Cancer 2025 · Urology-Textbook · UroCampus · SmPC de Javlor (EMA), consultado 17/11/2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "ifosfamida",
     name: "Ifosfamida",
     familyId: "quimioterapia",
     commercial: "Tronoxal",
-    mechanism: "Agente alquilante; su metabolito acroleína lesiona el urotelio. El corpus no detalla el mecanismo citotóxico molecular (alquilación del ADN) más allá de su clasificación como alquilante y del efecto de la acroleína sobre la vejiga.",
+    mechanism: "Agente alquilante que alquila el ADN, forma enlaces cruzados y roturas de cadena, con apoptosis celular; su metabolito acroleína lesiona el urotelio y puede causar cistitis hemorrágica.",
     indications: [
       "Tumores germinales de testículo en rescate/recidiva, en esquemas con cisplatino: VIP (etopósido-ifosfamida-cisplatino), VeIP (vinblastina-ifosfamida-cisplatino) y TIP (paclitaxel-ifosfamida-cisplatino); la EAU 2025 establece que los regímenes de elección en rescate son 4 ciclos de un régimen de tres fármacos con cisplatino e ifosfamida más un tercer fármaco —etopósido (VIP), paclitaxel (TIP) o potencialmente gemcitabina (GIP)— con soporte de G-CSF y por oncólogos experimentados, por el riesgo potencial de toxicidad hematológica letal",
       "Si la bleomicina está contraindicada, VIP en lugar de BEP en seminoma de pronóstico intermedio; VIP × 4 puede sustituir a BEP × 4 en pacientes con función pulmonar comprometida y en quienes se realizará cirugía torácica extensa para extirpar enfermedad residual",
@@ -2877,15 +2835,25 @@ export const drugs: Drug[] = [
       "UroCampus recoge la quimioterapia de rescate con esquemas basados en cisplatino e ifosfamida (PEI/VIP, TIP o VeIP) cuando los marcadores crecen tras dos ciclos de BEP",
       "Campbell recoge además ifosfamida en combinación con doxorrubicina y gemcitabina como terapia combinada alternativa en carcinoma urotelial metastásico",
     ],
-    dose: "En VIP de rescate testicular: ifosfamida 1,2 g/m² días 1–5 (con cisplatino 20 mg/m² días 1–5 y etopósido 75–100 mg/m² días 1–5), intervalo 21 días. En TIP de rescate testicular: ifosfamida 1,5 g/m² días 2–5 (con paclitaxel 250 mg/m² en infusión continua de 24 h el día 1 y cisplatino 25 mg/m² días 2–5); esquema alternativo: ifosfamida 1,2 g/m² días 1–5 (con paclitaxel 175 mg/m² día 1 en infusión de 3 h y cisplatino 20 mg/m² días 1–5); intervalo 21 días. En GIP: ifosfamida 1.200 mg/m² días 1–5 (con gemcitabina 1.000 mg/m² días 1 y 5 y cisplatino 20 mg/m² días 1–5). En TIP de cáncer de pene: ifosfamida 1.200 mg/m² días 1–3 (con paclitaxel 175 mg/m² día 1 y cisplatino 25 mg/m² días 1–3), ciclo cada 3 semanas. Protección urotelial: mesna (mercaptoetansulfonato sódico) a dosis equivalentes a la del alquilante (por ejemplo, 60 mg/kg v.o. o i.v.) neutraliza la acroleína y la excreta como tioéter inofensivo, reduciendo la toxicidad vesical; también se emplea diuresis forzada e hiperhidratación para diluir y eliminar rápidamente el metabolito; la ASCO recomienda mesna como uroprotector durante la quimioterapia con ifosfamida. Nota: en la Tabla 5 de la EAU las dosis de ifosfamida llevan asterisco sin nota al pie visible en la extracción; no se ha interpretado su significado.",
+    dose: "En VIP de rescate testicular: ifosfamida 1,2 g/m² días 1–5 (con cisplatino 20 mg/m² días 1–5 y etopósido 75–100 mg/m² días 1–5), intervalo 21 días. En TIP de rescate testicular: ifosfamida 1,5 g/m² días 2–5 (con paclitaxel 250 mg/m² en infusión continua de 24 h el día 1 y cisplatino 25 mg/m² días 2–5); esquema alternativo: ifosfamida 1,2 g/m² días 1–5 (con paclitaxel 175 mg/m² día 1 en infusión de 3 h y cisplatino 20 mg/m² días 1–5); intervalo 21 días. En GIP: ifosfamida 1.200 mg/m² días 1–5 (con gemcitabina 1.000 mg/m² días 1 y 5 y cisplatino 20 mg/m² días 1–5). En TIP de cáncer de pene: ifosfamida 1.200 mg/m² días 1–3 (con paclitaxel 175 mg/m² día 1 y cisplatino 25 mg/m² días 1–3), ciclo cada 3 semanas. Protección urotelial: mesna (mercaptoetansulfonato sódico) a dosis equivalentes a la del alquilante (por ejemplo, 60 mg/kg v.o. o i.v.) neutraliza la acroleína y la excreta como tioéter inofensivo, reduciendo la toxicidad vesical; también se emplea diuresis forzada e hiperhidratación para diluir y eliminar rápidamente el metabolito; la ASCO recomienda mesna como uroprotector durante la quimioterapia con ifosfamida. ",
     adverse: [
       "Cistitis hemorrágica por el metabolito acroleína, que lesiona el urotelio; afecta a un 2–4 % de los pacientes tratados (incidencia mayor en regímenes de altas dosis y en trasplante de progenitores hematopoyéticos); ciclofosfamida e ifosfamida tienen también efecto carcinogenético sobre la mucosa vesical",
       "VIP × 4 produjo mayor toxicidad hematológica y urológica que BEP × 4",
       "Los regímenes de rescate con ifosfamida conllevan riesgo potencial de toxicidad hematológica letal, por lo que deben usarse con soporte de G-CSF",
-      "No hay en el corpus una lista de efectos adversos propia de la ifosfamida más allá de lo anterior",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad a ifosfamida o a sus componentes.",
+      "Obstrucción del flujo urinario.",
+      "Mielosupresión grave no controlada, infección activa grave o insuficiencia renal/hepática grave sin ajuste.",
+      "Embarazo y lactancia; evitar en pacientes con cistitis hemorrágica grave previa.",
+    ],
+    interactions: [
+      "Los inductores de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden aumentar la formación de metabolitos neurotóxicos y nefrotóxicos; vigilar toxicidad.",
+      "Los inhibidores de CYP3A4 pueden reducir la activación de ifosfamida y su eficacia.",
+      "Puede aumentar el efecto de warfarina; monitorizar INR.",
+      "Nefrotoxicidad aditiva con cisplatino, aminoglucósidos, anfotericina B o AINE; hidratar y monitorizar función renal.",
+      "Mielosupresión aditiva con otros citotóxicos o radioterapia; evitar vacunas vivas.",
+    ],
     relatedDrugs: ["cisplatino", "etoposido", "gemcitabina", "bleomicina", "carboplatino"],
     conditions: [
       "Tumores germinales de testículo en recidiva/refractarios",
@@ -2894,8 +2862,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Testículo", "Pene", "Vejiga"],
     source: "EAU Testicular Cancer 2025 · EAU Penile Cancer 2025 · Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "sunitinib",
@@ -2939,8 +2905,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma renal metastásico"],
     organs: ["Riñón"],
     source: "Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · EAU Renal Cell Carcinoma 2025 · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "pazopanib",
@@ -2981,8 +2945,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma renal metastásico"],
     organs: ["Riñón"],
     source: "Urology-Textbook · EAU Renal Cell Carcinoma 2025 · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "axitinib",
@@ -3023,8 +2985,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma renal metastásico"],
     organs: ["Riñón"],
     source: "Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · EAU Renal Cell Carcinoma 2025 · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "cabozantinib",
@@ -3034,7 +2994,7 @@ export const drugs: Drug[] = [
     mechanism: "Inhibidor oral multitirocina quinasa que inhibe potentemente MET, VEGFR-1/-2/-3 y AXL; también inhibe RET, KIT, FLT3 y otras quinasas. Esta inhibición reduce la angiogénesis tumoral, la invasión y el potencial metastásico.",
     indications: [
       "Carcinoma renal metastásico: en combinación con nivolumab en primera línea (todos los grupos de riesgo) y en monoterapia (en primera línea seleccionada y tras terapia previa)",
-      "En CheckMate-9ER (nivolumab + cabozantinib), PFS 16 vs. 8 meses y supervivencia global 47 vs. 36 meses frente a sunitinib — véase «Discrepancias detectadas» (las cifras varían entre páginas UT)",
+      "En CheckMate-9ER (nivolumab + cabozantinib), PFS 16 vs. 8 meses y supervivencia global 47 vs. 36 meses frente a sunitinib",
       "Primera línea en monoterapia para pacientes de pronóstico intermedio o pobre con contraindicación a inhibidores de puntos de control (CABOSUN: PFS 9 vs. 5 meses frente a sunitinib)",
       "Segunda línea y posteriores tras terapia previa dirigida a VEGF (METEOR: mejor PFS y supervivencia global, 21 vs. 19 meses, frente a everolimus)",
       "La EAU 2025 recomienda ofrecer nivolumab o cabozantinib en CCR de células claras refractario a VEGFR tras una o dos líneas de terapia (recomendación fuerte) y ofrecer cabozantinib tras terapia dirigida a VEGF (recomendación fuerte)",
@@ -3067,8 +3027,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma renal metastásico"],
     organs: ["Riñón"],
     source: "Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · EAU Renal Cell Carcinoma 2025 · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "everolimus",
@@ -3090,14 +3048,23 @@ export const drugs: Drug[] = [
       "Toxicidad característica de los inhibidores de mTOR: astenia, estomatitis, hiperglucemia, dislipemia, proteinuria, neumonitis no infecciosa y elevado riesgo de complicaciones en heridas; exigen control metabólico y de signos respiratorios",
       "Para la clase mTOR: mucositis, fatiga, erupción, hiperglucemia, hipofosfatemia, hipercolesterolemia y complicaciones pulmonares, susceptibles de medidas médicas y/o de apoyo",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad grave a everolimus, a otros derivados de rapamicina o a los excipientes.",
+      "No se recomienda durante el embarazo ni la lactancia salvo indicación especializada.",
+      "Precaución en insuficiencia hepática grave; requiere ajuste de dosis y monitorización.",
+      "Evitar en pacientes con infecciones activas no controladas hasta su resolución.",
+    ],
+    interactions: [
+      "Evitar inhibidores potentes de CYP3A4 y P-gp (ketoconazol, itraconazol, claritromicina, ritonavir); con inhibidores moderados (eritromicina, fluconazol, diltiazem, verapamilo) reducir la dosis.",
+      "Los inductores potentes de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) reducen la exposición; aumentar la dosis según ficha técnica.",
+      "Evitar el zumo de pomelo y las preparaciones que lo contengan.",
+      "Puede potenciar el angioedema de los IECA; vigilar si se combinan.",
+      "Evitar vacunas vivas durante el tratamiento.",
+    ],
     relatedDrugs: ["lenvatinib", "cabozantinib", "nivolumab", "belzutifan", "sunitinib", "sorafenib"],
     conditions: ["Carcinoma renal metastásico"],
     organs: ["Riñón"],
     source: "Urology-Textbook · EAU Renal Cell Carcinoma 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "bevacizumab",
@@ -3117,7 +3084,13 @@ export const drugs: Drug[] = [
     contraindications: [
       "Alergia, embarazo, un mes antes o después de cirugía mayor, hipertensión no controlada, aumento del riesgo de hemorragia (metástasis cerebrales, hemoptisis), síndrome nefrótico, alto riesgo de tromboembolismo arterial (tras infarto de miocardio, ictus)",
     ],
-    interactions: [],
+    interactions: [
+      "No se han descrito interacciones farmacocinéticas clínicamente relevantes.",
+      "Anticoagulantes, antiagregantes y AINE aumentan el riesgo de hemorragia; monitorizar.",
+      "Con otros antiangiogénicos o inhibidores de tirosina cinasa puede aumentar la toxicidad aditiva (hipertensión, proteinuria, tromboembolia).",
+      "Evitar vacunas vivas durante la quimioterapia concomitante.",
+      "Precaución con fármacos nefrotóxicos por el riesgo de proteinuria y daño renal.",
+    ],
     relatedDrugs: [
       "sunitinib",
       "pazopanib",
@@ -3130,8 +3103,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma renal metastásico"],
     organs: ["Riñón"],
     source: "Urology-Textbook · EAU Renal Cell Carcinoma 2025",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "sorafenib",
@@ -3150,8 +3121,19 @@ export const drugs: Drug[] = [
       "Perfil comparable al de otros agentes de esta clase: hipertensión, fatiga, erupción, síndrome mano-pie y diarrea",
       "En el ensayo AXIS, el sorafenib se comparó con axitinib en segunda línea (PFS mediana 4,7 vs. 6,7 meses)",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad grave a sorafenib o a los excipientes.",
+      "No usar en combinación con carboplatino y paclitaxel en pacientes con cáncer de pulmón escamoso (indicación no urológica).",
+      "Embarazo y lactancia; valorar riesgo/beneficio.",
+      "Precaución en insuficiencia hepática o renal grave, hipertensión no controlada y riesgo hemorrágico.",
+    ],
+    interactions: [
+      "Evitar inductores potentes de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) y neomicina; reducen la exposición.",
+      "Precaución con inhibidores de CYP3A4 (ketoconazol, itraconazol, claritromicina) y con sustratos de CYP3A4 de margen estrecho.",
+      "Puede aumentar la exposición a docetaxel y doxorrubicina; vigilar toxicidad.",
+      "Monitorizar INR si se combina con warfarina.",
+      "Evitar vacunas vivas durante el tratamiento.",
+    ],
     relatedDrugs: [
       "sunitinib",
       "pazopanib",
@@ -3164,8 +3146,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma renal metastásico"],
     organs: ["Riñón"],
     source: "Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · EAU Renal Cell Carcinoma 2025",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "olaparib",
@@ -3199,7 +3179,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "Urology-Textbook · EAU Prostate Cancer 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026 · UroCampus",
-    full: true,
   },
   {
     id: "niraparib",
@@ -3231,7 +3210,6 @@ export const drugs: Drug[] = [
     conditions: ["Cáncer de próstata metastásico resistente a la castración con mutación BRCA1/2"],
     organs: ["Próstata"],
     source: "Urology-Textbook · EAU Prostate Cancer 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026 · UroCampus",
-    full: true,
   },
   {
     id: "talazoparib",
@@ -3263,7 +3241,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "Urology-Textbook · EAU Prostate Cancer 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026 · UroCampus",
-    full: true,
   },
   {
     id: "pembrolizumab",
@@ -3282,7 +3259,7 @@ export const drugs: Drug[] = [
     adverse: [
       "Eventos adversos inmunomediados que pueden aparecer hasta cinco meses después de la última dosis",
       "Según la gravedad, suspender o discontinuar pembrolizumab e iniciar corticosteroides (habitualmente metilprednisolona 1–3 mg/kg/día), seguidos de descenso gradual",
-      "Ver el perfil por sistema de órganos en la ficha de efectos adversos de inhibidores de puntos de control",
+      "Perfil de efectos adversos similar al del resto de inhibidores de puntos de control",
       "En EV+P, los eventos adversos de grado 3–5 fueron comparables a la quimioterapia y la tasa de discontinuación por eventos adversos fue del 35 % vs. 19 %",
       "En adyuvancia renal, los eventos adversos de grado III–V fueron del 32 % frente al 18 % con placebo y aproximadamente el 21 % interrumpió el tratamiento por toxicidad",
     ],
@@ -3302,8 +3279,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Vejiga"],
     source: "Urology-Textbook · EAU MIBC 2025 · EAU Renal Cell Carcinoma 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "nivolumab",
@@ -3313,7 +3288,7 @@ export const drugs: Drug[] = [
     mechanism: "Anticuerpo monoclonal dirigido contra el receptor de muerte celular programada 1 (PD-1). Al inhibir este punto de control inmunitario, el nivolumab potencia la inmunidad mediada por linfocitos T contra el cáncer avanzado.",
     indications: [
       "Carcinoma renal metastásico: primera línea en combinación con cabozantinib (todos los grupos de riesgo) y en combinación con ipilimumab en pacientes de mal pronóstico; segunda línea en monoterapia",
-      "En CheckMate-9ER (nivolumab + cabozantinib), mejoría de la PFS (17 vs. 8 meses; HR 0,51), tasa de respuesta global (56 % vs. 27 %), respuesta completa (8 % vs. 5 %) y supervivencia global (HR 0,60; la página UT de terapia dirigida del CCR cifra la supervivencia global en 47 vs. 37 meses ) frente a sunitinib",
+      "En CheckMate-9ER (nivolumab + cabozantinib), mejoría de la PFS (17 vs. 8 meses; HR 0,51), tasa de respuesta global (56 % vs. 27 %), respuesta completa (8 % vs. 5 %) y supervivencia global (HR 0,60; la página UT de terapia dirigida del CCR cifra la supervivencia global en 47 vs. 37 meses) frente a sunitinib",
       "En CheckMate-214 (nivolumab + ipilimumab), supervivencia global superior frente a sunitinib en riesgo intermedio y pobre (56 vs. 38 meses a 5 años), con fuerte actividad en CCR sarcomatoide",
       "Segunda línea tras fracaso de TKI: mejoría de PFS, respuesta (RC + RP: 25 % vs. 5 %) y supervivencia global (25 vs. 20 meses) frente a everolimus, con menos efectos adversos",
       "Carcinoma urotelial metastásico: primera línea en combinación con quimioterapia cisplatino-gemcitabina; segunda línea tras quimioterapia con platino; adyuvancia tras cistectomía",
@@ -3322,11 +3297,11 @@ export const drugs: Drug[] = [
       "La EAU 2025 recomienda ofrecer nivolumab o cabozantinib en CCR de células claras refractario a VEGFR tras una o dos líneas (recomendación fuerte) y considerar cisplatino/gemcitabina + nivolumab como alternativa a GC seguida de mantenimiento con avelumab en pacientes no elegibles para EV",
       "En nuestro medio: nivolumab adyuvante 240 mg IV cada 2 semanas o 480 mg cada 4 semanas, hasta 1 año, en alto riesgo tras cistectomía (CheckMate 274: DFS HR 0,70)",
     ],
-    dose: "Monoterapia: 240 mg cada dos semanas en infusión corta (unos 30 minutos) o 480 mg cada cuatro semanas (unos 60 minutos, según la práctica institucional). En combinación con ipilimumab (ver «Discrepancias detectadas»): según la EAU 2025 (CheckMate 214), nivolumab 3 mg/kg + ipilimumab 1 mg/kg IV cada 3 semanas, 4 dosis, seguido de nivolumab en monoterapia; mismo esquema en nuestro medio: ipilimumab 1 mg/kg IV cada 3 semanas × 4 dosis + nivolumab 3 mg/kg IV cada 3 semanas × 4 dosis, seguido de nivolumab 3 mg/kg (o 240 mg fijo) IV cada 2 semanas en mantenimiento. En combinación con cisplatino-gemcitabina (CheckMate 901): nivolumab 360 mg IV el día 1 cada 3 semanas hasta 6 ciclos, seguido de mantenimiento con nivolumab 480 mg IV cada 4 semanas hasta progresión. En combinación con cabozantinib: nivolumab 240 mg IV cada 2 semanas + cabozantinib 40 mg v.o. al día.",
+    dose: "Monoterapia: 240 mg cada dos semanas en infusión corta (unos 30 minutos) o 480 mg cada cuatro semanas (unos 60 minutos, según la práctica institucional). En combinación con ipilimumab: según la EAU 2025 (CheckMate 214), nivolumab 3 mg/kg + ipilimumab 1 mg/kg IV cada 3 semanas, 4 dosis, seguido de nivolumab en monoterapia; mismo esquema en nuestro medio: ipilimumab 1 mg/kg IV cada 3 semanas × 4 dosis + nivolumab 3 mg/kg IV cada 3 semanas × 4 dosis, seguido de nivolumab 3 mg/kg (o 240 mg fijo) IV cada 2 semanas en mantenimiento. En combinación con cisplatino-gemcitabina (CheckMate 901): nivolumab 360 mg IV el día 1 cada 3 semanas hasta 6 ciclos, seguido de mantenimiento con nivolumab 480 mg IV cada 4 semanas hasta progresión. En combinación con cabozantinib: nivolumab 240 mg IV cada 2 semanas + cabozantinib 40 mg v.o. al día.",
     adverse: [
       "Eventos adversos inmunomediados que pueden aparecer hasta cinco meses después de la última dosis",
       "Según la gravedad, suspender o discontinuar e iniciar corticosteroides (habitualmente metilprednisolona 1–3 mg/kg/día), seguidos de descenso gradual",
-      "Ver el perfil por sistema de órganos en la ficha de efectos adversos de inhibidores de puntos de control",
+      "Perfil de efectos adversos similar al del resto de inhibidores de puntos de control",
       "En CheckMate 901, eventos adversos de grado 3–5 del 62 % vs. 52 % con quimioterapia sola",
     ],
     contraindications: [
@@ -3345,8 +3320,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Vejiga"],
     source: "Urology-Textbook · EAU Renal Cell Carcinoma 2025 · EAU MIBC 2025 · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "atezolizumab",
@@ -3365,7 +3338,7 @@ export const drugs: Drug[] = [
     adverse: [
       "Eventos adversos inmunomediados que pueden aparecer hasta cinco meses después de la última dosis",
       "Según la gravedad, suspender o discontinuar e iniciar corticosteroides (habitualmente metilprednisolona 1–3 mg/kg/día), seguidos de descenso gradual",
-      "Ver el perfil por sistema de órganos en la ficha de efectos adversos de inhibidores de puntos de control",
+      "Perfil de efectos adversos similar al del resto de inhibidores de puntos de control",
     ],
     contraindications: [
       "Embarazo y lactancia; pérdida de beneficio clínico o progresión inequívoca de la enfermedad; eventos adversos inmunomediados de grado 4; eventos adversos persistentes de grado 2/3 pese a interrupción del tratamiento y corticosteroides",
@@ -3379,8 +3352,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma urotelial metastásico"],
     organs: ["Vejiga"],
     source: "Urology-Textbook · EAU MIBC 2025 · EAU Renal Cell Carcinoma 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "avelumab",
@@ -3404,14 +3375,21 @@ export const drugs: Drug[] = [
       "En JAVELIN Bladder 100, más eventos adversos de grado ≥ 3 en el grupo avelumab (47,2 %) que en el grupo control (25,2 %)",
       "Aplica además el perfil de clase de los inhibidores de puntos de control (ver ficha de efectos adversos de inhibidores de puntos de control)",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad grave a avelumab o a los excipientes.",
+      "No hay contraindicaciones absolutas adicionales en la ficha técnica; valorar riesgo/beneficio en embarazo, lactancia e infecciones activas.",
+      "Precaución en pacientes con enfermedades autoinmunes, trasplante de órgano sólido o neumopatía intersticial.",
+    ],
+    interactions: [
+      "No se han realizado estudios formales de interacción.",
+      "Evitar vacunas vivas durante el tratamiento; las vacunas inactivadas pueden tener una respuesta reducida.",
+      "Los inmunosupresores pueden reducir la eficacia; los corticosteroides sistémicos se reservan para el manejo de eventos inmunorrelacionados.",
+      "No asociar a otros inhibidores de puntos de control fuera de ensayos clínicos por toxicidad inmunitaria aditiva.",
+    ],
     relatedDrugs: ["pembrolizumab", "nivolumab", "atezolizumab", "ipilimumab", "axitinib"],
     conditions: ["Carcinoma urotelial metastásico", "Carcinoma renal metastásico"],
     organs: ["Vejiga", "Riñón"],
     source: "EAU MIBC 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026 · Urology-Textbook · EAU Renal Cell Carcinoma 2025",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "ipilimumab",
@@ -3425,7 +3403,7 @@ export const drugs: Drug[] = [
       "La EAU 2025 confirma el beneficio en supervivencia global y tasa de respuesta objetiva de nivolumab + ipilimumab frente a sunitinib en CCR de células claras de riesgo intermedio y pobre sin tratamiento previo (nivel de evidencia 1b)",
       "En carcinoma urotelial, el estudio NABUCCO (ipilimumab + nivolumab preoperatorios) reportó una respuesta patológica completa del 46 %",
     ],
-    dose: "Inducción: nivolumab 3 mg/kg IV + ipilimumab 1 mg/kg IV cada 3 semanas, 4 dosis. Mantenimiento: continuar con nivolumab en monoterapia según la ficha técnica (p. ej., 240 mg cada 2 semanas o 480 mg cada 4 semanas) hasta progresión o toxicidad inaceptable. Mismo esquema en nuestro medio: ipilimumab 1 mg/kg IV cada 3 semanas × 4 dosis + nivolumab 3 mg/kg IV cada 3 semanas × 4 dosis, seguido de nivolumab 3 mg/kg (o 240 mg fijo) IV cada 2 semanas en mantenimiento. Ver «Discrepancias detectadas»: la ficha UT de nivolumab invierte las dosis; manda la EAU 2025 (nivolumab 3 mg/kg + ipilimumab 1 mg/kg).",
+    dose: "Inducción: nivolumab 3 mg/kg IV + ipilimumab 1 mg/kg IV cada 3 semanas, 4 dosis. Mantenimiento: continuar con nivolumab en monoterapia según la ficha técnica (p. ej., 240 mg cada 2 semanas o 480 mg cada 4 semanas) hasta progresión o toxicidad inaceptable. Mismo esquema en nuestro medio: ipilimumab 1 mg/kg IV cada 3 semanas × 4 dosis + nivolumab 3 mg/kg IV cada 3 semanas × 4 dosis, seguido de nivolumab 3 mg/kg (o 240 mg fijo) IV cada 2 semanas en mantenimiento.",
     adverse: [
       "Puede causar reacciones adversas inmunomediadas durante el tratamiento o tras su discontinuación",
       "Gastrointestinales: colitis inmunomediada y diarrea; riesgo de perforación intestinal si no se trata",
@@ -3450,8 +3428,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma renal metastásico", "Carcinoma urotelial músculo-invasivo"],
     organs: ["Riñón", "Vejiga"],
     source: "Urology-Textbook · EAU Renal Cell Carcinoma 2025 · EAU MIBC 2025 · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "bcg-intravesical",
@@ -3478,7 +3454,12 @@ export const drugs: Drug[] = [
       "La presencia de leucocituria, hematuria no visible o bacteriuria asintomática NO es contraindicación y no requiere profilaxis antibiótica",
       "El BCG se contraindica en el contexto de un urotelio perturbado por el riesgo de sepsis por BCG",
     ],
-    interactions: [],
+    interactions: [
+      "Evitar la instilación concomitante con otros agentes intravesicales, especialmente quimioterapia o interferón, por toxicidad aditiva.",
+      "Los inmunosupresores y corticosteroides sistémicos aumentan el riesgo de infección diseminada por BCG; valorar la suspensión.",
+      "Los antibióticos con actividad antituberculosa pueden inactivar el BCG; no administrarlos de forma concomitante salvo tratamiento de una complicación.",
+      "No se han descrito interacciones farmacocinéticas sistémicas relevantes.",
+    ],
     relatedDrugs: ["pembrolizumab", "nivolumab", "atezolizumab"],
     conditions: [
       "Cáncer de vejiga no músculo-invasivo de riesgo intermedio y alto",
@@ -3486,8 +3467,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Próstata"],
     source: "Urology-Textbook · EAU NMIBC 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "lenvatinib",
@@ -3507,8 +3486,18 @@ export const drugs: Drug[] = [
       "En CLEAR, los eventos adversos relacionados con el tratamiento de grado > III con lenvatinib + pembrolizumab fueron del 72 %; hubo muerte relacionada con el tratamiento en cuatro pacientes del brazo lenvatinib + pembrolizumab y en uno del brazo sunitinib",
       "Como TKI anti-VEGF, comparte la toxicidad de clase: hipertensión, diarrea, fatiga, disfunción tiroidea, proteinuria y síndrome mano-pie",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad grave a lenvatinib o a los excipientes.",
+      "No hay contraindicaciones absolutas adicionales en la ficha técnica; valorar riesgo/beneficio en embarazo, lactancia y pacientes con QT largo.",
+      "Precaución en hipertensión no controlada, insuficiencia hepática o renal grave, riesgo hemorrágico y eventos tromboembólicos.",
+    ],
+    interactions: [
+      "Evitar fármacos que prolongan el QT; lenvatinib puede prolongarlo.",
+      "Los inhibidores potentes de CYP3A4 (ketoconazol, itraconazol, claritromicina, ritonavir) pueden aumentar la exposición; los inductores (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducirla.",
+      "Monitorizar INR si se combina con warfarina.",
+      "Evitar vacunas vivas durante el tratamiento.",
+      "Precaución con fármacos que aumentan la presión arterial o la proteinuria.",
+    ],
     relatedDrugs: [
       "pembrolizumab",
       "everolimus",
@@ -3522,8 +3511,6 @@ export const drugs: Drug[] = [
     conditions: ["Carcinoma renal metastásico"],
     organs: ["Riñón"],
     source: "EAU Renal Cell Carcinoma 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "belzutifan",
@@ -3542,8 +3529,17 @@ export const drugs: Drug[] = [
       "Los eventos adversos de grado ≥ 3 más frecuentes fueron anemia (27 %) e hipoxia (16 %)",
       "Su perfil tóxico incluye anemia (frecuente y dosis dependiente), hipoxia, fatiga y elevación de creatinina que puede enmascarar la función renal; la anemia responde al ajuste de dosis y no suele requerir transfusiones fuera de grados altos",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad grave a belzutifan o a los excipientes.",
+      "No hay contraindicaciones absolutas adicionales en la ficha técnica; evitar el embarazo por toxicidad fetal y valorar riesgo/beneficio en lactancia.",
+      "Precaución en anemia, hipoxia, insuficiencia renal o hepática y enfermedad pulmonar intersticial.",
+    ],
+    interactions: [
+      "Los inhibidores de UGT2B17 o CYP2C19 aumentan la exposición a belzutifan; vigilar anemia e hipoxia y ajustar la dosis.",
+      "Belzutifan induce CYP3A4 y reduce la exposición de sustratos sensibles; evitar la combinación con fármacos para los que una disminución mínima de concentración implique pérdida de eficacia.",
+      "Puede reducir la eficacia de los anticonceptivos hormonales; recomendar un método no hormonal durante el tratamiento y hasta una semana después de la última dosis.",
+      "Evitar vacunas vivas durante el tratamiento.",
+    ],
     relatedDrugs: ["everolimus", "cabozantinib", "nivolumab", "sunitinib", "pazopanib", "axitinib", "lenvatinib"],
     conditions: [
       "Carcinoma renal metastásico de células claras",
@@ -3551,8 +3547,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón"],
     source: "EAU Renal Cell Carcinoma 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026 · UroCampus",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "rucaparib",
@@ -3573,14 +3567,21 @@ export const drugs: Drug[] = [
       "En TRITON II, tasa de respuesta objetiva confirmada del 43,5 % en pacientes con enfermedad medible y respuesta del PSA del 54,8 %",
       "Como inhibidor de PARP, comparte el perfil de clase: náuseas, fatiga y anemia; efectos raros: síndrome mielodisplásico y embolismo pulmonar",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad grave a rucaparib o a los excipientes.",
+      "No hay contraindicaciones absolutas adicionales en la ficha técnica; evitar el embarazo y la lactancia.",
+      "Precaución en insuficiencia renal o hepática, mielosupresión y antecedente de síndrome mielodisplásico o leucemia mieloide aguda.",
+    ],
+    interactions: [
+      "Rucaparib inhibe CYP1A2, CYP2C9, CYP2C19 y CYP3A4; puede aumentar la exposición de sustratos como warfarina, fenitoína, ciclosporina, midazolam o estatinas; monitorizar y ajustar.",
+      "Los inductores potentes de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducir la exposición a rucaparib.",
+      "Evitar vacunas vivas durante el tratamiento.",
+      "Mielosupresión aditiva con otros citotóxicos o radioterapia.",
+    ],
     relatedDrugs: ["olaparib", "niraparib", "talazoparib"],
     conditions: ["Cáncer de próstata metastásico resistente a la castración con mutación BRCA1/2 tras ARPI"],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Campbell-Walsh-Wein 13.ª ed. · UroCampus",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "leuprolida-leuprorelina",
@@ -3593,7 +3594,7 @@ export const drugs: Drug[] = [
       "La EAU añade su uso combinado con radioterapia en enfermedad localizada o localmente avanzada y como monoterapia en recidiva tras tratamiento local",
       "En el cáncer de próstata metastásico hormonosensible (mHSPC) la EAU ya no recomienda la monoterapia con ADT si el paciente es apto para tratamiento combinado",
     ],
-    dose: "11,25 mg por vía subcutánea cada 3 meses. La EAU describe los agonistas de la LHRH de acción prolongada como inyecciones de depósito mensuales, trimestrales, semestrales o anuales, sin dosis por fármaco. Al iniciar el agonista debe administrarse bicalutamida o flutamida durante 14 días para bloquear el brote inicial de testosterona; la EAU indica que el antiandrógeno se continúa habitualmente 4 semanas (véase «Discrepancias detectadas»).",
+    dose: "11,25 mg por vía subcutánea cada 3 meses. La EAU describe los agonistas de la LHRH de acción prolongada como inyecciones de depósito mensuales, trimestrales, semestrales o anuales, sin dosis por fármaco. Al iniciar el agonista debe administrarse bicalutamida o flutamida durante 14 días para bloquear el brote inicial de testosterona; la EAU indica que el antiandrógeno se continúa habitualmente 4 semanas.",
     adverse: [
       "Efectos de clase de los agonistas de la GnRH por hipogonadismo: osteoporosis, sofocos, disminución de la libido, pérdida de la función eréctil, deterioro de la memoria, debilidad física, fatiga, atrofia testicular, ginecomastia y depresión; exacerbación inicial de la testosterona con posible empeoramiento de los síntomas del cáncer avanzado; alergias o infecciones en el lugar de inyección; existen casos comunicados de adenomas hipofisarios",
       "Efectos generales de la privación androgénica: sofocos muy frecuentes, disfunción eréctil grave (> 80 %) y pérdida de libido (> 95 %), ginecomastia, deterioro cognitivo y episodios de depresión, pérdida de masa muscular y aumento de grasa corporal (2-4 % de peso en un año), riesgo aumentado de síndrome metabólico y diabetes tipo II, aumento de enfermedad cardiovascular (riesgo relativo de cardiopatía coronaria 1,2; infarto 1,1; arritmias mortales o muerte súbita 1,16), osteoporosis y fracturas (19 % frente a 13 % sin ADT a 5 años) y anemia normocrómica normocítica",
@@ -3603,7 +3604,12 @@ export const drugs: Drug[] = [
       "Tras castración quirúrgica; alergia e intolerancia; metástasis prostáticas en vértebras con compresión medular (mejores alternativas: antagonistas de la GnRH o castración quirúrgica)",
       "La EAU recomienda ofrecer antagonistas de la LHRH u orquiectomía a pacientes con complicaciones clínicas inminentes como compresión medular u obstrucción de la salida vesical",
     ],
-    interactions: [],
+    interactions: [
+      "No se han realizado estudios formales de interacción; no es un sustrato relevante de CYP450.",
+      "Los fármacos que aumentan la prolactina (antipsicóticos, metoclopramida) pueden reducir el número de receptores de GnRH y disminuir la eficacia.",
+      "Precaución con fármacos que prolongan el QT (antiarrítmicos clase IA/III, metadona, azoles, macrólidos) por el riesgo de prolongación del QT con la privación androgénica.",
+      "Los anticoagulantes y antiagregantes no interaccionan de forma directa, pero la ADT aumenta el riesgo cardiovascular y tromboembólico.",
+    ],
     relatedDrugs: [
       "goserelina",
       "buserelina",
@@ -3624,8 +3630,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata", "Testículo"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "goserelina",
@@ -3638,7 +3642,7 @@ export const drugs: Drug[] = [
       "Campbell recoge su uso neoadyuvante antes de prostatectomía radical en enfermedad T3-T4N0M0 (estudio SWOG 9109: 16 semanas de goserelina y flutamida)",
       "En mHSPC la EAU no recomienda la monoterapia con ADT si el paciente es apto para tratamiento combinado",
     ],
-    dose: "10,8 mg por vía subcutánea cada 3 meses; la misma dosis recoge el protocolo HHA: «goserelina 10,8 mg cada 3 meses». Al iniciar el agonista debe administrarse bicalutamida o flutamida durante 14 días para bloquear el brote inicial de testosterona; la EAU indica habitualmente 4 semanas (véase «Discrepancias detectadas»).",
+    dose: "10,8 mg por vía subcutánea cada 3 meses; la misma dosis recoge el protocolo HHA: «goserelina 10,8 mg cada 3 meses». Al iniciar el agonista debe administrarse bicalutamida o flutamida durante 14 días para bloquear el brote inicial de testosterona; la EAU indica habitualmente 4 semanas.",
     adverse: [
       "Efectos de clase de los agonistas de la GnRH por hipogonadismo: osteoporosis, sofocos, disminución de la libido, pérdida de la función eréctil, deterioro de la memoria, debilidad física, fatiga, atrofia testicular, ginecomastia y depresión; exacerbación inicial de la testosterona; alergias o infecciones en el lugar de inyección; casos comunicados de adenomas hipofisarios",
       "Efectos generales de la privación androgénica: sofocos muy frecuentes, disfunción eréctil grave (> 80 %), pérdida de libido (> 95 %), deterioro cognitivo y depresión, cambios metabólicos, aumento del riesgo cardiovascular, osteoporosis y fracturas, anemia normocrómica normocítica",
@@ -3646,7 +3650,12 @@ export const drugs: Drug[] = [
     contraindications: [
       "Tras castración quirúrgica; alergia e intolerancia; metástasis prostáticas en vértebras con compresión medular (mejores alternativas: antagonistas de la GnRH o castración quirúrgica)",
     ],
-    interactions: [],
+    interactions: [
+      "No se han descrito interacciones farmacocinéticas confirmadas.",
+      "Puede alterar las pruebas de función hipofisaria-gonadal durante el tratamiento y hasta 12 semanas después.",
+      "Los fármacos hiperprolactinemiantes pueden reducir la eficacia.",
+      "Precaución con fármacos que prolongan el QT.",
+    ],
     relatedDrugs: [
       "leuprolida-leuprorelina",
       "buserelina",
@@ -3663,8 +3672,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata", "Testículo"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "buserelina",
@@ -3675,18 +3682,21 @@ export const drugs: Drug[] = [
     indications: [
       "Las de la clase de agonistas de la GnRH: tratamiento hormonal del cáncer de próstata metastásico como alternativa a la castración quirúrgica; tratamiento conservador del cáncer de próstata localmente avanzado con STUI; neoadyuvante antes de braquiterapia; solo o en combinación con flutamida o bicalutamida para bloqueo androgénico máximo",
       "En mHSPC la EAU no recomienda la monoterapia con ADT si el paciente es apto para tratamiento combinado",
-      "No hay en el corpus ninguna indicación específica propia de la buserelina distinta de las de su clase",
     ],
-    dose: "9,45 mg por vía subcutánea cada 3 meses. Al iniciar el agonista debe administrarse bicalutamida o flutamida durante 14 días para bloquear el brote inicial de testosterona; la EAU indica habitualmente 4 semanas (véase «Discrepancias detectadas»).",
+    dose: "9,45 mg por vía subcutánea cada 3 meses. Al iniciar el agonista debe administrarse bicalutamida o flutamida durante 14 días para bloquear el brote inicial de testosterona; la EAU indica habitualmente 4 semanas.",
     adverse: [
       "Efectos de clase de los agonistas de la GnRH por hipogonadismo: osteoporosis, sofocos, disminución de la libido, pérdida de la función eréctil, deterioro de la memoria, debilidad física, fatiga, atrofia testicular, ginecomastia y depresión; exacerbación inicial de la testosterona; alergias o infecciones en el lugar de inyección; casos comunicados de adenomas hipofisarios",
       "Efectos generales de la privación androgénica: sofocos muy frecuentes, disfunción eréctil grave (> 80 %), pérdida de libido (> 95 %), deterioro cognitivo y depresión, cambios metabólicos, aumento del riesgo cardiovascular, osteoporosis y fracturas, anemia normocrómica normocítica",
-      "No hay en el corpus efectos adversos específicos propios de la buserelina",
     ],
     contraindications: [
       "Las de la clase: tras castración quirúrgica; alergia e intolerancia; metástasis prostáticas en vértebras con compresión medular (mejores alternativas: antagonistas de la GnRH o castración quirúrgica)",
     ],
-    interactions: [],
+    interactions: [
+      "No se han realizado estudios formales; no se esperan interacciones CYP450 relevantes.",
+      "Los fármacos hiperprolactinemiantes pueden reducir la eficacia.",
+      "Precaución con fármacos que prolongan el QT.",
+      "Puede interferir en las pruebas de función hipofisaria-gonadal.",
+    ],
     relatedDrugs: [
       "leuprolida-leuprorelina",
       "goserelina",
@@ -3703,8 +3713,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata", "Testículo"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · UroCampus",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "triptorelina",
@@ -3716,18 +3724,21 @@ export const drugs: Drug[] = [
       "Las de la clase de agonistas de la GnRH: tratamiento hormonal del cáncer de próstata metastásico como alternativa a la castración quirúrgica; tratamiento conservador del cáncer de próstata localmente avanzado con STUI; neoadyuvante antes de braquiterapia; solo o en combinación con flutamida o bicalutamida para bloqueo androgénico máximo",
       "El protocolo HHA la cita entre los análogos de GnRH como forma de castración («goserelina 10,8 mg cada 3 meses; leuprolide; triptorelina»)",
       "En mHSPC la EAU no recomienda la monoterapia con ADT si el paciente es apto para tratamiento combinado",
-      "No hay en el corpus ninguna indicación específica propia de la triptorelina distinta de las de su clase",
     ],
-    dose: "11,25 mg por vía subcutánea cada 3 meses. Al iniciar el agonista debe administrarse bicalutamida o flutamida durante 14 días para bloquear el brote inicial de testosterona; la EAU indica habitualmente 4 semanas (véase «Discrepancias detectadas»).",
+    dose: "11,25 mg por vía subcutánea cada 3 meses. Al iniciar el agonista debe administrarse bicalutamida o flutamida durante 14 días para bloquear el brote inicial de testosterona; la EAU indica habitualmente 4 semanas.",
     adverse: [
       "Efectos de clase de los agonistas de la GnRH por hipogonadismo: osteoporosis, sofocos, disminución de la libido, pérdida de la función eréctil, deterioro de la memoria, debilidad física, fatiga, atrofia testicular, ginecomastia y depresión; exacerbación inicial de la testosterona; alergias o infecciones en el lugar de inyección; casos comunicados de adenomas hipofisarios",
       "Efectos generales de la privación androgénica: sofocos muy frecuentes, disfunción eréctil grave (> 80 %), pérdida de libido (> 95 %), deterioro cognitivo y depresión, cambios metabólicos, aumento del riesgo cardiovascular, osteoporosis y fracturas, anemia normocrómica normocítica",
-      "No hay en el corpus efectos adversos específicos propios de la triptorelina",
     ],
     contraindications: [
       "Las de la clase: tras castración quirúrgica; alergia e intolerancia; metástasis prostáticas en vértebras con compresión medular (mejores alternativas: antagonistas de la GnRH o castración quirúrgica)",
     ],
-    interactions: [],
+    interactions: [
+      "No se han realizado estudios formales; la triptorelina no se metaboliza de forma relevante por CYP450.",
+      "Evitar fármacos hiperprolactinemiantes por posible reducción de los receptores de GnRH.",
+      "Precaución con fármacos que prolongan el QT.",
+      "Puede interferir en las pruebas de función hipofisaria-gonadal.",
+    ],
     relatedDrugs: [
       "leuprolida-leuprorelina",
       "goserelina",
@@ -3744,8 +3755,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata", "Testículo"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "degarelix",
@@ -3768,7 +3777,12 @@ export const drugs: Drug[] = [
     contraindications: [
       "Contraindicado (e inútil) tras castración quirúrgica; niños y mujeres; reacciones alérgicas graves tras la inyección; intervalo QT superior a 450 ms; concentraciones de transaminasas persistentemente elevadas (el doble del valor estándar); insuficiencia hepática y renal",
     ],
-    interactions: [],
+    interactions: [
+      "No se han realizado estudios formales; degarelix no es sustrato ni inductor/inhibidor del CYP450.",
+      "Precaución con fármacos que prolongan el QT (antiarrítmicos clase IA/III, metadona, azoles, macrólidos).",
+      "Puede interferir en las pruebas de función hipofisaria-gonadal.",
+      "No se esperan interacciones con anticoagulantes, pero la ADT aumenta el riesgo cardiovascular y tromboembólico.",
+    ],
     relatedDrugs: [
       "relugolix",
       "leuprolida-leuprorelina",
@@ -3785,8 +3799,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata", "Testículo"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "relugolix",
@@ -3805,13 +3817,16 @@ export const drugs: Drug[] = [
       "Hipogonadismo pronunciado con efectos similares a los del agonista de GnRH o la castración quirúrgica: osteoporosis, sofocos, disminución de la libido, pérdida de la función eréctil, deterioro de la memoria, debilidad física, fatiga, depresión, aumento del riesgo cardiovascular, transaminasas elevadas y ginecomastia",
       "En el ensayo pivotal de relugolix el riesgo de eventos cardiovasculares relevantes se redujo a la mitad frente a leuprorelina; la EAU confirma que la incidencia de eventos cardiovasculares adversos mayores fue significativamente menor con relugolix (análisis de seguridad preespecificado)",
       "La EAU añade que, tras suspender relugolix, la recuperación de testosterona fue más rápida y frecuente que tras leuprolida (54 % frente a 3,2 % a las 48 semanas; 86 frente a 112 días)",
-      "No hay en el corpus efectos adversos específicos propios del relugolix distintos de los de su clase, salvo los cardiovasculares citados",
     ],
     contraindications: [
-      "Las de la clase según UT (antagonistas de la GnRH): contraindicado (e inútil) tras castración quirúrgica; niños y mujeres; reacciones alérgicas graves tras la inyección; intervalo QT superior a 450 ms; concentraciones de transaminasas persistentemente elevadas (el doble del valor estándar); insuficiencia hepática y renal",
-      "Nota: la mención a «reacciones tras la inyección» corresponde al degarelix; el corpus no detalla contraindicaciones propias del relugolix oral",
+      "Contraindicado tras la castración quirúrgica (resulta inútil); en niños y mujeres; hipersensibilidad grave al fármaco; intervalo QT superior a 450 ms; transaminasas persistentemente elevadas (el doble del límite superior); insuficiencia hepática o renal graves",
     ],
-    interactions: [],
+    interactions: [
+      "Evitar los inhibidores orales de P-gp (ciclosporina, verapamilo, ketoconazol, claritromicina); si es imprescindible, administrar relugolix primero y separar al menos 6 horas.",
+      "Evitar la combinación con inductores potentes de P-gp y CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan); si no puede evitarse, aumentar la dosis a 240 mg/día.",
+      "Precaución con fármacos que prolongan el QT.",
+      "No se han descrito interacciones con anticoagulantes, pero la ADT aumenta el riesgo tromboembólico.",
+    ],
     relatedDrugs: ["degarelix", "leuprolida-leuprorelina", "goserelina", "buserelina", "triptorelina"],
     conditions: [
       "Cáncer de próstata metastásico hormonosensible",
@@ -3820,8 +3835,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata", "Testículo"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "enzalutamida",
@@ -3871,7 +3884,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
   },
   {
     id: "apalutamida",
@@ -3914,8 +3926,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "darolutamida",
@@ -3931,7 +3941,7 @@ export const drugs: Drug[] = [
       "En nmCRPC de alto riesgo recomienda ofrecer apalutamida, darolutamida o enzalutamida",
       "El protocolo HHA la recoge como ARPI de doblete (600 mg × 2/día) y de triplete con docetaxel (ARASENS) en mHSPC, y en nmCRPC de alto riesgo",
     ],
-    dose: "600 mg por vía oral 2 veces al día con las comidas (dosis diaria total: 1.200 mg). La adición de prednisolona es innecesaria. Reducir la dosis a 300 mg 1 vez al día en caso de efectos adversos renales o hepáticos. Suspender el tratamiento en pacientes con enfermedad progresiva o intolerancia persistente. La misma dosis (600 mg 2 veces/día) recogen el HHA y la tabla ARASENS de la EAU; Campbell ch166 indica por error 300 mg 2 veces al día (véase «Discrepancias detectadas»).",
+    dose: "600 mg por vía oral 2 veces al día con las comidas (dosis diaria total: 1.200 mg). La adición de prednisolona es innecesaria. Reducir la dosis a 300 mg 1 vez al día en caso de efectos adversos renales o hepáticos. Suspender el tratamiento en pacientes con enfermedad progresiva o intolerancia persistente. La misma dosis (600 mg 2 veces/día) recogen el HHA y la tabla ARASENS de la EAU; Campbell ch166 indica por error 300 mg 2 veces al día.",
     adverse: [
       "Los más frecuentes son fatiga (16 %)",
       "Aumento del riesgo cardiovascular (p.ej., insuficiencia cardíaca 2 % frente a 1 %)",
@@ -3964,15 +3974,13 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "abiraterona-acetato-de-abiraterona",
     name: "Abiraterona (acetato de abiraterona)",
     familyId: "hormonoterapia",
     commercial: "Zytiga.",
-    mechanism: "Inhibidor de CYP17 y, por tanto, inhibidor de la biosíntesis de testosterona. La EAU precisa que, al bloquear CYP17, disminuye significativamente el nivel intracelular de testosterona suprimiendo su síntesis a nivel suprarrenal y dentro de las células cancerosas (mecanismo intracrino), y que debe usarse junto con prednisona/prednisolona para prevenir el hiperaldosteronismo inducido por el fármaco. Farmacocinética: tomarla con comidas produce un aumento masivo de la absorción (hasta 17 veces la concentración máxima), por lo que debe evitarse la ingesta con alimentos; alto volumen de distribución y alta unión a proteínas plasmáticas; semivida de eliminación de 15 h; metabolismo hepático y eliminación biliar. Campbell indica que la biodisponibilidad aumenta hasta diez veces con las comidas y que una opción alternativa de dosificación es 250 mg/día con una comida baja en grasa (véase «Discrepancias detectadas»).",
+    mechanism: "Inhibidor de CYP17 y, por tanto, inhibidor de la biosíntesis de testosterona. La EAU precisa que, al bloquear CYP17, disminuye significativamente el nivel intracelular de testosterona suprimiendo su síntesis a nivel suprarrenal y dentro de las células cancerosas (mecanismo intracrino), y que debe usarse junto con prednisona/prednisolona para prevenir el hiperaldosteronismo inducido por el fármaco. Farmacocinética: tomarla con comidas produce un aumento masivo de la absorción (hasta 17 veces la concentración máxima), por lo que debe evitarse la ingesta con alimentos; alto volumen de distribución y alta unión a proteínas plasmáticas; semivida de eliminación de 15 h; metabolismo hepático y eliminación biliar. Campbell indica que la biodisponibilidad aumenta hasta diez veces con las comidas y que una opción alternativa de dosificación es 250 mg/día con una comida baja en grasa.",
     indications: [
       "Cáncer de próstata metastásico sensible a la castración (mHSPC/mCSPC) de alto riesgo (Gleason ≥ 8, al menos 3 metástasis óseas o metástasis viscerales): ADT estándar combinada con abiraterona 1.000 mg/día y prednisolona 5 mg/día mejora la supervivencia (83 % frente a 76 %) y prolonga la supervivencia libre de progresión (STAMPEDE, LATITUDE)",
       "Cáncer de próstata metastásico resistente a la castración (mCRPC), antes o después de quimioterapia: aumenta la supervivencia tras docetaxel (14,8 frente a 10,9 meses; COU-AA-301) y mejora el pronóstico antes de docetaxel (supervivencia libre de progresión 16,5 frente a 8,3 meses; COU-AA-302)",
@@ -3982,7 +3990,7 @@ export const drugs: Drug[] = [
       "El protocolo HHA la recoge como ideal en enfermedad localizada de alto riesgo/localmente avanzada con radioterapia (1.000 mg/día + prednisona 5 mg/día durante 2 años), en N1M0, y en mHSPC y mCRPC",
       "Combinación con olaparib: en el ensayo PROpel, olaparib + abiraterona en mCRPC de primera línea prolongó la supervivencia libre de progresión (25 frente a 17 meses) y la supervivencia global (42 frente a 35 meses); la combinación fue aprobada en Europa en 2023 como primera línea del mCRPC sin test genético, y en EE. UU. restringida a pacientes con mutación BRCA",
     ],
-    dose: "1.000 mg por vía oral 1 vez al día, con el estómago vacío: no consumir alimentos al menos 2 horas antes de la dosis ni durante al menos 1 hora después. Se prescribe junto con prednisolona 10 mg 1 vez al día según UT; la EAU y el HHA indican prednisona/prednisolona 5 mg/día (véase «Discrepancias detectadas»; manda la EAU: 5 mg/día).",
+    dose: "1.000 mg por vía oral 1 vez al día, con el estómago vacío: no consumir alimentos al menos 2 horas antes de la dosis ni durante al menos 1 hora después. Se prescribe junto con prednisolona 10 mg 1 vez al día según UT; la EAU y el HHA indican prednisona/prednisolona 5 mg/día.",
     adverse: [
       "Hepatotoxicidad con aumento de GOT y GPT; retención de líquidos con edema periférico por exceso de mineralocorticoides, con hipertensión e hipopotasemia; disminución de la densidad ósea; infección del tracto urinario",
       "La EAU señala que los eventos adversos relacionados con el exceso de mineralocorticoides y las anomalías de la función hepática fueron más frecuentes con abiraterona, pero en su mayoría de grado 1-2",
@@ -4014,7 +4022,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus · Protocolos HHA 2026",
-    full: true,
   },
   {
     id: "bicalutamida",
@@ -4026,7 +4033,7 @@ export const drugs: Drug[] = [
       "Privación androgénica con bicalutamida como opción terapéutica contra el cáncer de próstata en las siguientes situaciones: tratamiento hormonal del cáncer de próstata avanzado, solo o en combinación con un agonista de GnRH, antagonista de GnRH o castración quirúrgica; privación androgénica adyuvante del cáncer de próstata avanzado tras cirugía o radioterapia; ciclo corto de 14 días para prevenir el brote de testosterona al inicio del tratamiento con agonista de GnRH",
       "La EAU advierte que la monoterapia con antiandrógenos no esteroideos de generación anterior es menos eficaz que la ADT en supervivencia global, progresión clínica y fracaso del tratamiento, y generalmente no se recomienda; la combinación con antiandrógenos de generación anterior solo debe considerarse si no hay otras terapias combinadas disponibles",
       "La EAU recomienda la administración a corto plazo de un antagonista del receptor androgénico de generación anterior a pacientes M1 que inician un agonista de LHRH para reducir el riesgo de «flare-up», y no ofrecer monoterapia con antagonista del receptor androgénico a pacientes con enfermedad M1",
-      "El protocolo HHA la usa como alternativa disponible en nuestro medio cuando no se dispone de abiraterona o ARPI: bicalutamida 150 mg/día en enfermedad localizada de alto riesgo/localmente avanzada y en N1M0, y 50 mg/día en bloqueo androgénico total del mHSPC o como puente paliativo en mCRPC (adaptación local documentada)",
+      "El protocolo HHA la usa como alternativa disponible en nuestro medio cuando no se dispone de abiraterona o ARPI: bicalutamida 150 mg/día en enfermedad localizada de alto riesgo/localmente avanzada y en N1M0, y 50 mg/día en bloqueo androgénico total del mHSPC o como puente paliativo en mCRPC ",
     ],
     dose: "En la UE y algunos otros países hay dos dosis aprobadas para administración oral: 50 mg/día o 150 mg/día. En EE. UU. solo está aprobada la indicación de 50 mg. 150 mg/día se recomienda para monoterapia antiandrogénica (como alternativa a los moduladores de GnRH o la castración quirúrgica). 50 mg/día es suficiente para prevenir el brote de testosterona al inicio del tratamiento con agonista de GnRH o en combinación con agonista de GnRH (bloqueo androgénico máximo). La EAU recoge la misma pauta: dosis autorizada en combinación con bloqueo de LHRH de 50 mg/día y de 150 mg/día para monoterapia.",
     adverse: [
@@ -4068,8 +4075,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: [],
   },
   {
     id: "flutamida",
@@ -4080,7 +4085,7 @@ export const drugs: Drug[] = [
     indications: [
       "Privación androgénica con flutamida como opción terapéutica contra el cáncer de próstata en las siguientes situaciones: tratamiento hormonal del cáncer de próstata avanzado, solo o en combinación con un agonista de GnRH, antagonista de GnRH o castración quirúrgica; privación androgénica adyuvante del cáncer de próstata avanzado tras cirugía o radioterapia; ciclo corto de 14 días para prevenir el brote de testosterona al inicio del tratamiento con agonista de GnRH",
       "La EAU advierte que la monoterapia con antiandrógenos no esteroideos de generación anterior es menos eficaz que la ADT y generalmente no se recomienda, y que la combinación con antiandrógenos de generación anterior solo debe considerarse si no hay otras terapias combinadas disponibles; recomienda la administración a corto plazo de un antagonista del receptor androgénico de generación anterior a pacientes M1 que inician un agonista de LHRH para reducir el riesgo de «flare-up», y no ofrecer monoterapia con antagonista del receptor androgénico a pacientes con enfermedad M1",
-      "El protocolo HHA la usa como alternativa disponible en nuestro medio en bloqueo androgénico total del mHSPC (flutamida 250 mg × 3/día) y como puente en nmCRPC/mCRPC cuando no hay ARPI ni docetaxel (adaptación local documentada)",
+      "El protocolo HHA la usa como alternativa disponible en nuestro medio en bloqueo androgénico total del mHSPC (flutamida 250 mg × 3/día) y como puente en nmCRPC/mCRPC cuando no hay ARPI ni docetaxel ",
     ],
     dose: "250 mg 3 veces al día por vía oral (250 mg 1-1-1). La misma dosis recoge el HHA para el bloqueo androgénico total.",
     adverse: [
@@ -4099,7 +4104,13 @@ export const drugs: Drug[] = [
       "Debe suspenderse la flutamida ante elevación progresiva de transaminasas sin evidencia de metástasis hepáticas",
       "Otras contraindicaciones: alergia; no tiene indicaciones en mujeres ni en niños",
     ],
-    interactions: [],
+    interactions: [
+      "Aumenta el efecto de warfarina y otros anticoagulantes cumarínicos; monitorizar INR y ajustar la dosis.",
+      "Puede aumentar los niveles de teofilina y otros sustratos de CYP1A2; monitorizar.",
+      "Precaución con fármacos hepatotóxicos; vigilar transaminasas.",
+      "No asociar a otros antiandrógenos.",
+      "Puede aumentar la retención de líquidos con corticosteroides.",
+    ],
     relatedDrugs: [
       "bicalutamida",
       "ciproterona-acetato-de-ciproterona",
@@ -4117,8 +4128,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · UroCampus · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "ciproterona-acetato-de-ciproterona",
@@ -4135,10 +4144,21 @@ export const drugs: Drug[] = [
     adverse: [
       "Efectos secundarios compatibles con el estado hipogonadal: pérdida de la libido, disfunción eréctil y letargo",
       "Pueden presentarse complicaciones cardiovasculares graves (hasta el 10 % de los pacientes), ginecomastia (20 %) y casos raros de hepatotoxicidad fulminante",
-      "La EAU indica que los principales efectos farmacológicos son secundarios a la castración, mientras que los efectos no farmacológicos son la toxicidad cardiovascular (4-40 % para el acetato de ciproterona) y la hepatotoxicidad; añade que parece asociarse a una peor supervivencia global en comparación con los análogos de LHRH y que no hay beneficio en comparación con la flutamida (véase «Discrepancias detectadas» sobre la frecuencia de ginecomastia: la EAU la describe como «bastante rara» con antiandrógenos esteroideos, frente al 20 % de Campbell; manda la EAU)",
+      "La EAU indica que los principales efectos farmacológicos son secundarios a la castración, mientras que los efectos no farmacológicos son la toxicidad cardiovascular (4-40 % para el acetato de ciproterona) y la hepatotoxicidad; añade que parece asociarse a una peor supervivencia global en comparación con los análogos de LHRH y que no hay beneficio en comparación con la flutamida ",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad a ciproterona o a los excipientes.",
+      "Enfermedad hepática grave, antecedente de tumores hepáticos, síndrome de Dubin-Johnson o Rotor, e ictericia o prurito persistente durante un embarazo previo.",
+      "Tromboembolismo activo o antecedente de tromboembolismo grave.",
+      "Diabetes grave con alteraciones vasculares, anemia falciforme y depresión grave.",
+      "Embarazo y lactancia; no está indicado en mujeres en esta ficha.",
+    ],
+    interactions: [
+      "Los inhibidores potentes de CYP3A4 (ketoconazol, itraconazol, claritromicina, ritonavir) pueden aumentar la exposición a ciproterona; los inductores (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducirla.",
+      "Puede aumentar la resistencia a la insulina y alterar los requerimientos de antidiabéticos; monitorizar la glucemia.",
+      "Precaución con fármacos hepatotóxicos; vigilar transaminasas.",
+      "No asociar a otros antiandrógenos.",
+    ],
     relatedDrugs: [
       "bicalutamida",
       "flutamida",
@@ -4152,8 +4172,6 @@ export const drugs: Drug[] = [
     conditions: ["Cáncer de próstata metastásico", "Sofocos por privación androgénica"],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Urology-Textbook · Campbell-Walsh-Wein 13.ª ed. · UroCampus",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "citratos-alcalinos",
@@ -4198,7 +4216,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Uréter", "Vejiga"],
     source: "Urology-Textbook · EAU Urolithiasis 2025 · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
   },
   {
     id: "metionina",
@@ -4212,7 +4229,7 @@ export const drugs: Drug[] = [
       "La base de evidencia global es limitada y se apoya sobre todo en series de casos pequeñas no controladas o análisis retrospectivos; no hay ensayos aleatorizados controlados con placebo con variables clínicas relevantes (IQWiG 2010); en las guías urológicas actuales la metionina tiene solo un papel menor",
       "UroCampus la califica de indicación débil (grado de recomendación bajo en EAU) y de utilidad dudosa, considerable en pacientes muy seleccionados sin otra alternativa",
     ],
-    dose: "Metionina 500 mg 1–1–1 a 2–2–2 (dosis diaria total 1,5–3 g); pH urinario objetivo 5,7–6,2, con autocontrol regular; para prevenir la formación de cálculos de ácido úrico y de cistina, evitar una acidificación urinaria sostenida y marcada con valores de pH claramente por debajo de 5,5. EAU 2025: metionina 200–500 mg una a tres veces al día como alternativa al cloruro amónico (recomendación débil) para asegurar la acidificación urinaria; Tabla 4.6: L-metionina 600–1.500 mg/día. Manda EAU: 200–500 mg 1–3 veces/día (600–1.500 mg/día) — véase «Discrepancias detectadas».",
+    dose: "Metionina 500 mg 1–1–1 a 2–2–2 (dosis diaria total 1,5–3 g); pH urinario objetivo 5,7–6,2, con autocontrol regular; para prevenir la formación de cálculos de ácido úrico y de cistina, evitar una acidificación urinaria sostenida y marcada con valores de pH claramente por debajo de 5,5. EAU 2025: metionina 200–500 mg una a tres veces al día como alternativa al cloruro amónico (recomendación débil) para asegurar la acidificación urinaria; Tabla 4.6: L-metionina 600–1.500 mg/día. EAU 2025: 200–500 mg 1–3 veces/día (600–1.500 mg/día)",
     adverse: [
       "Gastrointestinales: náuseas, vómitos, dolor abdominal y dispepsia",
       "El aumento del catabolismo de la metionina puede elevar las concentraciones de homocisteína, lo que a largo plazo puede contribuir a un mayor riesgo cardiovascular",
@@ -4234,8 +4251,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Uréter", "Vejiga"],
     source: "Urology-Textbook · EAU Urolithiasis 2025 · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "pentosan-polisulfato-pps",
@@ -4264,8 +4279,6 @@ export const drugs: Drug[] = [
     conditions: ["Cistitis intersticial / Síndrome de dolor vesical"],
     organs: ["Vejiga"],
     source: "Urology-Textbook · UroCampus",
-    full: true,
-    gaps: [],
   },
   {
     id: "contraste-yodado",
@@ -4305,7 +4318,6 @@ export const drugs: Drug[] = [
     conditions: ["Diagnóstico por imagen del tracto urinario"],
     organs: ["Riñón", "Uréter", "Vejiga", "Uretra"],
     source: "Urology-Textbook · UroCampus",
-    full: true,
   },
   {
     id: "anestesicos-locales",
@@ -4322,7 +4334,7 @@ export const drugs: Drug[] = [
       "Campbell: los dos fármacos más usados son lidocaína y bupivacaína, con diferencias primarias en el inicio y la duración de la acción; la infiltración de anestésicos locales antes de la incisión disminuye la sensibilización y la conducción del nociceptor y reduce el dolor postoperatorio y las necesidades analgésicas",
       "Gel de lidocaína en cistouretroscopia flexible: un metaanálisis de 12 ECA con 1.549 varones encontró reducción significativa del dolor; los tiempos de permanencia deben superar los 5 minutos e idealmente ser de 10–20 minutos",
     ],
-    dose: "Ajustar siempre según peso corporal (mg/kg), lugar de inyección, comorbilidades y administración concomitante de epinefrina; las dosis máximas de la tabla son valores de referencia generales. Infiltración: lidocaína o mepivacaína al 1 %; en un adulto de 70 kg sin factores de riesgo, aproximadamente 3–5 mg/kg (unos 20–30 mL de lidocaína al 1 % sin epinefrina). Ropivacaína 0,2–0,5 % sin superar 3 mg/kg. Dosis máximas (sin/con epinefrina): lidocaína 4–5 / 7 mg/kg (duración 1–2 h); mepivacaína 4–5 / 7 mg/kg (1–2 h); bupivacaína 2 / 2,5–3 mg/kg (4–8 h); ropivacaína 3–4 / 4 mg/kg (4–8 h). UroCampus da valores orientativos algo distintos: lidocaína 4,5–5 mg/kg (máx. total ~300 mg), mepivacaína 7 mg/kg (máx. 400–500 mg), prilocaína 6–8 mg/kg, bupivacaína 2,5–3 mg/kg (máx. 150–225 mg) y ropivacaína 2–3 mg/kg (máx. ~200 mg); con adrenalina 1:200.000 o 1:100.000 la dosis máxima de lidocaína sube a ~7 mg/kg. Véase «Discrepancias detectadas» (la EAU no fija dosis máximas; se consignan ambas fuentes). Inicio y duración (UroCampus): lidocaína 2–5 min / 65–150 min; mepivacaína 2–5 min / 90–180 min; bupivacaína 4–10 min / 180–360 min; ropivacaína 5–15 min / 2–6 h.",
+    dose: "Ajustar siempre según peso corporal (mg/kg), lugar de inyección, comorbilidades y administración concomitante de epinefrina; las dosis máximas de la tabla son valores de referencia generales. Infiltración: lidocaína o mepivacaína al 1 %; en un adulto de 70 kg sin factores de riesgo, aproximadamente 3–5 mg/kg (unos 20–30 mL de lidocaína al 1 % sin epinefrina). Ropivacaína 0,2–0,5 % sin superar 3 mg/kg. Dosis máximas (sin/con epinefrina): lidocaína 4–5 / 7 mg/kg (duración 1–2 h); mepivacaína 4–5 / 7 mg/kg (1–2 h); bupivacaína 2 / 2,5–3 mg/kg (4–8 h); ropivacaína 3–4 / 4 mg/kg (4–8 h). UroCampus da valores orientativos algo distintos: lidocaína 4,5–5 mg/kg (máx. total ~300 mg), mepivacaína 7 mg/kg (máx. 400–500 mg), prilocaína 6–8 mg/kg, bupivacaína 2,5–3 mg/kg (máx. 150–225 mg) y ropivacaína 2–3 mg/kg (máx. ~200 mg); con adrenalina 1:200.000 o 1:100.000 la dosis máxima de lidocaína sube a ~7 mg/kg. Inicio y duración (UroCampus): lidocaína 2–5 min / 65–150 min; mepivacaína 2–5 min / 90–180 min; bupivacaína 4–10 min / 180–360 min; ropivacaína 5–15 min / 2–6 h.",
     adverse: [
       "Los efectos adversos surgen sobre todo por absorción sistémica o inyección intravascular inadvertida (toxicidad sistémica por anestésicos locales, LAST): de forma dependiente de la dosis causan vasodilatación, alteraciones del SNC y depresión de la contractilidad y la conducción miocárdicas",
       "SNC: síntomas excitatorios iniciales (mareo, náuseas, inquietud, parestesias peribucales, tinnitus, sabor metálico, convulsiones) — son signos precoces de toxicidad inminente y debe detenerse de inmediato la administración; con concentraciones plasmáticas crecientes, depresión del SNC con riesgo de pérdida de conciencia, depresión respiratoria y coma",
@@ -4338,7 +4350,13 @@ export const drugs: Drug[] = [
       "La epinefrina produce vasoconstricción local, prolonga la duración y reduce la absorción sistémica; las fichas técnicas suelen listar como contraindicado su uso en territorios de arteria terminal (pene, dedos) por riesgo de isquemia, pero estudios contemporáneos y revisiones sistemáticas muestran que la epinefrina a dosis bajas (1:100.000–1:200.000) puede usarse con seguridad en bloqueos digitales y del nervio del pene (p.ej. reparación de hipospadias) en pacientes sin compromiso vascular; dicho uso es fuera de ficha y debe seguir las guías de la especialidad y las políticas institucionales",
       "UroCampus: la adrenalina está contraindicada o requiere prudencia extrema en zonas acras (pene, glande, dedos), en cardiopatía isquémica o hipertensión mal controlada y no debe inyectarse nunca por vía intravenosa accidental; el bloqueo del nervio dorsal del pene es siempre sin adrenalina por el riesgo de isquemia del glande",
     ],
-    interactions: [],
+    interactions: [
+      "Toxicidad aditiva con otros anestésicos locales o antiarrítmicos clase I (lidocaína, mexiletina, flecainida); evitar la administración simultánea por varias vías.",
+      "La cimetidina y los inhibidores de CYP3A4 pueden aumentar los niveles de lidocaína; los inductores pueden reducirlos.",
+      "La epinefrina puede interactuar con IMAO, antidepresivos tricíclicos, betabloqueantes no selectivos, cocaína y alcaloides del ergot; evitar o monitorizar.",
+      "Precaución con fármacos que disminuyen el umbral convulsivo o prolongan el QT.",
+      "No mezclar con soluciones alcalinas ni con otros fármacos en la misma jeringa salvo compatibilidad documentada.",
+    ],
     relatedDrugs: ["pentosan-polisulfato-pps", "contraste-yodado"],
     conditions: [
       "Procedimientos urológicos",
@@ -4347,8 +4365,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Uretra", "Próstata", "Testículo", "Pene", "Riñón"],
     source: "Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: ["Interacciones"],
   },
   {
     id: "acido-zoledronico",
@@ -4373,8 +4389,19 @@ export const drugs: Drug[] = [
       "Los pacientes deben someterse a examen dental antes de iniciar el tratamiento, ya que el riesgo de necrosis mandibular aumenta con antecedentes de traumatismo, cirugía dental o infección dental",
       "Al suspender el tratamiento debe tenerse cuidado, ya que puede producirse resorción ósea de rebote",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad a ácido zoledrónico o a los excipientes.",
+      "Hipocalcemia no corregida.",
+      "Insuficiencia renal grave (aclaramiento de creatinina < 35 mL/min) para la indicación oncológica.",
+      "Embarazo y lactancia; no indicado en mujeres en edad fértil sin valoración especializada.",
+    ],
+    interactions: [
+      "Aminoglucósidos y calcitonina pueden aumentar la hipocalcemia; monitorizar el calcio.",
+      "Los diuréticos de asa aumentan el riesgo de hipocalcemia.",
+      "Precaución con fármacos nefrotóxicos (AINE, aminoglucósidos, cisplatino, anfotericina B); vigilar la función renal.",
+      "Evitar la asociación con otros bisfosfonatos.",
+      "Los antiácidos y suplementos de calcio pueden reducir la absorción si se administran por vía oral; la vía intravenosa no se ve afectada.",
+    ],
     relatedDrugs: ["denosumab"],
     conditions: [
       "Metástasis óseas del cáncer de próstata",
@@ -4383,8 +4410,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "denosumab",
@@ -4408,8 +4433,18 @@ export const drugs: Drug[] = [
       "Campbell: toxicidades comunes: fatiga, náuseas, hipofosfatemia e hipocalcemia (grado ≥ 3 en el 5 % de los pacientes); ONJ en aproximadamente el 2–4 % de los pacientes; uso profiláctico de suplementos de calcio y vitamina D muy recomendado",
       "Los pacientes deben someterse a examen dental antes de iniciar el tratamiento",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipocalcemia preexistente no corregida.",
+      "Embarazo; puede causar daño fetal.",
+      "Hipersensibilidad a denosumab o a los excipientes.",
+      "Precaución en insuficiencia renal grave, riesgo de osteonecrosis mandibular e infecciones.",
+    ],
+    interactions: [
+      "No se han descrito interacciones farmacocinéticas relevantes.",
+      "Evitar la asociación con otro inhibidor de RANKL o bisfosfonato por toxicidad ósea aditiva.",
+      "Corregir la hipocalcemia antes de iniciar; precaución con fármacos que reducen el calcio (diuréticos de asa, aminoglucósidos) y con suplementos de calcio y vitamina D.",
+      "Precaución con inmunosupresores por mayor riesgo de infección.",
+    ],
     relatedDrugs: ["acido-zoledronico"],
     conditions: [
       "Metástasis óseas del cáncer de próstata",
@@ -4418,8 +4453,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Próstata"],
     source: "EAU Prostate Cancer 2025 · Campbell-Walsh-Wein 13.ª ed. · Protocolos HHA 2026",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "alopurinol",
@@ -4433,7 +4466,7 @@ export const drugs: Drug[] = [
       "En hiperuricosuria con cálculos cálcicos, 100–300 mg/día",
       "En hiperuricemia e hiperuricosuria o gota asociada, y en formadores de cálculos úricos; en hiperuricosuria aislada (sin hiperuricemia) puede usarse a dosis bajas (100 mg/día) para reducir la nucleación sobre cristales de urato",
       "También en cálculos de 2,8-dihidroxiadenina y xantina (la formación puede prevenirse con alopurinol)",
-      "Campbell matiza: no debe ofrecerse de forma rutinaria como terapia de primera línea en pacientes con cálculos de ácido úrico, porque el pH urinario bajo es con diferencia el factor de riesgo predominante; los pacientes con hiperuricemia e hiperuricosuria (p.ej. gota primaria) pueden ser una excepción, y la AUA sugiere el alopurinol como terapia adyuvante cuando la alcalinización no tiene éxito o se siguen formando cálculos pese a alcalinización apropiada — véase «Discrepancias detectadas» (matiz de subgrupo, no conflicto directo)",
+      "Campbell matiza: no debe ofrecerse de forma rutinaria como terapia de primera línea en pacientes con cálculos de ácido úrico, porque el pH urinario bajo es con diferencia el factor de riesgo predominante; los pacientes con hiperuricemia e hiperuricosuria (p.ej. gota primaria) pueden ser una excepción, y la AUA sugiere el alopurinol como terapia adyuvante cuando la alcalinización no tiene éxito o se siguen formando cálculos pese a alcalinización apropiada",
     ],
     dose: "EAU 2025 (Tabla 4.6): alopurinol 100–300 mg/día; 100 mg en hiperuricosuria aislada; en niños 1–3 mg/kg/día; la insuficiencia renal exige corrección de dosis. UroCampus: 100–300 mg/día ajustado a la función renal, con inicio a dosis bajas; 100 mg/día hasta 300 mg/día en litiasis úrica. Campbell: dosis típica 300 mg/día por vía oral; se elimina principalmente por el riñón, por lo que se requiere reducción de dosis en función renal deficiente; Cuadro 99.1: alopurinol 300 mg VO al día.",
     adverse: [
@@ -4459,8 +4492,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Uréter"],
     source: "EAU Urolithiasis 2025 · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: [],
   },
   {
     id: "tiazidas",
@@ -4482,7 +4513,13 @@ export const drugs: Drug[] = [
       "Mayor riesgo de cáncer cutáneo no melanoma y algunas formas de melanoma: los pacientes en hidroclorotiazida deben hacerse revisar la piel de forma regular; en pacientes con antecedente de cáncer de piel, la indicación debe revisarse a fondo",
       "UroCampus coincide: a largo plazo, mayor riesgo de cáncer cutáneo no melanoma, por lo que se recomienda control dermatológico",
     ],
-    contraindications: [],
+    contraindications: [
+      "Hipersensibilidad a tiazidas o sulfonamidas.",
+      "Anuria.",
+      "Insuficiencia renal grave (aclaramiento de creatinina < 30 mL/min) o refractaria.",
+      "Hipopotasemia o hiponatremia refractarias, hipercalcemia y enfermedad de Addison.",
+      "Embarazo y lactancia: valorar riesgo/beneficio; no son de primera elección.",
+    ],
     interactions: [
       "Las reacciones de hipersensibilidad al alopurinol pueden aumentar en pacientes con disminución de la función renal que reciben tiazidas y alopurinol simultáneamente",
       "No hay evidencia de que la combinación tiazida + citrato o tiazida + alopurinol sea superior a la tiazida sola",
@@ -4492,8 +4529,6 @@ export const drugs: Drug[] = [
     conditions: ["Litiasis cálcica", "Hipercalciuria"],
     organs: ["Riñón", "Uréter"],
     source: "EAU Urolithiasis 2025 · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: ["Contraindicaciones"],
   },
   {
     id: "tiopronina",
@@ -4507,20 +4542,29 @@ export const drugs: Drug[] = [
       "EAU 2025: tiopronina 250–2.000 mg/día para reducir la formación de cálculos en pacientes con excreción de cisteína > 3 mmol/día o cuando otras medidas son insuficientes (recomendación fuerte, junto con otras medidas)",
       "Agente de primera línea por su mejor tolerancia; fármaco de elección por mejor tolerancia",
     ],
-    dose: "EAU 2025 (Tabla 4.6): dosis inicial 800 mg/día; media 2.000 mg/día; en niños > 20 kg, dosis inicial 15 mg/kg/día; evitar dosis > 50 mg/kg/día; no hay información sobre la dosis máxima; puede iniciarse con dosis muy baja si hubo reacciones previas a tiopronina o penicilamina; titular según la frecuencia de episodios de cálculo, los efectos adversos y la función renal, bajo supervisión experta con monitorización estrecha. EAU 2025 (§ 4.9.3): tiopronina 250–2.000 mg/día; en la Figura 4.9, 250 mg/día hasta 2.000 mg/día como dosis máxima. Campbell: dosis típicas a partir de 300 mg VO dos veces al día, hasta un máximo de 1.200 mg/día, ajustadas para lograr concentraciones urinarias de cistina inferiores a 250 mg/L de orina. UroCampus: 400–1.200 mg/día en dos o tres tomas; 800–1.200 mg/día en 3 tomas; en cistinuria refractaria, 0,5–1 g/día en varias tomas. Manda EAU: 250–2.000 mg/día — véase «Discrepancias detectadas». Monitorizar la cistinuria y ajustar las dosis; controlar hematimetría y función renal; medición puntual de proteína en orina al inicio y durante el seguimiento.",
+    dose: "EAU 2025 (Tabla 4.6): dosis inicial 800 mg/día; media 2.000 mg/día; en niños > 20 kg, dosis inicial 15 mg/kg/día; evitar dosis > 50 mg/kg/día; no hay información sobre la dosis máxima; puede iniciarse con dosis muy baja si hubo reacciones previas a tiopronina o penicilamina; titular según la frecuencia de episodios de cálculo, los efectos adversos y la función renal, bajo supervisión experta con monitorización estrecha. EAU 2025 (§ 4.9.3): tiopronina 250–2.000 mg/día; en la Figura 4.9, 250 mg/día hasta 2.000 mg/día como dosis máxima. Campbell: dosis típicas a partir de 300 mg VO dos veces al día, hasta un máximo de 1.200 mg/día, ajustadas para lograr concentraciones urinarias de cistina inferiores a 250 mg/L de orina. UroCampus: 400–1.200 mg/día en dos o tres tomas; 800–1.200 mg/día en 3 tomas; en cistinuria refractaria, 0,5–1 g/día en varias tomas. EAU 2025: 250–2.000 mg/día Monitorizar la cistinuria y ajustar las dosis; controlar hematimetría y función renal; medición puntual de proteína en orina al inicio y durante el seguimiento.",
     adverse: [
       "EAU 2025 (Tabla 4.6): riesgo de proteinuria",
       "Los efectos adversos a menudo llevan a suspender el tratamiento, por ejemplo cuando se desarrolla síndrome nefrótico o hay mala adherencia, especialmente con el uso prolongado",
       "Campbell: astenia, problemas gastrointestinales, exantema, dolores articulares y cambios del estado mental; las reacciones adversas graves que requieren el cese de la terapia son menos comunes; el 30,6 % tuvo que dejar la alfa-mercaptopropionilglicina frente al 69,4 % que no toleró la D-penicilamina",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Hipersensibilidad a tiopronina o a los excipientes.",
+      "Antecedente de agranulocitosis o anemia aplásica por tiopronina o penicilamina.",
+      "Insuficiencia renal grave sin ajuste; monitorizar proteinuria.",
+      "Embarazo y lactancia: valorar riesgo/beneficio.",
+    ],
+    interactions: [
+      "Evitar el alcohol 2 horas antes y 3 horas después de la dosis; acelera la liberación y aumenta los efectos adversos.",
+      "Puede aumentar el riesgo de proteinuria y síndrome nefrótico con fármacos nefrotóxicos (AINE, aminoglucósidos, anfotericina B).",
+      "Precaución con penicilamina por reacciones cruzadas y toxicidad aditiva; no asociar sin supervisión.",
+      "Puede interferir con la determinación de proteínas urinarias y con las pruebas de función renal.",
+      "No hay estudios formales de interacción; revisar la medicación concomitante.",
+    ],
     relatedDrugs: ["citratos-alcalinos", "d-penicilamina"],
     conditions: ["Litiasis de cistina", "Cistinuria"],
     organs: ["Riñón", "Uréter"],
     source: "EAU Urolithiasis 2025 · UroCampus · Campbell-Walsh-Wein 13.ª ed.",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "ondansetron",
@@ -4571,10 +4615,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Vejiga", "Próstata", "Riñón", "Testículo"],
     source: "Urology-Textbook · UroCampus · Campbell-Walsh-Wein 13.ª ed. · Ficha técnica de Zofran (AEMPS/CIMA, rev. mayo 2024)",
-    full: true,
-    gaps: [
-      "Fármacos relacionados",
-    ],
   },
   {
     id: "d-penicilamina",
@@ -4591,33 +4631,47 @@ export const drugs: Drug[] = [
       "Fiebre, exantema, hipogeusia, proteinuria y síndrome nefrótico, citopenias, déficit de vitamina B6 y fenómenos autoinmunes",
       "Campbell: exantema, fiebre, artralgia, pancitopenia, proteinuria y síndrome nefrótico; ha sido reemplazada en gran medida por la tiopronina por sus efectos adversos frecuentes",
     ],
-    contraindications: [],
-    interactions: [],
+    contraindications: [
+      "Embarazo, excepto en enfermedad de Wilson o cistinuria seleccionada, y lactancia.",
+      "Antecedente de agranulocitosis o anemia aplásica por penicilamina.",
+      "Hipersensibilidad a penicilamina o a los excipientes.",
+      "Insuficiencia renal grave sin ajuste; valorar riesgo/beneficio.",
+    ],
+    interactions: [
+      "Los antiácidos, el hierro, el zinc y otros metales reducen la absorción; separar al menos 2 horas.",
+      "Puede aumentar el riesgo de mielosupresión con citotóxicos, sales de oro o inmunosupresores; monitorizar hemograma.",
+      "La piridoxina (vitamina B6) debe suplementarse para prevenir neuropatía.",
+      "Puede aumentar el INR con warfarina; monitorizar.",
+    ],
     relatedDrugs: ["tiopronina", "citratos-alcalinos"],
     conditions: ["Litiasis de cistina", "Cistinuria"],
     organs: ["Riñón", "Uréter"],
     source: "Campbell-Walsh-Wein 13.ª ed. · UroCampus · EAU Urolithiasis 2025",
-    full: true,
-    gaps: ["Contraindicaciones", "Interacciones"],
   },
   {
     id: "febuxostat",
     name: "Febuxostat",
     familyId: "otros",
     commercial: "Adenuric",
-    mechanism: "Inhibidor de la xantina oxidasa (el corpus no detalla su mecanismo propio más allá de su clasificación funcional como alternativa al alopurinol en hiperuricosuria/hiperuricemia). Aparentemente más potente como inhibidor de la xantina oxidasa que el alopurinol, aunque con mayor coste.",
+    mechanism: "Inhibidor selectivo de la xantina oxidasa que reduce la síntesis de ácido úrico. Es más potente que el alopurinol y se emplea como alternativa de segunda línea en hiperuricosuria e hiperuricemia.",
     indications: [
       "Segunda línea en la hiperuricosuria (nivel de evidencia 1b; recomendación fuerte de la EAU: ofrecer febuxostat como tratamiento de segunda línea de la hiperuricosuria)",
       "En hiperuricemia e hiperuricosuria o gota asociada",
       "Constituye una alternativa en caso de intolerancia al alopurinol",
       "También en cálculos de 2,8-dihidroxiadenina: dosis altas de alopurinol o febuxostat son opciones importantes",
     ],
-    dose: "EAU 2025 (Tabla 4.6): febuxostat 80–120 mg/día; la nota 5 de la Figura 4.3 indica febuxostat 80 mg/día. UroCampus: 40–80 mg/día en litiasis de ácido úrico y 80 mg/día como segunda línea en litiasis cálcica. Manda EAU: 80–120 mg/día — véase «Discrepancias detectadas».",
+    dose: "EAU 2025 (Tabla 4.6): febuxostat 80–120 mg/día. UroCampus: 40–80 mg/día en litiasis de ácido úrico y 80 mg/día como segunda línea en litiasis cálcica. EAU 2025: 80–120 mg/día",
     adverse: [
       "EAU 2025 (Tabla 4.6): formación de cálculos de xantina; contraindicado en gota aguda, embarazo y lactancia",
     ],
     contraindications: ["Gota aguda, embarazo y lactancia"],
-    interactions: [],
+    interactions: [
+      "Contraindicado con azatioprina y mercaptopurina: la inhibición de la xantina oxidasa aumenta sus niveles y puede causar mielosupresión grave.",
+      "Puede aumentar los niveles de teofilina; monitorizar y ajustar.",
+      "Precaución con otros sustratos de la xantina oxidasa y con fármacos nefrotóxicos.",
+      "No se han descrito interacciones relevantes con AINE, colchicina o indometacina, pero vigilar la función renal.",
+      "Los antiácidos pueden reducir la absorción; separar la administración.",
+    ],
     relatedDrugs: ["alopurinol", "citratos-alcalinos", "tiazidas"],
     conditions: [
       "Litiasis cálcica",
@@ -4627,8 +4681,6 @@ export const drugs: Drug[] = [
     ],
     organs: ["Riñón", "Uréter"],
     source: "EAU Urolithiasis 2025 · UroCampus",
-    full: true,
-    gaps: ["Interacciones"],
   },
 ];
 

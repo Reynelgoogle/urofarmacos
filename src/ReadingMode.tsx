@@ -3,7 +3,7 @@
 // del tamaño de letra. Patrón tomado de UroCampus ReadingMode.tsx,
 // adaptado a Vite (sin "use client", con createPortal de react-dom).
 // La variable --tam-letra se pone EN EL CONTENEDOR del overlay, no
-// en :root, y de ella derivan .sec p, .sec li, .dose y .laguna (con
+// en :root, y de ella derivan .sec p, .sec li, .dose y .no-data (con
 // su tamaño actual como fallback, así la ficha normal no cambia).
 // jsdom no implementa requestFullscreen ni IntersectionObserver:
 // todo va con try/catch y optional chaining y se degrada sin errores.
@@ -43,6 +43,7 @@ export default function ReadingMode({
   onSearch,
   onOpenOrgan,
   onOpenCondition,
+  onCompare,
   onClose,
 }: {
   drug: Drug;
@@ -55,6 +56,7 @@ export default function ReadingMode({
   onSearch: (q: string) => void;
   onOpenOrgan: (name: string) => void;
   onOpenCondition: (name: string) => void;
+  onCompare?: (ids: string[]) => void;
   onClose: () => void;
 }) {
   const [size, setSize] = useState(loadSize);
@@ -196,6 +198,7 @@ export default function ReadingMode({
             onSearch={closeAnd(onSearch)}
             onOpenOrgan={closeAnd(onOpenOrgan)}
             onOpenCondition={closeAnd(onOpenCondition)}
+            onCompare={onCompare ? closeAnd(onCompare) : undefined}
             hideReadingButton
             readingMode
           />

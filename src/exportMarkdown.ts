@@ -11,102 +11,34 @@ export function slugify(name: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-const LAGUNA = "Sin datos en el corpus (LAGUNA).";
+const EMPTY = "No consta en la ficha.";
 
-// Copia exacta de la lógica de lagunas de App.tsx: comparación EXACTA
-// tras normalizar (minúsculas, sin acentos), nunca por subcadena.
-const GAP_ALIASES: Record<string, string> = {
-  mechanism: "mecanismo de accion",
-  mecanismo: "mecanismo de accion",
-  indications: "indicaciones",
-  indicaciones: "indicaciones",
-  dose: "dosis habitual",
-  dosis: "dosis habitual",
-  adverse: "efectos adversos",
-  "efectos adversos": "efectos adversos",
-  efectos: "efectos adversos",
-  contraindications: "contraindicaciones",
-  contraindicaciones: "contraindicaciones",
-  interactions: "interacciones",
-  interacciones: "interacciones",
-  related: "farmacos relacionados",
-  "farmacos relacionados": "farmacos relacionados",
-};
-
-function normalize(s: string): string {
-  return s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
+function textSection(text: string): string {
+  return text.trim() ? text : EMPTY;
 }
 
-function isGap(drug: Drug, ...keys: string[]): boolean {
-  const gaps = (drug as Drug & { gaps?: string[] }).gaps;
-  if (!gaps || gaps.length === 0) return false;
-  return gaps.some((g) => {
-    const ng = normalize(g);
-    return keys.some((k) => ng === GAP_ALIASES[normalize(k)]);
-  });
-}
-
-function textSection(text: string, gap: boolean): string {
-  return gap || !text.trim() ? LAGUNA : text;
-}
-
-function listSection(items: string[], gap: boolean): string {
-  return gap || items.length === 0
-    ? LAGUNA
-    : items.map((x) => `- ${x}`).join("\n");
+function listSection(items: string[]): string {
+  return items.length ? items.map((x) => `- ${x}`).join("\n") : EMPTY;
 }
 
 export function drugToMarkdown(drug: Drug): string {
   const fam = familyOf(drug);
   const commercial = drug.commercial.trim()
     ? drug.commercial
-    : "no constan en el corpus.";
+    : "no constan en la ficha.";
   const related = drug.relatedDrugs
     .map((id) => drugById(id)?.name)
     .filter((n): n is string => !!n);
   const sections: [string, string][] = [
-    [
-      "Mecanismo de acción",
-      textSection(drug.mechanism, isGap(drug, "mechanism", "mecanismo")),
-    ],
-    [
-      "Indicaciones",
-      listSection(drug.indications, isGap(drug, "indications", "indicaciones")),
-    ],
-    [
-      "Dosis habitual",
-      textSection(drug.dose, isGap(drug, "dose", "dosis")),
-    ],
-    [
-      "Efectos adversos",
-      listSection(
-        drug.adverse,
-        isGap(drug, "adverse", "efectos adversos", "efectos")
-      ),
-    ],
-    [
-      "Contraindicaciones y precauciones",
-      listSection(
-        drug.contraindications,
-        isGap(drug, "contraindications", "contraindicaciones")
-      ),
-    ],
-    [
-      "Interacciones",
-      listSection(
-        drug.interactions,
-        isGap(drug, "interactions", "interacciones")
-      ),
-    ],
-    [
-      "Fármacos relacionados",
-      listSection(related, isGap(drug, "related", "farmacos relacionados")),
-    ],
-    ["Patologías que trata", listSection(drug.conditions, false)],
-    ["Órganos", listSection(drug.organs, false)],
+    ["Mecanismo de acción", textSection(drug.mechanism)],
+    ["Indicaciones", listSection(drug.indications)],
+    ["Dosis habitual", textSection(drug.dose)],
+    ["Efectos adversos", listSection(drug.adverse)],
+    ["Contraindicaciones y precauciones", listSection(drug.contraindications)],
+    ["Interacciones", listSection(drug.interactions)],
+    ["Fármacos relacionados", listSection(related)],
+    ["Patologías que trata", listSection(drug.conditions)],
+    ["Órganos", listSection(drug.organs)],
   ];
   const parts: string[] = [
     `# ${drug.name}`,

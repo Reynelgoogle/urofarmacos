@@ -788,16 +788,6 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family:
   text-overflow: ellipsis;
 }
 .drug-row .arrow { color: var(--teal); font-weight: 700; flex: none; }
-.tag-full {
-  flex-shrink: 0;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--brand-800);
-  background: var(--brand-100);
-  border-radius: 9999px;
-  padding: 0.2rem 0.55rem;
-  white-space: nowrap;
-}
 
 .result-block { margin-bottom: 1.5rem; }
 .result-group {
@@ -875,19 +865,6 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family:
   color: #fff;
   background: var(--acc);
 }
-.full-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  border-radius: 999px;
-  padding: 4px 9px;
-  font-size: 10.5px;
-  font-weight: 650;
-  background: #f1f5f9;
-  border: 1px solid var(--line-2);
-  color: var(--muted);
-}
-.full-pill .dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
 .ficha-title {
   margin: 12px 0 0;
   font-size: 38px;
@@ -978,21 +955,14 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family:
 .source-line { margin: 6px 2px 0; font-size: 11px; line-height: 1.55; color: var(--muted-2); }
 .disclaimer { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
 
-/* Laguna: el mockup la pone inline-flex, pero como <p> debe ocupar
-   el ancho del bloque: display flex. */
-.laguna {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  background: var(--amber-bg);
-  border: 1px solid var(--amber-b);
-  border-radius: 9px;
-  padding: 9px 11px;
+/* Sección sin contenido: texto neutro, sin cajas de alarma. */
+.no-data {
+  margin: 0;
   font-size: var(--tam-letra, 11.5px);
   line-height: 1.5;
-  color: var(--amber-ink);
+  color: var(--muted-2);
+  font-style: italic;
 }
-.laguna b { font-weight: 700; }
 
 .sec-index {
   position: sticky;
@@ -1161,7 +1131,7 @@ h1, .section-head h2, .block-head h2, .ficha-title, .hero-stats b { font-family:
 /* Fondo BLANCO (decisión de Rey para leer), una sola columna,
    contenido max-w-3xl con scroll propio. La variable --tam-letra
    se pone en este contenedor y de ella derivan .sec p, .sec li,
-   .dose y .laguna. */
+   .dose y .no-data. */
 .reading-mode {
   position: fixed;
   inset: 0;

@@ -27,6 +27,7 @@ export default function NavDrawer({
   children: ReactNode;
 }) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
   const prevFocus = useRef<Element | null>(null);
 
   // Bloqueo del scroll de la página de fondo mientras está abierto.
@@ -62,6 +63,27 @@ export default function NavDrawer({
     }
   }, [open]);
 
+  // Trampa de foco mientras el cajón está abierto: Tab recorre solo sus
+  // controles y no se escapa al contenido del fondo (teclado en escritorio).
+  const trapFocus = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.key !== "Tab") return;
+    const root = panelRef.current;
+    if (!root) return;
+    const focusables = root.querySelectorAll<HTMLElement>(
+      'button, input, select, a[href], [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusables.length === 0) return;
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
   return createPortal(
     <div
       id="nav-drawer"
@@ -78,6 +100,8 @@ export default function NavDrawer({
         role="dialog"
         aria-modal="true"
         aria-label="Índice de navegación"
+        ref={panelRef}
+        onKeyDown={trapFocus}
       >
         <div className="nav-drawer-head">
           <span className="nav-drawer-brand">

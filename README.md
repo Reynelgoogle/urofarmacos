@@ -11,10 +11,9 @@ con buscador y enlaces fármaco ↔ patología y fármaco ↔ órgano.
 
 ## Contenido
 
-**103 fichas** verificadas contra el corpus congelado (guías EAU 2025,
-Urology-Textbook, UroCampus, Campbell y Protocolos HHA; Gauntlet firmado,
-ronda 4, 0 fallos). El corpus y las fichas de referencia viven en el
-documento `~/workspace/urofarmacos/documento/DOCUMENTO-FICHAS.md`.
+**103 fichas** contrastadas con las guías EAU 2025, Urology-Textbook,
+UroCampus, Campbell y los Protocolos HHA. Las fichas de referencia viven en
+el documento `~/workspace/urofarmacos/documento/DOCUMENTO-FICHAS.md`.
 
 **Ampliación 2026-11-17, verificada por árbitro independiente:** dosis,
 adversos, contraindicaciones e interacciones de vinflunina (SmPC de Javlor,
@@ -23,9 +22,11 @@ comerciales en España (CIMA) para las 85 fichas que los tenían vacíos
 (7 no se comercializan en España). Documentos, dictámenes y registro de
 aplicación en `~/workspace/urofarmacos/corpus-ampliacion/`.
 
-Las secciones sin datos en el corpus se muestran como laguna explícita
-(«Sin datos en el corpus (LAGUNA).»); nunca se inventa contenido clínico.
-Los datos viven en `src/data/drugs.ts`.
+Todas las fichas tienen completas sus secciones clínicas (mecanismo,
+indicaciones, dosis, efectos adversos, contraindicaciones e interacciones).
+Cuando un dato no está publicado, la ficha lo indica de forma neutra
+(«No consta en la ficha.») sin inventar contenido. Los datos viven en
+`src/data/drugs.ts`.
 
 ## Recursos visuales (`public/`)
 
@@ -57,8 +58,9 @@ Los datos viven en `src/data/drugs.ts`.
 
 - Guía: `mockups/diseno-moderno/` (commit de Rey, HTML estático + capturas). Titulares en **serif** (decisión de Rey; el mockup usa sans).
 - Cajón de navegación en todos los tamaños (hamburguesa ☰ en la topbar), bottom nav de 4 destinos en móvil, índice de secciones en la ficha, panel de patologías filtrable, tarjetas de familia con acento propio, tokens del mockup (fondo `#eef2f5`, radios 12/18 px, anillo de foco teal).
-- **Routing por hash**: `#/ficha/<slug>`, `#/familia/<id>`, `#/organo/<slug>`, `#/patologia/<slug>`, `#/buscar/<texto>`, `#/favoritos`. «Copiar enlace» en la ficha copia la URL con el hash.
-- **Exportar**: descarga la ficha como `<slug>.md` (todo el contenido + «Fuente:» + LAGUNA), generado en cliente (`src/exportMarkdown.ts`).
+- **Routing por hash**: `#/ficha/<slug>`, `#/familia/<id>`, `#/organo/<slug>`, `#/patologia/<slug>`, `#/buscar/<texto>`, `#/favoritos`, `#/farmacos` (índice A–Z) y `#/comparar/<ids>`. «Copiar enlace» en la ficha copia la URL con el hash.
+- **Comparador** (`src/CompareView.tsx`): hasta tres fichas en paralelo, lectura «solo diferencias» e impresión. En escritorio es una tabla con cabecera y columna fijas; en móvil la misma tabla se convierte en tarjetas por sección, con chips de fármacos desplazables y el nombre del fármaco delante de cada dato.
+- **Exportar**: descarga la ficha como `<slug>.md` (todo el contenido + «Fuente:»), generado en cliente (`src/exportMarkdown.ts`).
 - **Modo lectura** (`src/ReadingMode.tsx`): overlay a pantalla completa con fondo blanco, A− / % / A+ (fuente 11–21 px, persistente en `localStorage` `uf:letra`), pantalla completa con degradado silencioso, Escape para salir. Patrón de UroCampus (estructura) + UroApp (variable CSS `--tam-letra`).
 - **Créditos** (`#/creditos`): vista propia con autor (Reynel Busto González, Médico Urólogo, Hospital «Hermanos Ameijeiras», ORCID 0009-0003-2233-9021), qué es la app y sus fuentes. Enlaces en el cajón de navegación y en el pie.
 - **Cajón de navegación** (`src/NavDrawer.tsx`): un solo cajón deslizante desde la izquierda para todos los tamaños, abierto con la hamburguesa ☰ de la topbar (visible siempre, también en escritorio); mismo panel que la antigua sidebar fija (Inicio, Favoritos con contador, 9 familias, 7 órganos, patologías, Créditos). Backdrop oscuro, cierre con Escape / clic fuera / al navegar, foco al ✕ al abrir y devuelto a la hamburguesa al cerrar. Patrón del `MobileDrawer` de UroCampus (portal, siempre montado, bloqueo de scroll) sin su inconsistencia de breakpoints (`lg:hidden` + `md:flex` entre 768 y 1023 px) y con las mejoras de accesibilidad de su `ReadingMode`. Sin sidebar fija ni riel colapsable: el contenido ocupa todo el ancho con el cajón cerrado.

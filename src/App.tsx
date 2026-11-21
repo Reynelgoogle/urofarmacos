@@ -13,6 +13,11 @@ import {
 import { drugToMarkdown, slugify } from "./exportMarkdown";
 import NavDrawer from "./NavDrawer";
 import ReadingMode from "./ReadingMode";
+import CommandPalette from "./CommandPalette";
+import DrugIndexView from "./DrugIndexView";
+import CompareView from "./CompareView";
+import { SECTIONS, haystack, readingMinutesOf } from "./drugMeta";
+import { Highlight, HighlightAll, excerpt, normalize } from "./text";
 
 type View =
   | { type: "home" }
@@ -21,9 +26,12 @@ type View =
   | { type: "favorites" }
   | { type: "organ"; name: string }
   | { type: "condition"; name: string }
-  | { type: "credits" };
+  | { type: "credits" }
+  | { type: "index" }
+  | { type: "compare"; ids: string[] };
 
 const FAV_KEY = "urofarmacos:favoritos";
+const RECENT_KEY = "urofarmacos:recientes";
 
 function loadFavs(): Set<string> {
   try {
@@ -34,106 +42,17 @@ function loadFavs(): Set<string> {
   }
 }
 
-function normalize(s: string): string {
-  return s
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "");
-}
-
-/** Resalta la primera ocurrencia de la búsqueda (filas de resultados). */
-function Highlight({ text, query }: { text: string; query: string }) {
-  const q = query.trim();
-  if (!q) return <>{text}</>;
-  const idx = normalize(text).indexOf(normalize(q));
-  if (idx < 0) return <>{text}</>;
-  return (
-    <>
-      {text.slice(0, idx)}
-      <mark className="hl">{text.slice(idx, idx + q.length)}</mark>
-      {text.slice(idx + q.length)}
-    </>
-  );
-}
-
-/** Resalta TODAS las ocurrencias (texto de la ficha al saltar desde Buscar). */
-function HighlightAll({ text, query }: { text: string; query: string }) {
-  const q = query.trim();
-  if (!q) return <>{text}</>;
-  const nq = normalize(q);
-  const parts: React.ReactNode[] = [];
-  let rest = text;
-  let key = 0;
-  for (;;) {
-    const idx = normalize(rest).indexOf(nq);
-    if (idx < 0) {
-      parts.push(rest);
-      break;
-    }
-    parts.push(rest.slice(0, idx));
-    parts.push(
-      <mark key={key++} className="hl">
-        {rest.slice(idx, idx + q.length)}
-      </mark>
-    );
-    rest = rest.slice(idx + q.length);
+function loadRecents(): string[] {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    if (!raw) return [];
+    const ids = JSON.parse(raw) as unknown;
+    if (!Array.isArray(ids)) return [];
+    return ids.filter((id): id is string => typeof id === "string");
+  } catch {
+    return [];
   }
-  return <>{parts}</>;
 }
-
-function haystack(d: Drug): string {
-  return normalize(
-    [
-      d.name,
-      d.commercial,
-      familyOf(d).name,
-      familyOf(d).short,
-      d.mechanism,
-      ...d.indications,
-      d.dose,
-      ...d.adverse,
-      ...d.contraindications,
-      ...d.interactions,
-      ...d.conditions,
-      ...d.organs,
-    ].join(" ")
-  );
-}
-
-/** Una sección está en laguna si el campo está vacío o su clave figura en
- *  `drug.gaps`. Comparación EXACTA tras normalizar (minúsculas, sin
- *  acentos): nunca por subcadena — «contraindicaciones» contiene
- *  «indicaciones» y un `includes` escondería las indicaciones reales de
- *  toda ficha con gap en contraindicaciones (18 fichas en la fase 2).
- *  Cada clave (es/en) se traduce a su título canónico de laguna. */
-const GAP_ALIASES: Record<string, string> = {
-  mechanism: "mecanismo de accion",
-  mecanismo: "mecanismo de accion",
-  indications: "indicaciones",
-  indicaciones: "indicaciones",
-  dose: "dosis habitual",
-  dosis: "dosis habitual",
-  adverse: "efectos adversos",
-  "efectos adversos": "efectos adversos",
-  efectos: "efectos adversos",
-  contraindications: "contraindicaciones",
-  contraindicaciones: "contraindicaciones",
-  interactions: "interacciones",
-  interacciones: "interacciones",
-  related: "farmacos relacionados",
-  "farmacos relacionados": "farmacos relacionados",
-};
-
-function isGap(drug: Drug, ...keys: string[]): boolean {
-  const gaps = (drug as Drug & { gaps?: string[] }).gaps;
-  if (!gaps || gaps.length === 0) return false;
-  return gaps.some((g) => {
-    const ng = normalize(g);
-    return keys.some((k) => ng === GAP_ALIASES[normalize(k)]);
-  });
-}
-
-const LAGUNA = "Sin datos en el corpus (LAGUNA).";
 
 // ---------- Routing por hash ----------
 function decodeSafe(s: string): string {
@@ -160,6 +79,12 @@ function hashFor(view: View, query: string): string {
       return "#/favoritos";
     case "credits":
       return "#/creditos";
+    case "index":
+      return "#/farmacos";
+    case "compare":
+      return view.ids.length > 0
+        ? `#/comparar/${view.ids.map(encodeURIComponent).join(",")}`
+        : "#/comparar";
     default:
       return query.trim().length >= 2
         ? `#/buscar/${encodeURIComponent(query.trim())}`
@@ -199,6 +124,16 @@ function parseHash(hash: string): { view: View; query: string } {
       return { view: { type: "favorites" }, query: "" };
     case "creditos":
       return { view: { type: "credits" }, query: "" };
+    case "farmacos":
+    case "indice":
+      return { view: { type: "index" }, query: "" };
+    case "comparar": {
+      const ids = tail
+        .split(",")
+        .map((x) => decodeSafe(x).trim())
+        .filter((x) => !!drugById(x));
+      return { view: { type: "compare", ids: [...new Set(ids)].slice(0, 3) }, query: "" };
+    }
     default:
       return home;
   }
@@ -244,6 +179,13 @@ const SvgGrid = (
     <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
     <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
     <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+  </svg>
+);
+const SvgCompare = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M4 7h10M4 7l3-3M4 7l3 3" />
+    <path d="M20 17H10M20 17l-3-3M20 17l-3 3" />
+    <path d="M8 4v6M16 14v6" />
   </svg>
 );
 const SvgMenu = (
@@ -295,6 +237,8 @@ function NavContent({
   onOrgan,
   onCondition,
   onAllConditions,
+  onIndex,
+  onCompare,
 }: {
   view: View;
   searching: boolean;
@@ -308,6 +252,8 @@ function NavContent({
   onOrgan: (name: string) => void;
   onCondition: (name: string) => void;
   onAllConditions: () => void;
+  onIndex: () => void;
+  onCompare: () => void;
 }) {
   return (
     <>
@@ -333,6 +279,21 @@ function NavContent({
           title="Créditos"
         >
           {SvgInfo}Créditos
+        </button>
+        <button
+          className={`side-tool${view.type === "index" ? " active" : ""}`}
+          onClick={onIndex}
+          title="Índice alfabético completo"
+        >
+          {SvgGrid}Índice A–Z
+          <span className="side-count">{drugs.length}</span>
+        </button>
+        <button
+          className={`side-tool${view.type === "compare" ? " active" : ""}`}
+          onClick={onCompare}
+          title="Comparador de fármacos"
+        >
+          {SvgCompare}Comparador
         </button>
       </div>
       <div className="side-divider" />
@@ -421,9 +382,11 @@ export default function App() {
   const [highlight, setHighlight] = useState("");
   const [drawer, setDrawer] = useState(false);
   const [favs, setFavs] = useState<Set<string>>(loadFavs);
+  const [recents, setRecents] = useState<string[]>(loadRecents);
   const [condFilter, setCondFilter] = useState("");
   const [condExpanded, setCondExpanded] = useState(false);
   const [reading, setReading] = useState(false);
+  const [palette, setPalette] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -431,8 +394,55 @@ export default function App() {
   }, [favs]);
 
   useEffect(() => {
+    try {
+      localStorage.setItem(RECENT_KEY, JSON.stringify(recents));
+    } catch {
+      // Sin almacenamiento: la lista vive solo en esta sesión.
+    }
+  }, [recents]);
+
+  // Título de documento por vista: historial, pestañas y lectores de
+  // pantalla reciben un título útil en lugar del genérico de la app.
+  useEffect(() => {
+    const base = "UroFármacos";
+    if (view.type === "drug") {
+      const d = drugById(view.id);
+      document.title = d ? `${d.name} · ${base}` : base;
+    } else if (view.type === "family") {
+      const f = families.find((x) => x.id === view.id);
+      document.title = f ? `${f.name} · ${base}` : base;
+    } else if (view.type === "index") {
+      document.title = `Índice de fármacos · ${base}`;
+    } else if (view.type === "compare") {
+      document.title = `Comparador · ${base}`;
+    } else if (view.type === "favorites") {
+      document.title = `Favoritos · ${base}`;
+    } else if (view.type === "credits") {
+      document.title = `Créditos · ${base}`;
+    } else if (query.trim().length >= 2) {
+      document.title = `Buscar “${query.trim()}” · ${base}`;
+    } else {
+      document.title = "UroFármacos — Wiki de fármacos en urología";
+    }
+  }, [view, query]);
+
+  // Clave estable de vista: cambiar de fármaco, familia, órgano o
+  // patología vuelve arriba, pero añadir o quitar una columna en el
+  // comparador NO debe hacer saltar la página al principio.
+  const viewKey =
+    view.type === "drug"
+      ? `drug:${view.id}`
+      : view.type === "family"
+        ? `family:${view.id}`
+        : view.type === "organ"
+          ? `organ:${view.name}`
+          : view.type === "condition"
+            ? `condition:${view.name}`
+            : view.type;
+
+  useEffect(() => {
     scrollTop();
-  }, [view]);
+  }, [viewKey]);
 
   // Al navegar (hash, atrás/adelante, enlace interno) el modo lectura
   // se cierra: el overlay pertenece a la ficha que se estaba viendo.
@@ -467,13 +477,23 @@ export default function App() {
     return () => window.removeEventListener("hashchange", onHash);
   }, [view, query]);
 
-  // Atajo Ctrl/⌘+K: enfoca el buscador y sube arriba.
+  // Atajos de producto: ⌘/Ctrl+K abre la paleta de comandos; «/» también
+  // cuando el foco no está en un campo de texto.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      const typing =
+        !!target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable);
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        searchRef.current?.focus();
-        scrollTop();
+        setPalette(true);
+      } else if (!typing && e.key === "/") {
+        e.preventDefault();
+        setPalette(true);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -510,11 +530,16 @@ export default function App() {
     setDrawer(false);
   };
 
+  const remember = (id: string) => {
+    setRecents((prev) => [id, ...prev.filter((x) => x !== id)].slice(0, 8));
+  };
+
   const openDrug = (id: string, hl = "") => {
     setQuery("");
     setHighlight(hl);
     setView({ type: "drug", id });
     setDrawer(false);
+    remember(id);
   };
 
   const openFamily = (id: string) => {
@@ -546,6 +571,28 @@ export default function App() {
     setCondFilter("");
     setCondExpanded(true);
     window.setTimeout(() => scrollToId("patologias"), 50);
+  };
+
+  const goIndex = () => {
+    setQuery("");
+    setHighlight("");
+    setView({ type: "index" });
+    setDrawer(false);
+  };
+
+  const openCompare = (ids: string[] = []) => {
+    setQuery("");
+    setHighlight("");
+    setView({ type: "compare", ids: [...new Set(ids)].filter(Boolean).slice(0, 3) });
+    setDrawer(false);
+  };
+
+  const openRandom = () => {
+    const pool = drugs.filter(
+      (d) => !(view.type === "drug" && d.id === view.id)
+    );
+    const d = pool[Math.floor(Math.random() * pool.length)];
+    if (d) openDrug(d.id);
   };
 
   // ---------- Buscador completo estilo UroApp: texto completo, agrupado ----------
@@ -610,6 +657,24 @@ export default function App() {
     []
   );
 
+  const recentDrugs = useMemo(
+    () =>
+      recents
+        .map((id) => drugById(id))
+        .filter((d): d is Drug => !!d)
+        .slice(0, 4),
+    [recents]
+  );
+
+  // Fármaco del día determinista: mismo día, misma ficha; sin aleatoriedad
+  // entre renders ni entre sesiones.
+  const dailyDrug = useMemo(() => {
+    const day = Math.floor(Date.now() / 86_400_000);
+    return drugs[day % drugs.length];
+  }, []);
+
+  const dailyFam = familyOf(dailyDrug);
+
   const filteredConds = useMemo(() => {
     const q = normalize(condFilter.trim());
     if (!q) return condCounts;
@@ -639,12 +704,16 @@ export default function App() {
     onOrgan: openOrgan,
     onCondition: openCondition,
     onAllConditions: goAllConditions,
+    onIndex: goIndex,
+    onCompare: () => openCompare(),
   };
 
   const focusSearch = () => {
     searchRef.current?.focus();
     scrollTop();
   };
+
+  const openPalette = () => setPalette(true);
 
   return (
     <>
@@ -690,11 +759,36 @@ export default function App() {
           </div>
         </div>
         <div className="top-actions">
+          <button
+            className="icon-btn palette-btn"
+            onClick={openPalette}
+            aria-label="Abrir paleta de comandos"
+            title="Paleta de comandos (⌘ K)"
+            aria-keyshortcuts="Control+K Meta+K"
+          >
+            <span className="cmd-glyph" aria-hidden="true">⌘</span>
+          </button>
           <button className="ghost-btn" onClick={goFavorites}>
             {SvgStar}Favoritos <span className="n">{favs.size}</span>
           </button>
         </div>
       </header>
+
+      <CommandPalette
+        open={palette}
+        onClose={() => setPalette(false)}
+        recent={recents}
+        onHome={goHome}
+        onFavorites={goFavorites}
+        onCredits={goCredits}
+        onIndex={goIndex}
+        onCompare={() => openCompare()}
+        onRandom={openRandom}
+        onOpenDrug={openDrug}
+        onOpenFamily={openFamily}
+        onOpenOrgan={openOrgan}
+        onOpenCondition={openCondition}
+      />
 
       {/* ---------- Cajón de navegación (único, todos los tamaños):
            el panel de navegación ya no es una sidebar fija: se abre
@@ -801,10 +895,8 @@ export default function App() {
                     <span>explicados fármaco a fármaco</span>.
                   </h1>
                   <p className="animate-fade-in-up delay-200">
-                    Mecanismo, indicaciones, dosis, efectos adversos,
-                    contraindicaciones e interacciones, con las guías EAU
-                    como fuente. Explora por familia, por órgano o por
-                    patología.
+                    Consulta los fármacos que se usan en urología y
+                    encuéntralos por familia, por órgano o por patología.
                   </p>
                   <div className="hero-cta animate-fade-in-up delay-300">
                     <button
@@ -841,8 +933,73 @@ export default function App() {
                 </div>
               </section>
 
-              {/* ---------- Familias ---------- */}
               <div className="page">
+                {/* ---------- Escritorio personal: recientes + fármaco del día ---------- */}
+                <section className="desk-band" aria-label="Tu espacio de trabajo">
+                  {recentDrugs.length > 0 && (
+                    <div className="recent-block">
+                      <div className="desk-head">
+                        <div>
+                          <p className="eyebrow">Tu recorrido</p>
+                          <h2>Continúa donde lo dejaste</h2>
+                        </div>
+                        <button className="block-link" onClick={goIndex}>
+                          Ver todo el índice →
+                        </button>
+                      </div>
+                      <div className="recent-grid">
+                        {recentDrugs.map((d) => {
+                          const fam = familyOf(d);
+                          return (
+                            <button
+                              key={d.id}
+                              className="recent-card"
+                              style={{ "--acc": fam.accent } as React.CSSProperties}
+                              onClick={() => openDrug(d.id)}
+                            >
+                              <span className="recent-avatar">{d.name.slice(0, 2).toUpperCase()}</span>
+                              <span className="recent-main">
+                                <b>{d.name}</b>
+                                <small>
+                                  {fam.short}
+                                  {d.commercial ? ` · ${d.commercial}` : ""}
+                                </small>
+                              </span>
+                              <span className="recent-arrow" aria-hidden="true">→</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <article
+                    className="daily-card"
+                    style={{ "--acc": dailyFam.accent } as React.CSSProperties}
+                  >
+                    <div className="daily-glow" aria-hidden="true" />
+                    <p className="eyebrow">Fármaco del día</p>
+                    <div className="daily-fam">
+                      <span className="daily-icon">{dailyFam.icon}</span>
+                      {dailyFam.name}
+                    </div>
+                    <h2>{dailyDrug.name}</h2>
+                    <p className="daily-excerpt">{excerpt(dailyDrug.mechanism, 170)}</p>
+                    <div className="daily-actions">
+                      <button className="btn btn-primary" onClick={() => openDrug(dailyDrug.id)}>
+                        Abrir ficha →
+                      </button>
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => openCompare([dailyDrug.id])}
+                      >
+                        Comparar
+                      </button>
+                    </div>
+                  </article>
+                </section>
+
+                {/* ---------- Familias ---------- */}
                 <section className="block" id="familias">
                   <div className="block-head">
                     <div>
@@ -853,6 +1010,9 @@ export default function App() {
                         las patologías que trata.
                       </p>
                     </div>
+                    <button className="block-link" onClick={goIndex}>
+                      Índice A–Z de las {drugs.length} fichas →
+                    </button>
                   </div>
                   <div className="grid-fam">
                     {familyList.map((f, i) => (
@@ -987,6 +1147,7 @@ export default function App() {
                     </div>
                   </div>
                 </section>
+
               </div>
             </>
           ) : view.type === "family" && currentFamily ? (
@@ -1015,6 +1176,15 @@ export default function App() {
             />
           ) : view.type === "credits" ? (
             <CreditsView onHome={goHome} />
+          ) : view.type === "index" ? (
+            <DrugIndexView onHome={goHome} onOpen={openDrug} onCompare={openCompare} />
+          ) : view.type === "compare" ? (
+            <CompareView
+              ids={view.ids}
+              onHome={goHome}
+              onOpen={openDrug}
+              onChange={(ids) => setView({ type: "compare", ids })}
+            />
           ) : view.type === "drug" && currentDrug ? (
             <DrugView
               drug={currentDrug}
@@ -1028,6 +1198,7 @@ export default function App() {
               onOpenOrgan={openOrgan}
               onOpenCondition={openCondition}
               onOpenReading={() => setReading(true)}
+              onCompare={(ids) => openCompare(ids)}
             />
           ) : view.type === "favorites" ? (
             <div className="page">
@@ -1074,6 +1245,12 @@ export default function App() {
           <button className="footer-link" onClick={goCredits}>
             Créditos
           </button>
+          <button className="footer-link" onClick={goIndex}>
+            Índice A–Z
+          </button>
+          <button className="footer-link" onClick={() => openCompare()}>
+            Comparador
+          </button>
         </div>
       </footer>
 
@@ -1090,6 +1267,7 @@ export default function App() {
           onSearch={(q) => setQuery(q)}
           onOpenOrgan={openOrgan}
           onOpenCondition={openCondition}
+          onCompare={(ids) => openCompare(ids)}
           onClose={() => setReading(false)}
         />
       )}
@@ -1103,8 +1281,13 @@ export default function App() {
           {SvgHome}Inicio
           {view.type === "home" && !searching && <span className="nav-dot" />}
         </button>
-        <button onClick={() => setDrawer(true)}>
+        <button
+          className={`${view.type === "index" ? "active" : ""}`}
+          onClick={goIndex}
+          aria-current={view.type === "index" ? "page" : undefined}
+        >
           {SvgGrid}Índice
+          {view.type === "index" && <span className="nav-dot" />}
         </button>
         <button
           className={searching ? "active" : ""}
@@ -1148,11 +1331,6 @@ function DrugRow({
           {fam.short} · {drug.mechanism.slice(0, 110)}…
         </span>
       </span>
-      {drug.full ? (
-        <span className="tag-full">Ficha completa</span>
-      ) : (
-        <span className="tag-full">Ficha</span>
-      )}
       <span className="arrow">→</span>
     </button>
   );
@@ -1236,12 +1414,31 @@ function AxisView({
 
 function CreditsView({ onHome }: { onHome: () => void }) {
   return (
-    <div className="page">
+    <div className="page credits-page">
       <button className="back-btn" onClick={onHome}>
         ← Inicio
       </button>
-      <div className="credits">
+
+      <div className="credits-hero">
+        <p className="eyebrow">Acerca de la app</p>
         <h2>Créditos</h2>
+        <p className="credits-sub">
+          Una wiki de fármacos en urología, en español, escrita para consultar
+          rápido en la consulta y para estudiar con criterio.
+        </p>
+        <div className="credits-stats">
+          <div>
+            <b>{drugs.length}</b>
+            <span>fichas</span>
+          </div>
+          <div>
+            <b>{families.length}</b>
+            <span>familias</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="credits">
         <p>
           <b>Autor:</b> Reynel Busto González, Médico Urólogo, Hospital
           «Hermanos Ameijeiras».
@@ -1250,35 +1447,26 @@ function CreditsView({ onHome }: { onHome: () => void }) {
           <b>ORCID:</b> 0009-0003-2233-9021
         </p>
         <p>
-          UroFármacos es una wiki de fármacos en urología, en español, con{" "}
-          {drugs.length} fichas agrupadas en {families.length} familias:
-          mecanismo de acción, indicaciones, dosis habitual, efectos
-          adversos, contraindicaciones e interacciones de cada fármaco.
+          UroFármacos reúne {drugs.length} fichas agrupadas en{" "}
+          {families.length} familias: mecanismo de acción, indicaciones, dosis
+          habitual, efectos adversos, contraindicaciones e interacciones de
+          cada fármaco.
         </p>
         <p>
           <b>Fuentes:</b> guías de la Asociación Europea de Urología (EAU)
-          2025 y farmacología de Urology-Textbook.
+          2025, Urology-Textbook, Campbell-Walsh-Wein y fichas técnicas de
+          referencia.
         </p>
+
         <p className="disclaimer">
           Material docente para profesionales de la salud. No sustituye el
-          juicio clínico ni la ficha técnica oficial de cada fármaco.
+          juicio clínico ni la ficha técnica oficial de cada fármaco. Las dosis
+          son orientativas: verifica siempre la ficha técnica vigente.
         </p>
       </div>
     </div>
   );
 }
-
-const SECTIONS = [
-  { id: "sec-mecanismo", label: "Mecanismo de acción", short: "Mecanismo de acción" },
-  { id: "sec-indicaciones", label: "Indicaciones", short: "Indicaciones" },
-  { id: "sec-dosis", label: "Dosis habitual", short: "Dosis habitual" },
-  { id: "sec-efectos", label: "Efectos adversos", short: "Efectos adversos" },
-  { id: "sec-contraindicaciones", label: "Contraindicaciones y precauciones", short: "Contraindicaciones" },
-  { id: "sec-interacciones", label: "Interacciones", short: "Interacciones" },
-  { id: "sec-relacionados", label: "Fármacos relacionados", short: "Fármacos relacionados" },
-  { id: "sec-patologias", label: "Patologías que trata", short: "Patologías" },
-  { id: "sec-organos", label: "Órganos", short: "Órganos" },
-] as const;
 
 const QUICKNAV = [
   { id: "sec-mecanismo", label: "Mecanismo" },
@@ -1300,6 +1488,7 @@ export function DrugView({
   onOpenOrgan,
   onOpenCondition,
   onOpenReading,
+  onCompare,
   hideReadingButton,
   readingMode,
 }: {
@@ -1314,13 +1503,42 @@ export function DrugView({
   onOpenOrgan: (name: string) => void;
   onOpenCondition: (name: string) => void;
   onOpenReading?: () => void;
+  onCompare?: (ids: string[]) => void;
   hideReadingButton?: boolean;
   readingMode?: boolean;
 }) {
   const fam = familyOf(drug);
   const [activeSec, setActiveSec] = useState<string>(SECTIONS[0].id);
   const [copied, setCopied] = useState(false);
+  const [progress, setProgress] = useState(0);
   const copyTimer = useRef<number | undefined>(undefined);
+  const mins = readingMinutesOf(drug);
+  const familyDrugs = drugsInFamily(drug.familyId);
+  const familyIndex = familyDrugs.findIndex((d) => d.id === drug.id);
+  const prevDrug = familyIndex > 0 ? familyDrugs[familyIndex - 1] : undefined;
+  const nextDrug =
+    familyIndex >= 0 && familyIndex < familyDrugs.length - 1
+      ? familyDrugs[familyIndex + 1]
+      : undefined;
+
+  // Progreso de lectura de la ficha (solo en la vista normal; el modo
+  // lectura tiene su propio contenedor con scroll).
+  useEffect(() => {
+    if (readingMode) return;
+    if (typeof window === "undefined") return;
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      setProgress(max > 0 ? Math.min(100, Math.max(0, (doc.scrollTop / max) * 100)) : 0);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [drug.id, readingMode]);
 
   // En el modo lectura la ficha de fondo sigue montada: las secciones
   // del overlay llevan el prefijo "rm-" para no duplicar IDs, y el
@@ -1419,8 +1637,22 @@ export function DrugView({
 
   const scrollToSec = (id: string) => scrollToId(secId(id));
 
+  const printFicha = () => {
+    try {
+      window.print();
+    } catch {
+      // Entorno sin impresión (jsdom/WebView antiguo): sin efecto.
+    }
+  };
+
   return (
     <div className="page">
+      {!readingMode && (
+        <div className="read-progress" aria-hidden="true">
+          <span style={{ width: `${progress}%` }} />
+        </div>
+      )}
+
       <nav className="crumb" aria-label="Ruta de navegación">
         <button onClick={onHome}>Inicio</button>
         <span aria-hidden="true">›</span>
@@ -1429,7 +1661,10 @@ export function DrugView({
         <span>{drug.name}</span>
       </nav>
 
-      <div className="ficha-head-card animate-fade-in-up">
+      <div
+        className="ficha-head-card animate-fade-in-up"
+        style={{ "--acc": fam.accent } as React.CSSProperties}
+      >
         <div className="ficha-kicker">
           <span
             className="family-pill"
@@ -1437,25 +1672,41 @@ export function DrugView({
           >
             {fam.icon} {fam.name}
           </span>
-          {drug.full ? (
-            <span className="full-pill">
-              <span className="dot" />
-              Ficha completa
-            </span>
-          ) : (
-            <span className="full-pill">Ficha</span>
-          )}
+
         </div>
         <h1 className="ficha-title">{drug.name}</h1>
         {drug.commercial === "" ? (
           <p className="commercial disclaimer">
-            Nombres comerciales: no constan en el corpus.
+            Nombres comerciales: no constan en la ficha.
           </p>
         ) : (
           <p className="commercial">
             Nombres comerciales: <b>{drug.commercial}</b>
           </p>
         )}
+
+        <div className="ficha-facts">
+          <div className="fact">
+            <span className="fact-label">Familia</span>
+            <b>{fam.short}</b>
+          </div>
+          <div className="fact">
+            <span className="fact-label">Órganos diana</span>
+            <b>{drug.organs.join(" · ")}</b>
+          </div>
+          <div className="fact">
+            <span className="fact-label">Patologías</span>
+            <b>
+              {drug.conditions.length}{" "}
+              {drug.conditions.length === 1 ? "indicación" : "indicaciones"}
+            </b>
+          </div>
+          <div className="fact">
+            <span className="fact-label">Lectura</span>
+            <b>≈ {mins} min</b>
+          </div>
+        </div>
+
         <div className="ficha-actions">
           <button
             className={`fav${fav ? " fav-primary" : ""}`}
@@ -1464,6 +1715,12 @@ export function DrugView({
           >
             {fav ? "★ En favoritos" : "☆ Guardar en favoritos"}
           </button>
+          {onCompare && (
+            <button className="fav" onClick={() => onCompare([drug.id])}>
+              {SvgCompare}
+              Comparar
+            </button>
+          )}
           <button className="fav" onClick={copyLink}>
             {SvgLink}
             {copied ? "¡Enlace copiado!" : "Copiar enlace"}
@@ -1472,6 +1729,14 @@ export function DrugView({
             {SvgDownload}
             Exportar
           </button>
+          <button className="fav" onClick={printFicha}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M6 9V3h12v6" />
+              <path d="M6 18H4a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2" />
+              <path d="M6 14h12v7H6z" />
+            </svg>
+            Imprimir
+          </button>
           {!hideReadingButton && (
             <button className="fav" onClick={onOpenReading}>
               {SvgExpand}
@@ -1479,6 +1744,7 @@ export function DrugView({
             </button>
           )}
         </div>
+
       </div>
 
       <div className="m-quicknav">
@@ -1493,20 +1759,19 @@ export function DrugView({
         <div className="ficha-main">
           <section className="sec" id={secId("sec-mecanismo")}>
             <h2>Mecanismo de acción</h2>
-            {isGap(drug, "mechanism", "mecanismo") || !drug.mechanism.trim() ? (
-              <p className="laguna">{LAGUNA}</p>
-            ) : (
+            {drug.mechanism.trim() ? (
               <p>
                 <HighlightAll text={drug.mechanism} query={highlight} />
               </p>
+            ) : (
+              <p className="no-data">No consta en la ficha.</p>
             )}
           </section>
 
           <section className="sec" id={secId("sec-indicaciones")}>
             <h2>Indicaciones</h2>
-            {isGap(drug, "indications", "indicaciones") ||
-            drug.indications.length === 0 ? (
-              <p className="laguna">{LAGUNA}</p>
+            {drug.indications.length === 0 ? (
+              <p className="no-data">No consta en la ficha.</p>
             ) : (
               <ul>
                 {drug.indications.map((x, i) => (
@@ -1520,20 +1785,19 @@ export function DrugView({
 
           <section className="sec" id={secId("sec-dosis")}>
             <h2>Dosis habitual</h2>
-            {isGap(drug, "dose", "dosis") || !drug.dose.trim() ? (
-              <p className="laguna">{LAGUNA}</p>
-            ) : (
+            {drug.dose.trim() ? (
               <div className="dose">
                 <HighlightAll text={drug.dose} query={highlight} />
               </div>
+            ) : (
+              <p className="no-data">No consta en la ficha.</p>
             )}
           </section>
 
           <section className="sec" id={secId("sec-efectos")}>
             <h2>Efectos adversos</h2>
-            {isGap(drug, "adverse", "efectos adversos", "efectos") ||
-            drug.adverse.length === 0 ? (
-              <p className="laguna">{LAGUNA}</p>
+            {drug.adverse.length === 0 ? (
+              <p className="no-data">No consta en la ficha.</p>
             ) : (
               <ul>
                 {drug.adverse.map((x, i) => (
@@ -1547,9 +1811,8 @@ export function DrugView({
 
           <section className="sec" id={secId("sec-contraindicaciones")}>
             <h2>Contraindicaciones y precauciones</h2>
-            {isGap(drug, "contraindications", "contraindicaciones") ||
-            drug.contraindications.length === 0 ? (
-              <p className="laguna">{LAGUNA}</p>
+            {drug.contraindications.length === 0 ? (
+              <p className="no-data">No consta en la ficha.</p>
             ) : (
               <ul>
                 {drug.contraindications.map((x, i) => (
@@ -1563,9 +1826,8 @@ export function DrugView({
 
           <section className="sec" id={secId("sec-interacciones")}>
             <h2>Interacciones</h2>
-            {isGap(drug, "interactions", "interacciones") ||
-            drug.interactions.length === 0 ? (
-              <p className="laguna">{LAGUNA}</p>
+            {drug.interactions.length === 0 ? (
+              <p className="no-data">No consta en la ficha.</p>
             ) : (
               <ul>
                 {drug.interactions.map((x, i) => (
@@ -1579,9 +1841,8 @@ export function DrugView({
 
           <section className="sec" id={secId("sec-relacionados")}>
             <h2>Fármacos relacionados</h2>
-            {drug.relatedDrugs.length === 0 ||
-            isGap(drug, "related", "farmacos relacionados") ? (
-              <p className="laguna">{LAGUNA}</p>
+            {drug.relatedDrugs.length === 0 ? (
+              <p className="no-data">No consta en la ficha.</p>
             ) : (
               <div className="rel-chips">
                 {drug.relatedDrugs.map((id) => {
@@ -1650,6 +1911,9 @@ export function DrugView({
         {!readingMode && (
           <aside className="sec-index">
             <p className="lbl">En esta ficha</p>
+            <div className="sec-progress" aria-hidden="true">
+              <span style={{ width: `${progress}%` }} />
+            </div>
             {SECTIONS.map((s) => (
               <a
                 key={s.id}
@@ -1662,6 +1926,29 @@ export function DrugView({
           </aside>
         )}
       </div>
+
+      {(prevDrug || nextDrug) && (
+        <nav className="ficha-pager" aria-label="Fichas de la misma familia">
+          {prevDrug ? (
+            <button className="pager-card prev" onClick={() => onOpen(prevDrug.id)}>
+              <span className="pager-dir">← Anterior</span>
+              <b>{prevDrug.name}</b>
+              <small>{familyOf(prevDrug).short}</small>
+            </button>
+          ) : (
+            <span />
+          )}
+          {nextDrug ? (
+            <button className="pager-card next" onClick={() => onOpen(nextDrug.id)}>
+              <span className="pager-dir">Siguiente →</span>
+              <b>{nextDrug.name}</b>
+              <small>{familyOf(nextDrug).short}</small>
+            </button>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )}
     </div>
   );
 }
