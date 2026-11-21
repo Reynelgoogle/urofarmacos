@@ -273,12 +273,14 @@ function ruleBody(css, sel) {
   check("CSS horizontal: kbd ⌘K oculto", /\.search-inner kbd\s*\{[^}]*display\s*:\s*none/.test(landCss));
   check("CSS horizontal: .search-inner sin tope (max-width:none)", /max-width\s*:\s*none/.test(landCss));
 
-  // Contadores del héroe: 9 familias, 7 órganos, 103 fichas, 103 patologías.
+  // Contadores del héroe: 9 familias, 7 órganos, 103 fichas, 102 patologías.
+  // (102, no 103: el chip raro de Penicilina «Sífilis . No es fármaco de ITU»
+  // se normalizó a «Sífilis», así que hay una patología distinta menos.)
   const stats = [...doc.querySelectorAll(".hero-stats .stat")].map((s) => s.textContent.replace(/\s+/g, " ").trim());
   check("9 familias en el héroe", stats.some((s) => /^9familias/.test(s.replace(/\s/g, ""))), stats.join(" | "));
   check("103 fichas en el héroe", stats.some((s) => s.replace(/\s/g, "").startsWith("103fichas")));
   check("7 órganos en el héroe", stats.some((s) => s.replace(/\s/g, "").startsWith("7órganos")));
-  check("103 patologías en el héroe", stats.some((s) => s.replace(/\s/g, "").startsWith("103patologías")));
+  check("102 patologías en el héroe", stats.some((s) => s.replace(/\s/g, "").startsWith("102patologías")));
 
   // Interfaz sin metadatos (decisión de Rey 2026-11-17): el pie es una
   // línea corta, sin lista del corpus, sin Gauntlet ni aviso de dosis.
@@ -430,7 +432,7 @@ function ruleBody(css, sel) {
     `${panelChips.length} chips`);
   const panelFoot = (doc.querySelector(".panel-foot span")?.textContent || "");
   check("filtro litiasis: el pie cambia",
-    new RegExp(`Mostrando ${panelChips.length} de 103 patologías`).test(panelFoot), panelFoot);
+    new RegExp(`Mostrando ${panelChips.length} de 102 patologías`).test(panelFoot), panelFoot);
   await typeInto(window, panelInput, "", tick);
   check("sin filtro: 12 patologías visibles",
     doc.querySelectorAll(".panel .chips .chip").length === 12);
@@ -438,11 +440,11 @@ function ruleBody(css, sel) {
     b.textContent.includes("Ver todas las patologías"));
   check("botón Ver todas las patologías presente", !!expandBtn);
   expandBtn?.click(); await tick(); await tick();
-  check("Ver todas las patologías expande a las 103",
-    doc.querySelectorAll(".panel .chips .chip").length === 103,
+  check("Ver todas las patologías expande a las 102",
+    doc.querySelectorAll(".panel .chips .chip").length === 102,
     `${doc.querySelectorAll(".panel .chips .chip").length} chips`);
-  check("pie con 103 de 103 tras expandir",
-    /Mostrando 103 de 103 patologías/.test(doc.querySelector(".panel-foot span")?.textContent || ""));
+  check("pie con 102 de 102 tras expandir",
+    /Mostrando 102 de 102 patologías/.test(doc.querySelector(".panel-foot span")?.textContent || ""));
   check("botón cambia a Ver menos tras expandir",
     [...doc.querySelectorAll(".panel-foot .block-link")].some((b) => b.textContent.includes("Ver menos")));
   // El enlace del encabezado del bloque también alterna.

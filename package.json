@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "android:setup": "node scripts/setup-android.cjs",
+    "android:apk": "node scripts/build-apk.cjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.0",

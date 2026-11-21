@@ -75,26 +75,13 @@ npm run dev
 
 ## Empaquetado (2026-11-17)
 
-- **Android (Capacitor 8.5.0)** — appId `com.reynel.urofarmacos`, v1.0.0. `android/` NO viaja al repo (se regenera). En el PC de Rey:
+- **Android (Capacitor 8.5.0)** — appId `com.reynel.urofarmacos`, v1.0.0. `android/` NO viaja al repo (se regenera). En el PC de Rey, un solo comando lo deja listo y otro compila la APK:
   ```sh
   npm install
-  npm run build
-  npx cap add android   # solo la primera vez
-  npx cap sync android
+  npm run android:setup   # solo la primera vez (o tras borrar android/)
+  npm run android:apk     # compila la APK debug
   ```
-  Tras `cap add android`, dos pasos manuales (el `cap sync` no los borra, verificado):
-  1. Re-aplicar a mano al inicio de `android/app/build.gradle`:
-  ```groovy
-  configurations.all {
-      exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
-      exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
-  }
-  ```
-  2. Regenerar los iconos launcher oficiales (el `cap add` pone el robot por defecto de Capacitor):
-  ```sh
-  python3 scripts/make-launcher-icons.py public/urofarmacos-icon.png
-  ```
-  Genera los 15 PNG (legacy + round en 5 densidades, foreground adaptativo de 432 px con el círculo en la zona segura de 66 dp) y los XML de fondo con el teal muestreado del maestro (#045B6C).
-  Luego compilar en Android Studio o `./gradlew :app:assembleDebug`, con **JDK 21** como Gradle JDK y build-tools **35.0.0** (compileSdk/targetSdk 36, minSdk 24). Verificado en verde aquí (`assembleDebug --offline`, APK debug 5,3 MB) con el entorno cacheado (AGP 8.13.0, Gradle 9.1.0, JDK 21).
+  La APK queda en `android/app/build/outputs/apk/debug/app-debug.apk`. `android:setup` hace solo lo que falta: genera `android/` con `npx cap add android`, re-aplica el fix de kotlin-stdlib-jdk7/jdk8 en `android/app/build.gradle` (SIN ESTO FALLA `:app:checkDebugDuplicateClasses`), regenera los iconos launcher oficiales desde el maestro y corre `npx cap sync android`. `android:apk` corre `npm run build` + `cap sync` + `:app:assembleDebug` (con `gradlew.bat` en Windows). Requiere **JDK 21** como Gradle JDK y build-tools **35.0.0** (compileSdk/targetSdk 36, minSdk 24); si Gradle no encuentra Java, define `JAVA_HOME` apuntando a tu JDK 21 (en Android Studio: File > Settings > Build Tools > Gradle > Gradle JDK). Verificado en verde aquí (`assembleDebug --offline`, APK debug 5,4 MB) con el entorno cacheado (AGP 8.13.0, Gradle 9.1.0, JDK 21).
+  Pasos manuales (por si el script no corre en tu PC): `npm install`, `npm run build`, `npx cap add android` (solo la 1ª vez), `npx cap sync android`, re-aplicar a mano al inicio de `android/app/build.gradle` el bloque `configurations.all { exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7" / "kotlin-stdlib-jdk8" }`, regenerar los iconos con `python3 scripts/make-launcher-icons.py public/urofarmacos-icon.png` (15 PNG legacy + round en 5 densidades, foreground adaptativo de 432 px con el círculo en la zona segura de 66 dp, fondo teal #045B6C), y compilar en Android Studio o `./gradlew :app:assembleDebug`.
 - **Escritorio (Tauri 2.12.6)** — `src-tauri/` (identifier `com.reynel.urofarmacos`, ventana 1280×800, CSP estricta 100% local). El exe de Windows lo construye GitHub Actions cuando el push toca `src-tauri/`, el propio workflow o la web (`src/`, `public/`, `index.html`, `package.json`, `package-lock.json`, `vite.config.ts`, `tsconfig*.json`) — el exe empaqueta la web, así que un cambio web dispara el build; también a mano con workflow_dispatch. Los cambios de Android, scripts o README no lo disparan. Dos artefactos: `UroFarmacos-windows-installer` (instalador NSIS) y `UroFarmacos-windows-portable` (exe suelto de `target/release/`, como el portable de UroApp). `cargo check`/`cargo build` verificados en Linux (necesitan las dev libs de GTK/WebKit; no sobreviven a un reemplazo de la VM).
 - Splash de Android: pendiente de generar. Para la APK debug no hace falta.
