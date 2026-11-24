@@ -394,7 +394,10 @@ function ruleBody(css, sel) {
   const crumbHome = doc.querySelector(".crumb button");
   crumbHome?.click(); await tick(); await tick();
   check("vuelta a Inicio con el breadcrumb", !!doc.querySelector(".hero"));
-  for (const name of ["naftopidil", "cabazitaxel", "denosumab"]) {
+  // Cabazitaxel ya no va en este bucle: sus contraindicaciones e
+  // interacciones quedaron en LAGUNA por decisión del árbitro 2026-11-23
+  // (eran trasplantes de docetaxel/abiraterona); se verifica aparte abajo.
+  for (const name of ["naftopidil", "denosumab"]) {
     await search(name);
     const row = [...doc.querySelectorAll(".drug-row")].find((r) => r.textContent.toLowerCase().includes(name));
     if (!row) { check(`ficha ${name}: encontrada en búsqueda`, false); continue; }
@@ -409,6 +412,22 @@ function ruleBody(css, sel) {
       !/LAGUNA|laguna/i.test(doc.body.textContent || ""));
     doc.querySelector(".crumb button")?.click(); await tick(); await tick();
   }
+
+  // Cabazitaxel en LAGUNA (árbitro 2026-11-23): ambas secciones deben
+  // mostrar «No consta en la ficha.» y ninguna marca de laguna.
+  await search("cabazitaxel");
+  const cabRow = [...doc.querySelectorAll(".drug-row")].find((r) => r.textContent.toLowerCase().includes("cabazitaxel"));
+  check("ficha cabazitaxel: encontrada en búsqueda", !!cabRow);
+  cabRow?.click(); await tick(); await tick();
+  const cabContra = doc.querySelector(".sec#sec-contraindicaciones");
+  const cabInter = doc.querySelector(".sec#sec-interacciones");
+  check("ficha cabazitaxel: contraindicaciones «No consta en la ficha.»",
+    (cabContra?.textContent || "").includes("No consta en la ficha."));
+  check("ficha cabazitaxel: interacciones «No consta en la ficha.»",
+    (cabInter?.textContent || "").includes("No consta en la ficha."));
+  check("ficha cabazitaxel: sin LAGUNA visible",
+    !/LAGUNA|laguna/i.test(doc.body.textContent || ""));
+  doc.querySelector(".crumb button")?.click(); await tick(); await tick();
 
   // Eje por órgano: abrir Próstata para contar sus fichas.
   check("vuelta a Inicio tras las fichas", !!doc.querySelector(".hero"));

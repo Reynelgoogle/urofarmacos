@@ -583,11 +583,10 @@ export const drugs: Drug[] = [
     ],
     dose: "25–75 mg/día; cápsulas de 25 y 50 mg; mercado solo en países asiáticos. Un estudio comparó dosis alta (75 mg) con dosis baja (25 mg), con eficacia comparable en alivio de síntomas pero mejores resultados en flujo con la dosis superior; naftopidil 75 mg logró mejores resultados en síntomas de vaciado en pacientes con síntomas moderados al inicio.",
     adverse: [
-      "Mareo, cefalea, astenia y somnolencia; suelen aparecer al inicio y mejorar con el tratamiento continuado.",
-      "Hipotensión postural, palpitaciones, edema periférico y congestión nasal; rara vez síncope.",
-      "Eyaculación retrógrada o disminución del volumen eyaculado; disfunción eréctil y disminución de la libido.",
+      "Mareo, cefalea y astenia.",
+      "Hipotensión postural, palpitaciones y congestión nasal; rara vez síncope.",
+      "Eyaculación anormal o disminución/ausencia del volumen eyaculado. Los alfabloqueantes no afectan negativamente la libido ni causan disfunción eréctil (EAU 2025).",
       "Síndrome del iris flácido intraoperatorio (IFIS) en cirugía de cataratas; comunicar el tratamiento al oftalmólogo.",
-      "Reacciones cutáneas de hipersensibilidad y elevación de transaminasas, habitualmente leves y reversibles.",
     ],
     contraindications: [
       "Hipersensibilidad a naftopidil o a cualquiera de los excipientes.",
@@ -1112,7 +1111,7 @@ export const drugs: Drug[] = [
       "Tratamiento sintomático de los síntomas de urgencia asociados a la vejiga hiperactiva en adultos",
       "En el ensayo pivotal fase III EMPOWUR (aleatorizado, doble ciego, 12 semanas; vibegrón 75 mg frente a placebo frente a tolterodina; n=1518), el vibegrón mejoró la frecuencia miccional diaria media, los episodios de incontinencia urinaria de urgencia y aumentó el volumen medio miccionado frente a placebo",
       "La EAU señala que el vibegrón (75 mg o 100 mg) produjo mejoría significativa de los episodios de urgencia y de IUU y del volumen medio miccionado frente a placebo, y también frente a imidafenacina y tolterodina",
-      "La EAU (guía masculina) indica que el vibegrón aún no está autorizado en Europa",
+      "La EAU (guía masculina) indica que el vibegrón aún no está autorizado en Europa — ver discrepancia 6 (UroCampus, actualizado 2025, cita EMA 2024)",
       "UroCampus: segundo agonista beta-3 disponible (FDA 2020; EMA 2024), con perfil de tolerabilidad similar al mirabegrón",
     ],
     dose: "Adultos: 75 mg por vía oral una vez al día; no es necesario ajuste de dosis en insuficiencia renal leve a grave (FG 15-90 mL/min) ni en insuficiencia hepática leve a moderada (Child-Pugh A o B). UroCampus: 75 mg una vez al día. Campbell: en Japón se estudiaron dosis de 50 y 100 mg; en el estudio internacional (EMPOWUR) 75 mg.",
@@ -1559,9 +1558,7 @@ export const drugs: Drug[] = [
       "En la DE neurógena debe usarse una dosis baja por el riesgo de priapismo; ante una erección mantenida más de 4 horas está indicada la descompresión",
     ],
     interactions: [
-      "Hipotensión aditiva con antihipertensivos, nitratos, diuréticos, alfabloqueantes y otros vasodilatadores; vigilar la presión arterial.",
-      "No combinar con inhibidores de la PDE5 ni con otros vasodilatadores intracavernosos por riesgo de priapismo e hipotensión; separar las pautas según protocolo.",
-      "Anticoagulantes, antiagregantes y trastornos de la coagulación aumentan el riesgo de sangrado en el sitio de inyección.",
+      "La combinación de PDE5I con alprostadil (tópico/intrauretral o intracavernoso) y las mezclas intracavernosas (Trimix/Bimix) se emplean en casos refractarios o con respuesta insuficiente; iniciar con precaución y evaluación en consulta por el posible agravamiento de complicaciones (p. ej., priapismo). No es una combinación prohibida.",
       "El uso intrauretral con preservativo es obligatorio si la pareja está embarazada; no se han descrito interacciones sistémicas relevantes con la vía tópica.",
     ],
     relatedDrugs: [
@@ -1753,7 +1750,7 @@ export const drugs: Drug[] = [
       "En el embarazo: puede considerarse (no en caso de déficit de glucosa-6-fosfato deshidrogenasa ni al final del embarazo)",
       "No debe emplearse en la pielonefritis ni en la prostatitis, porque no alcanza el parénquima ni la próstata; la EAU 2025 lo prohíbe expresamente en pielonefritis",
     ],
-    dose: "Cistitis no complicada: 100 mg de liberación sostenida 1-0-1 o 1-1-1 durante 5–7 días; la dosis máxima diaria en niños y adultos no debe superar 5 mg/kg de peso corporal. La EAU 2025 precisa: macrocristales 50–100 mg cuatro veces al día durante 5 días; monohidrato/macrocristales 100 mg b.i.d. durante 5 días; macrocristales de liberación prolongada 100 mg b.i.d.. UroCampus coincide con 100 mg/12 h durante 5 días. ITU complicada (trastornos del vaciado vesical, portadores de sonda): 100 mg 1-0-1 o 0-0-1 durante un máximo de 14 días; dosis máxima diaria 2–3 mg/kg. Profilaxis de ITU recurrentes: 50–100 mg de liberación sostenida 0-0-1 durante un máximo de seis meses; dosis máxima diaria 1,2 mg/kg. En el embarazo: nitrofurantoína 50 mg/12 h durante 5–7 días; profilaxis nocturna 50 mg por la noche hasta la semana 37.",
+    dose: "Cistitis no complicada: 100 mg de liberación sostenida 1-0-1 o 1-1-1 durante 5–7 días; la dosis máxima diaria en niños y adultos no debe superar 5 mg/kg de peso corporal. La EAU 2025 precisa: macrocristales 50–100 mg cuatro veces al día durante 5 días; monohidrato/macrocristales 100 mg b.i.d. durante 5 días; macrocristales de liberación prolongada 100 mg b.i.d. durante 5 días UroCampus coincide con 100 mg/12 h durante 5 días. ITU complicada (trastornos del vaciado vesical, portadores de sonda): 100 mg 1-0-1 o 0-0-1 durante un máximo de 14 días; dosis máxima diaria 2–3 mg/kg. Profilaxis de ITU recurrentes: 50–100 mg de liberación sostenida 0-0-1 durante un máximo de seis meses; dosis máxima diaria 1,2 mg/kg. En el embarazo: nitrofurantoína 50 mg/12 h durante 5–7 días; profilaxis nocturna 50 mg por la noche hasta la semana 37.",
     adverse: [
       "Posibles efectos adversos significativos, sobre todo durante el tratamiento prolongado; suspender inmediatamente si aparecen disnea, tos, fiebre, colestasis o síntomas neurológicos; durante el tratamiento prolongado son necesarios hemograma y pruebas de función hepática y renal",
       "Pulmón: neumonía intersticial e incluso fibrosis pulmonar mortal; suspender de inmediato si aparecen síntomas respiratorios",
@@ -2042,7 +2039,7 @@ export const drugs: Drug[] = [
       "UroCampus: cefazolina (primera) y cefuroxima (segunda) son las opciones clásicas de profilaxis quirúrgica perioperatoria; ceftriaxona y cefotaxima son alternativas en la pielonefritis aguda febril; ceftazidima y cefepima añaden actividad antipseudomónica; las formulaciones orales (cefixima, ceftibuteno, cefpodoxima) permiten desescalar o completar pautas",
       "En el embarazo pueden considerarse penicilinas, cefalosporinas, fosfomicina y nitrofurantoína",
     ],
-    dose: "Cefazolina: adultos 1 g 1-1-1 IV; niños 60 mg/kg/día en tres dosis; reducción de dosis en enfermedad renal crónica. Cefuroxima: ITU en adultos 250–500 mg v.o. 1-0-1 o 1,5 g 1-1-1 IV; niños 25 mg/kg 1-1-1 IV; en insuficiencia renal con FG inferior a 20 ml/min: 0,75 g dos veces al día, y por debajo de 10 ml/min una vez al día 0,75 g. Cefotaxima: adultos 3–6 g/día (niños 50–100 mg/kg/día) en tres dosis; con FG inferior a 50 ml/min, la dosis diaria (tras la dosis inicial normal) se reduce al 50 %; con FG inferior a 10 ml/min, al 25 %. Ceftriaxona: 1–2 g una vez al día IV en adultos; niños 50–80 mg/kg; gonorrea: 500 mg IM o IV en dosis única Ceftibuteno: adultos 400 mg 1-0-0; niños 9 mg/kg 1-0-0; reducir a la mitad con FG de 50–30 ml/min; con FG de 29–5 ml/min, solo la cuarta parte. Cefixima: adultos 200 mg 1-0-1 o 400 mg 1-0-0; niños 4 mg/kg 1-0-1 o 8 mg/kg 1-0-0; con insuficiencia renal grave (FG < 20 ml/min), limitar a 200 mg una vez al día. Cefpodoxima: adultos 100–200 mg 1-0-1; niños 4 mg/kg 1-0-1; con FG de 40–10 ml/min, limitar a una vez al día; con FG < 10 ml/min, una dosis cada dos días. Profilaxis quirúrgica (UroCampus): cefazolina 1 g IV (2 g en pacientes > 80 kg) en cirugía sin penetrar el tracto urinario. En ITU complicada (UroCampus): ceftriaxona 1 g/24 h o cefotaxima 1–2 g/8–12 h parenteral 24–48 h, luego oral con cefixima 400 mg/día, cefuroxima 500 mg/12 h o cefpodoxima 200 mg/12 h durante 10–14 días.",
+    dose: "Cefazolina: adultos 1 g 1-1-1 IV; niños 60 mg/kg/día en tres dosis; reducción de dosis en enfermedad renal crónica. Cefuroxima: ITU en adultos 250–500 mg v.o. 1-0-1 o 1,5 g 1-1-1 IV; niños 25 mg/kg 1-1-1 IV; en insuficiencia renal con FG inferior a 20 ml/min: 0,75 g dos veces al día, y por debajo de 10 ml/min una vez al día 0,75 g. Cefotaxima: adultos 3–6 g/día (niños 50–100 mg/kg/día) en tres dosis; con FG inferior a 50 ml/min, la dosis diaria (tras la dosis inicial normal) se reduce al 50 %; con FG inferior a 10 ml/min, al 25 %. Ceftriaxona: 1–2 g una vez al día IV en adultos; niños 50–80 mg/kg; gonorrea: 1–2 g IM o IV en dosis única — véase «Discrepancias detectadas» (500 mg frente a 1–2 g de la EAU 2025 en gonorrea; manda EAU). Ceftibuteno: adultos 400 mg 1-0-0; niños 9 mg/kg 1-0-0; reducir a la mitad con FG de 50–30 ml/min; con FG de 29–5 ml/min, solo la cuarta parte. Cefixima: adultos 200 mg 1-0-1 o 400 mg 1-0-0; niños 4 mg/kg 1-0-1 o 8 mg/kg 1-0-0; con insuficiencia renal grave (FG < 20 ml/min), limitar a 200 mg una vez al día. Cefpodoxima: adultos 100–200 mg 1-0-1; niños 4 mg/kg 1-0-1; con FG de 40–10 ml/min, limitar a una vez al día; con FG < 10 ml/min, una dosis cada dos días. Profilaxis quirúrgica (UroCampus): cefazolina 1 g IV (2 g en pacientes > 80 kg) en cirugía sin penetrar el tracto urinario. En ITU complicada (UroCampus): ceftriaxona 1 g/24 h o cefotaxima 1–2 g/8–12 h parenteral 24–48 h, luego oral con cefixima 400 mg/día, cefuroxima 500 mg/12 h o cefpodoxima 200 mg/12 h durante 10–14 días.",
     adverse: [
       "Reacciones alérgicas desde exantema hasta anafilaxia: 1–4 %; el riesgo de alergia cruzada con la penicilina es de aproximadamente el 10 %",
       "Efectos digestivos: náuseas y diarrea frecuentes, así como elevación de enzimas hepáticas; enterocolitis pseudomembranosa rara pero posible",
@@ -2420,7 +2417,7 @@ export const drugs: Drug[] = [
       "UroCampus coincide: en la gangrena de Fournier, piperacilina-tazobactam + clindamicina o metronidazol; y en profilaxis de cirugía con uso de intestino: tobramicina + metronidazol, o cefalosporina de 2ª/3ª generación (+ metronidazol si precisa)",
       "No tiene actividad frente a los uropatógenos aerobios convencionales",
     ],
-    dose: "Intravenosa: 0,5 g IV 1-0-1 o 1-1-1-1. Oral: 0,4 g 1-1-1 o 0,5 g 1-0-1. Es necesaria una reducción de dosis en pacientes con insuficiencia hepática o renal grave. Tratamiento de la tricomoniasis: metronidazol 1500–2000 mg v.o. en dosis única en varones; en mujeres, tratamiento durante siete días: 500 mg 1-0-1 v.o.",
+    dose: "Intravenosa: 0,5 g IV 1-0-1 o 1-1-1-1. Oral: 0,4 g 1-1-1 o 0,5 g 1-0-1. Es necesaria una reducción de dosis en pacientes con insuficiencia hepática o renal grave. Tratamiento de la tricomoniasis: metronidazol 1500–2000 mg v.o. en dosis única.",
     adverse: [
       "Los efectos adversos graves son raros con la dosis indicada y duración de hasta una semana; con tratamientos más largos, el riesgo aumenta significativamente y hay evidencia de mayor riesgo mutagénico en experimentos con animales",
       "Tubo digestivo: frecuentes, trastornos del gusto, náuseas, vómitos, diarrea; rara, pancreatitis",
@@ -2646,7 +2643,7 @@ export const drugs: Drug[] = [
       "La EAU 2025 recoge la instilación única de mitomicina C (junto a epirrubicina, pirarubicina o gemcitabina) como opción que reduce la recurrencia intravesical tras RTU, y la instilación intracavitaria precoz de mitomicina C tras cirugía del tracto urinario superior para reducir el riesgo de recurrencia vesical",
       "También se emplea como radiosensibilizante con 5-fluorouracilo en terapia trimodal de preservación vesical en MIBC seleccionado",
     ],
-    dose: "Para optimizar la actividad, alcalinizar la orina con bicarbonato sódico, con dosis la noche anterior y la mañana de la instilación; para lograr un tiempo de permanencia de 2 horas, el paciente debe beber solo pequeñas cantidades antes de la instilación. Quimioterapia intravesical: instilar 20–40 mg de mitomicina C por vía intravesical con sonda de un solo uso una vez por semana durante 6 semanas; valorar la respuesta sobre todo con cistoscopia y citología urinaria; si la quimioterapia intravesical es eficaz y bien tolerada, considerar mantenimiento con instilaciones mensuales de 20–40 mg hasta 1 año Profilaxis de recurrencia tras RTU: una única instilación intravesical de 40 mg de mitomicina C tras resección completa de un tumor vesical no músculo-invasivo, siempre que no haya perforación ni sangrado postoperatorio significativo que requiera irrigación. Profilaxis tras nefroureterectomía: una única instilación intravesical de 40 mg, siempre que se haya logrado un cierre vesical seguro. El HHA coincide: instilación única inmediata de mitomicina C 40 mg/40 mL (o epirrubicina 50–80 mg, o gemcitabina 1 g/100 mL) en las primeras 24 h y, a ser posible, en las primeras 2–6 h tras la RTU, con retención de 1–2 h; en inducción, 30–40 mg semanal × 6–8 con mantenimiento ≤ 1 año. UroCampus precisa la dosis única inmediata durante 30–60 min en las primeras 6 h tras la RTU, y la quimioterapia diferida iniciada 1–4 semanas tras la RTU con instilaciones semanales durante 6–8 semanas.",
+    dose: "Para optimizar la actividad, alcalinizar la orina con bicarbonato sódico, con dosis la noche anterior y la mañana de la instilación; para lograr un tiempo de permanencia de 2 horas, el paciente debe beber solo pequeñas cantidades antes de la instilación. Quimioterapia intravesical: instilar 20–40 mg de mitomicina C por vía intravesical con sonda de un solo uso una vez por semana durante 6 semanas; valorar la respuesta sobre todo con cistoscopia y citología urinaria; si la quimioterapia intravesical es eficaz y bien tolerada, considerar mantenimiento con instilaciones mensuales de 20–40 mg hasta 1 año. Profilaxis de recurrencia tras RTU: una única instilación intravesical de 40 mg de mitomicina C tras resección completa de un tumor vesical no músculo-invasivo, siempre que no haya perforación ni sangrado postoperatorio significativo que requiera irrigación. Profilaxis tras nefroureterectomía: una única instilación intravesical de 40 mg, siempre que se haya logrado un cierre vesical seguro. El HHA coincide: instilación única inmediata de mitomicina C 40 mg/40 mL (o epirrubicina 50–80 mg, o gemcitabina 1 g/100 mL) en las primeras 24 h y, a ser posible, en las primeras 2–6 h tras la RTU, con retención de 1–2 h; en inducción, 30–40 mg semanal × 6–8 con mantenimiento ≤ 1 año. UroCampus precisa la dosis única inmediata durante 30–60 min en las primeras 6 h tras la RTU, y la quimioterapia diferida iniciada 1–4 semanas tras la RTU con instilaciones semanales durante 6–8 semanas.",
     adverse: [
       "La administración intravesical es en general bien tolerada (a diferencia de BCG intravesical); los efectos adversos locales y sistémicos graves son muy raros",
       "Frecuencia 1–10 %: polaquiuria, disuria y hematuria; reacciones alérgicas cutáneas",
@@ -2757,19 +2754,8 @@ export const drugs: Drug[] = [
       "La EAU recoge que los eventos adversos grado 3–4 asociados al tratamiento fueron significativamente más frecuentes con cabazitaxel, en particular hematológicos (68,2 % frente a 47,3 %) pero también no hematológicos (57,4 % frente a 39,8 %)",
       "UroCampus añade que requiere hemograma y perfil hepático previos y vigilancia de neutropenia y diarrea",
     ],
-    contraindications: [
-      "Neutrófilos ≤ 1.500/mm³.",
-      "Hipersensibilidad grave a cabazitaxel o a productos formulados con polisorbato 80.",
-      "Insuficiencia hepática grave (bilirrubina total > 3 veces el límite superior normal).",
-      "Embarazo y lactancia; no está indicado en mujeres.",
-    ],
-    interactions: [
-      "Evitar inhibidores potentes de CYP3A4 (ketoconazol, itraconazol, claritromicina, ritonavir, atazanavir, indinavir, nefazodona, nelfinavir, saquinavir, telitromicina, voriconazol); si son imprescindibles, reducir la dosis un 25 %.",
-      "Los inductores potentes de CYP3A4 (rifampicina, carbamazepina, fenitoína, hierba de San Juan) pueden reducir la exposición y la eficacia.",
-      "Mielosupresión aditiva con otros citotóxicos o radioterapia; vigilar neutrófilos y usar G-CSF según protocolo.",
-      "Evitar vacunas vivas durante el tratamiento.",
-      "Precaución con fármacos hepatotóxicos y con sustratos de CYP3A4 de margen estrecho.",
-    ],
+    contraindications: [],
+    interactions: [],
     relatedDrugs: ["docetaxel", "cisplatino", "carboplatino"],
     conditions: ["Cáncer de próstata metastásico resistente a la castración"],
     organs: ["Próstata"],
@@ -3455,10 +3441,8 @@ export const drugs: Drug[] = [
       "El BCG se contraindica en el contexto de un urotelio perturbado por el riesgo de sepsis por BCG",
     ],
     interactions: [
-      "Evitar la instilación concomitante con otros agentes intravesicales, especialmente quimioterapia o interferón, por toxicidad aditiva.",
-      "Los inmunosupresores y corticosteroides sistémicos aumentan el riesgo de infección diseminada por BCG; valorar la suspensión.",
-      "Los antibióticos con actividad antituberculosa pueden inactivar el BCG; no administrarlos de forma concomitante salvo tratamiento de una complicación.",
-      "No se han descrito interacciones farmacocinéticas sistémicas relevantes.",
+      "Las combinaciones de BCG con quimioterapia intravesical (MMC) o interferón-α se han estudiado: MMC + BCG es más eficaz que BCG solo pero con mayor toxicidad; BCG + IFN no mostró diferencia clara frente a BCG solo. No hay recomendación de evitarlas por principio; son regímenes en investigación/uso seleccionado.",
+      "La profilaxis antibiótica rutinaria durante un curso de BCG puede inhibir su eficacia; en cambio, quinolonas a corto plazo tras la instilación reducen los efectos secundarios sin afectar recurrencia ni progresión. Los antituberculosos (isoniacida, rifampicina, etambutol) son el tratamiento de la infección diseminada o las complicaciones por BCG, administrándose tras suspender el BCG.",
     ],
     relatedDrugs: ["pembrolizumab", "nivolumab", "atezolizumab"],
     conditions: [
@@ -3781,7 +3765,7 @@ export const drugs: Drug[] = [
       "No se han realizado estudios formales; degarelix no es sustrato ni inductor/inhibidor del CYP450.",
       "Precaución con fármacos que prolongan el QT (antiarrítmicos clase IA/III, metadona, azoles, macrólidos).",
       "Puede interferir en las pruebas de función hipofisaria-gonadal.",
-      "No se esperan interacciones con anticoagulantes, pero la ADT aumenta el riesgo cardiovascular y tromboembólico.",
+      "No se describe interacción del degarelix con anticoagulantes. La ADT aumenta el riesgo cardiovascular (enfermedad cardiovascular, infarto de miocardio; EAU § 8.2.5.5); el riesgo tromboembólico duplicado que recoge la EAU 2025 corresponde a los inhibidores de PARP, no a la ADT.",
     ],
     relatedDrugs: [
       "relugolix",
@@ -3819,7 +3803,8 @@ export const drugs: Drug[] = [
       "La EAU añade que, tras suspender relugolix, la recuperación de testosterona fue más rápida y frecuente que tras leuprolida (54 % frente a 3,2 % a las 48 semanas; 86 frente a 112 días)",
     ],
     contraindications: [
-      "Contraindicado tras la castración quirúrgica (resulta inútil); en niños y mujeres; hipersensibilidad grave al fármaco; intervalo QT superior a 450 ms; transaminasas persistentemente elevadas (el doble del límite superior); insuficiencia hepática o renal graves",
+      "Las de la clase según UT (antagonistas de la GnRH): contraindicado (e inútil) tras castración quirúrgica; niños y mujeres; reacciones alérgicas graves tras la inyección; intervalo QT superior a 450 ms; concentraciones de transaminasas persistentemente elevadas (el doble del valor estándar); insuficiencia hepática y renal",
+      "Nota: la mención a «reacciones tras la inyección» corresponde al degarelix; no hay contraindicaciones propias descritas para el relugolix oral",
     ],
     interactions: [
       "Evitar los inhibidores orales de P-gp (ciclosporina, verapamilo, ketoconazol, claritromicina); si es imprescindible, administrar relugolix primero y separar al menos 6 horas.",
@@ -4144,7 +4129,7 @@ export const drugs: Drug[] = [
     adverse: [
       "Efectos secundarios compatibles con el estado hipogonadal: pérdida de la libido, disfunción eréctil y letargo",
       "Pueden presentarse complicaciones cardiovasculares graves (hasta el 10 % de los pacientes), ginecomastia (20 %) y casos raros de hepatotoxicidad fulminante",
-      "La EAU indica que los principales efectos farmacológicos son secundarios a la castración, mientras que los efectos no farmacológicos son la toxicidad cardiovascular (4-40 % para el acetato de ciproterona) y la hepatotoxicidad; añade que parece asociarse a una peor supervivencia global en comparación con los análogos de LHRH y que no hay beneficio en comparación con la flutamida ",
+      "La EAU indica que los principales efectos farmacológicos son secundarios a la castración, mientras que los efectos no farmacológicos son la toxicidad cardiovascular (4-40 % para el acetato de ciproterona) y la hepatotoxicidad; añade que parece asociarse a una peor supervivencia global en comparación con los análogos de LHRH y que no hay beneficio en comparación con la flutamida (véase «Discrepancias detectadas» sobre la frecuencia de ginecomastia: la EAU la describe como «bastante rara» con antiandrógenos esteroideos, frente al 20 % de Campbell; manda la EAU)",
     ],
     contraindications: [
       "Hipersensibilidad a ciproterona o a los excipientes.",
@@ -4351,11 +4336,7 @@ export const drugs: Drug[] = [
       "UroCampus: la adrenalina está contraindicada o requiere prudencia extrema en zonas acras (pene, glande, dedos), en cardiopatía isquémica o hipertensión mal controlada y no debe inyectarse nunca por vía intravenosa accidental; el bloqueo del nervio dorsal del pene es siempre sin adrenalina por el riesgo de isquemia del glande",
     ],
     interactions: [
-      "Toxicidad aditiva con otros anestésicos locales o antiarrítmicos clase I (lidocaína, mexiletina, flecainida); evitar la administración simultánea por varias vías.",
-      "La cimetidina y los inhibidores de CYP3A4 pueden aumentar los niveles de lidocaína; los inductores pueden reducirlos.",
-      "La epinefrina puede interactuar con IMAO, antidepresivos tricíclicos, betabloqueantes no selectivos, cocaína y alcaloides del ergot; evitar o monitorizar.",
-      "Precaución con fármacos que disminuyen el umbral convulsivo o prolongan el QT.",
-      "No mezclar con soluciones alcalinas ni con otros fármacos en la misma jeringa salvo compatibilidad documentada.",
+      "La lidocaína se alcaliniza habitualmente con bicarbonato sódico para instilación intravesical (mejor penetración urotelial); también se combina en instilaciones con heparina o hidrocortisona. No se describe ninguna prohibición general de mezclar anestésicos locales con soluciones alcalinas u otros fármacos.",
     ],
     relatedDrugs: ["pentosan-polisulfato-pps", "contraste-yodado"],
     conditions: [
@@ -4442,7 +4423,7 @@ export const drugs: Drug[] = [
     interactions: [
       "No se han descrito interacciones farmacocinéticas relevantes.",
       "Evitar la asociación con otro inhibidor de RANKL o bisfosfonato por toxicidad ósea aditiva.",
-      "Corregir la hipocalcemia antes de iniciar; precaución con fármacos que reducen el calcio (diuréticos de asa, aminoglucósidos) y con suplementos de calcio y vitamina D.",
+      "Corregir la hipocalcemia antes de iniciar (ingesta adecuada de calcio y vitamina D) y medir/monitorizar el calcio sérico, especialmente en pacientes con factores de riesgo de hipocalcemia o con medicación que afecta al calcio sérico. El calcio (> 500 mg/día) y la vitamina D (> 400 UI/día) se recomiendan en todos los pacientes, salvo hipercalcemia — no son una precaución, son parte del tratamiento.",
       "Precaución con inmunosupresores por mayor riesgo de infección.",
     ],
     relatedDrugs: ["acido-zoledronico"],
@@ -4542,7 +4523,7 @@ export const drugs: Drug[] = [
       "EAU 2025: tiopronina 250–2.000 mg/día para reducir la formación de cálculos en pacientes con excreción de cisteína > 3 mmol/día o cuando otras medidas son insuficientes (recomendación fuerte, junto con otras medidas)",
       "Agente de primera línea por su mejor tolerancia; fármaco de elección por mejor tolerancia",
     ],
-    dose: "EAU 2025 (Tabla 4.6): dosis inicial 800 mg/día; media 2.000 mg/día; en niños > 20 kg, dosis inicial 15 mg/kg/día; evitar dosis > 50 mg/kg/día; no hay información sobre la dosis máxima; puede iniciarse con dosis muy baja si hubo reacciones previas a tiopronina o penicilamina; titular según la frecuencia de episodios de cálculo, los efectos adversos y la función renal, bajo supervisión experta con monitorización estrecha. EAU 2025 (§ 4.9.3): tiopronina 250–2.000 mg/día; en la Figura 4.9, 250 mg/día hasta 2.000 mg/día como dosis máxima. Campbell: dosis típicas a partir de 300 mg VO dos veces al día, hasta un máximo de 1.200 mg/día, ajustadas para lograr concentraciones urinarias de cistina inferiores a 250 mg/L de orina. UroCampus: 400–1.200 mg/día en dos o tres tomas; 800–1.200 mg/día en 3 tomas; en cistinuria refractaria, 0,5–1 g/día en varias tomas. EAU 2025: 250–2.000 mg/día Monitorizar la cistinuria y ajustar las dosis; controlar hematimetría y función renal; medición puntual de proteína en orina al inicio y durante el seguimiento.",
+    dose: "EAU 2025 (Tabla 4.6): dosis inicial 800 mg/día; media 2.000 mg/día; en niños > 20 kg, dosis inicial 15 mg/kg/día; evitar dosis > 50 mg/kg/día; no hay información sobre la dosis máxima; puede iniciarse con dosis muy baja si hubo reacciones previas a tiopronina o penicilamina; titular según la frecuencia de episodios de cálculo, los efectos adversos y la función renal, bajo supervisión experta con monitorización estrecha. EAU 2025 (§ 4.9.3): tiopronina 250–2.000 mg/día; en la Figura 4.9, 250 mg/día hasta 2.000 mg/día como dosis máxima. Campbell: dosis típicas a partir de 300 mg VO dos veces al día, hasta un máximo de 1.200 mg/día, ajustadas para lograr concentraciones urinarias de cistina inferiores a 250 mg/L de orina. UroCampus: 400–1.200 mg/día en dos o tres tomas; 800–1.200 mg/día en 3 tomas; en cistinuria refractaria, 0,5–1 g/día en varias tomas. EAU 2025: 250–2.000 mg/día. Monitorizar la cistinuria y ajustar las dosis; controlar hematimetría y función renal; medición puntual de proteína en orina al inicio y durante el seguimiento.",
     adverse: [
       "EAU 2025 (Tabla 4.6): riesgo de proteinuria",
       "Los efectos adversos a menudo llevan a suspender el tratamiento, por ejemplo cuando se desarrolla síndrome nefrótico o hay mala adherencia, especialmente con el uso prolongado",
